@@ -1,0 +1,345 @@
+<!DOCTYPE html><html class="light" lang="es" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Nuestra Historia | Admin Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&amp;family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet">
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#625e55",
+                        "on-tertiary-fixed": "#1e1c14",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#554300",
+                        "on-surface-variant": "#4d4635",
+                        "secondary-fixed-dim": "#c6c7c2",
+                        "outline-variant": "#d0c5af",
+                        "surface-container": "#efeeeb",
+                        "surface-tint": "#735c00",
+                        "outline": "#7f7663",
+                        "surface-bright": "#faf9f6",
+                        "primary": "#735c00",
+                        "inverse-primary": "#e9c349",
+                        "secondary-fixed": "#e3e3de",
+                        "surface-variant": "#e3e2e0",
+                        "surface-container-highest": "#e3e2e0",
+                        "inverse-on-surface": "#f2f1ee",
+                        "on-error": "#ffffff",
+                        "surface": "#faf9f6",
+                        "surface-dim": "#dbdad7",
+                        "on-secondary-fixed": "#1a1c19",
+                        "surface-container-low": "#f4f3f1",
+                        "on-secondary-fixed-variant": "#454744",
+                        "secondary": "#5d5f5b",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#2f312f",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#62635f",
+                        "tertiary-fixed": "#e8e2d6",
+                        "on-background": "#1a1c1a",
+                        "on-tertiary-fixed-variant": "#4a473e",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#ffe088",
+                        "on-tertiary-container": "#48453c",
+                        "on-primary-fixed-variant": "#574500",
+                        "tertiary-container": "#b7b2a7",
+                        "background": "#faf9f6",
+                        "on-primary-fixed": "#241a00",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#cbc6ba",
+                        "on-surface": "#1a1c1a",
+                        "primary-fixed-dim": "#e9c349",
+                        "primary-container": "#d4af37",
+                        "surface-container-high": "#e9e8e5",
+                        "secondary-container": "#e0e0db"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "section-padding-desktop": "120px",
+                        "section-padding-mobile": "64px",
+                        "unit": "8px",
+                        "gutter": "24px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Montserrat"],
+                        "headline-sm": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Montserrat"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "body-lg": ["Montserrat"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "1.0", "letterSpacing": "0.2em", "fontWeight": "600" }],
+                        "headline-sm": ["24px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg-mobile": ["40px", { "lineHeight": "1.2", "fontWeight": "400" }],
+                        "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.8", "letterSpacing": "0.01em", "fontWeight": "300" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f4f3f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d0c5af;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex">
+<!-- Sidebar -->
+<aside class="hidden md:flex flex-col w-64 bg-surface-container-low border-r border-outline-variant h-screen fixed top-0 left-0 z-40">
+<div class="p-6">
+<div class="font-display-lg text-headline-sm text-primary tracking-widest uppercase mb-10">
+                Nuestra Historia
+            </div>
+<nav class="space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary rounded-xl font-label-caps text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface hover:text-primary rounded-xl font-label-caps text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="group">group</span>
+                    Invitados
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface hover:text-primary rounded-xl font-label-caps text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="event">event</span>
+                    Eventos
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface hover:text-primary rounded-xl font-label-caps text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+                    Configuración
+                </a>
+</nav>
+</div>
+<div class="mt-auto p-6 border-t border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-tertiary-fixed border border-outline-variant flex items-center justify-center overflow-hidden shrink-0">
+<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+</div>
+<div class="overflow-hidden">
+<p class="font-body-md text-sm font-medium truncate">Carlos &amp; Elena</p>
+<p class="font-body-md text-xs text-secondary truncate">carloselena@wedding.com</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 md:ml-64 bg-surface min-h-screen">
+<!-- Top Bar (Mobile menu + Notifications) -->
+<header class="sticky top-0 z-30 bg-surface/80 backdrop-blur-md border-b border-outline-variant/50 px-6 py-4 flex justify-between items-center md:justify-end">
+<div class="md:hidden font-display-lg text-headline-sm text-primary tracking-widest uppercase">
+                NH
+            </div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-on-surface-variant hover:text-primary transition-colors bg-surface-container-low rounded-full">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+</header>
+<div class="p-6 md:p-10 max-w-7xl mx-auto">
+<!-- Header Section -->
+<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface mb-2">Panel de Control</h1>
+<p class="font-body-md text-secondary">Resumen general de vuestra celebración y gestión de invitados.</p>
+</div>
+<div class="text-sm font-label-caps text-secondary">
+                    Faltan <span class="text-primary font-bold">42 días</span>
+</div>
+</div>
+<!-- Stats Cards Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Total Invitados -->
+<div class="bg-surface-container-lowest p-6 border border-outline-variant/50 rounded-2xl shadow-sm relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-primary">group</span>
+</div>
+<div class="relative z-10">
+<span class="font-label-caps text-xs text-secondary uppercase tracking-widest block mb-4">Total Invitados</span>
+<div class="flex items-end gap-3">
+<span class="text-5xl font-display-lg text-on-surface">248</span>
+<span class="text-sm font-body-md text-secondary mb-2">/ 250</span>
+</div>
+<div class="w-full bg-surface-variant h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 99%"></div>
+</div>
+</div>
+</div>
+<!-- Asistencias -->
+<div class="bg-surface-container-lowest p-6 border border-outline-variant/50 rounded-2xl shadow-sm relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-primary">check_circle</span>
+</div>
+<div class="relative z-10">
+<span class="font-label-caps text-xs text-secondary uppercase tracking-widest block mb-4">Confirmados</span>
+<div class="flex items-end gap-3">
+<span class="text-5xl font-display-lg text-on-surface">184</span>
+</div>
+<div class="w-full bg-surface-variant h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 74%"></div>
+</div>
+<p class="mt-2 text-xs font-body-md text-secondary">74% de la lista</p>
+</div>
+</div>
+<!-- No Asistirán -->
+<div class="bg-surface-container-lowest p-6 border border-outline-variant/50 rounded-2xl shadow-sm relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-error">cancel</span>
+</div>
+<div class="relative z-10">
+<span class="font-label-caps text-xs text-secondary uppercase tracking-widest block mb-4">No Asistirán</span>
+<div class="flex items-end gap-3">
+<span class="text-5xl font-display-lg text-on-surface">12</span>
+</div>
+<p class="mt-6 text-xs font-body-md text-secondary">Notificados oficialmente</p>
+</div>
+</div>
+<!-- Pendientes -->
+<div class="bg-surface-container-lowest p-6 border border-outline-variant/50 rounded-2xl shadow-sm relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-on-tertiary-container">pending</span>
+</div>
+<div class="relative z-10">
+<span class="font-label-caps text-xs text-secondary uppercase tracking-widest block mb-4">Pendientes</span>
+<div class="flex items-end gap-3">
+<span class="text-5xl font-display-lg text-on-surface">52</span>
+</div>
+<p class="mt-6 text-xs font-body-md text-secondary">Recordatorio enviado hace 2 días</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+<!-- Table Section -->
+
+<!-- Activity Timeline (Notification Center Style) -->
+<div class="flex flex-col h-full xl:col-span-3">
+<h2 class="font-headline-sm text-headline-sm mb-6">Centro de Actividad</h2>
+<div class="bg-surface-container-lowest border border-outline-variant/50 rounded-2xl shadow-sm flex-1 p-2">
+<div class="space-y-1">
+<!-- Item 1 -->
+<div class="p-3 rounded-xl hover:bg-surface-container-low transition-colors flex gap-4 items-start">
+<div class="mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="how_to_reg">how_to_reg</span>
+</div>
+<div>
+<p class="text-sm font-body-md text-on-surface leading-tight"><strong>Sofia García</strong> ha confirmado su asistencia junto con 3 acompañantes.</p>
+<p class="text-[10px] font-label-caps text-secondary mt-2 uppercase tracking-wide">Hace 15 min</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="p-3 rounded-xl hover:bg-surface-container-low transition-colors flex gap-4 items-start">
+<div class="mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-error/10 text-error shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="event_busy">event_busy</span>
+</div>
+<div>
+<p class="text-sm font-body-md text-on-surface leading-tight"><strong>Javier Martínez</strong> ha declinado la invitación.</p>
+<p class="text-[10px] font-label-caps text-secondary mt-2 uppercase tracking-wide">Hace 2 horas</p>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="p-3 rounded-xl hover:bg-surface-container-low transition-colors flex gap-4 items-start">
+<div class="mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-secondary-container/50 text-on-secondary-container shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="forward_to_inbox">forward_to_inbox</span>
+</div>
+<div>
+<p class="text-sm font-body-md text-on-surface leading-tight">Recordatorio automático enviado a <strong>52 invitados</strong> pendientes.</p>
+<p class="text-[10px] font-label-caps text-secondary mt-2 uppercase tracking-wide">Ayer, 18:30</p>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="p-3 rounded-xl hover:bg-surface-container-low transition-colors flex gap-4 items-start">
+<div class="mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="restaurant_menu">restaurant_menu</span>
+</div>
+<div>
+<p class="text-sm font-body-md text-on-surface leading-tight"><strong>Carlos y Elena</strong> han actualizado sus preferencias de menú (Vegetariano).</p>
+<p class="text-[10px] font-label-caps text-secondary mt-2 uppercase tracking-wide">Ayer, 09:12</p>
+</div>
+</div>
+</div>
+<div class="p-3 text-center mt-2 border-t border-outline-variant/30">
+<button class="text-xs font-label-caps text-primary hover:underline underline-offset-4">Ver todo el historial</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Actions / Bento Style -->
+<div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="relative h-48 md:h-64 rounded-2xl overflow-hidden group">
+<img alt="Eventos" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC82XyRmzv8U2Za6aW5qPWaW09NUJ2EE96yxR1npgY8AmZAIxVUbLVouQfFtFzTRDv0PQK7bZtIRFYo6n_gZN6VcP7Ub6MyMa3VBOXhCCvBEgnicjql3-RwGNF8Qdkob4pstquLCWsjPmoOTBRgWsGxugQQKq-4GgoNJo3gOj-vua1S_D8akugNRni9oy4k0qOCc0R0EDrrQhAZf6u8Nteb2pG2c86qv-Yl9XBMDT22FB60g89NiGyQdm8sxYS5wgOHzPrODyYqcvy7">
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/90 via-on-surface/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6 md:p-8 w-full flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h3 class="font-display-lg text-headline-sm text-surface mb-1">Gestionar Eventos</h3>
+<p class="text-surface/80 font-body-md text-sm">Cena de ensayo, ceremonia y recepción.</p>
+</div>
+<a class="inline-flex items-center justify-center bg-surface px-5 py-2.5 rounded-lg font-label-caps text-xs text-primary hover:bg-primary hover:text-on-primary transition-colors shrink-0" href="#">CONFIGURAR</a>
+</div>
+</div>
+<div class="relative h-48 md:h-64 rounded-2xl overflow-hidden group">
+<img alt="Mesa" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfnWCIsSN46OAgk2GP5D_cBGmi0TlkJsAEkyyx1EMidthdOQp6gxXoszVwe8WlaRqhtpIZvWlgMJe8sGTQLf-xI5BHng5xiBaVckDolmQUbAbNw6LTkdYJyRvg_MyV--XHxLIQy_tDnIvxiY8qRBh1cN9y13vTk3GCdU_8jWGsVQIsM6RFeMDicIMdGwVay_E1RmWq-oOAv_wDlhC4rdYGdtZecSJb549Lzh2RvkxxwEZfzN5YY7tyPAv1SDLZNHLfo5h6CpdaFNJ-">
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/90 via-on-surface/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6 md:p-8 w-full flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h3 class="font-display-lg text-headline-sm text-surface mb-1">Plano de Mesas</h3>
+<p class="text-surface/80 font-body-md text-sm">Organiza la distribución de tus invitados.</p>
+</div>
+<a class="inline-flex items-center justify-center bg-surface px-5 py-2.5 rounded-lg font-label-caps text-xs text-primary hover:bg-primary hover:text-on-primary transition-colors shrink-0" href="#">EDITAR PLANO</a>
+</div>
+</div>
+</div>
+<!-- Footer Area inside Main -->
+<footer class="mt-16 pt-8 pb-4 border-t border-outline-variant/50 text-center">
+<div class="font-display-lg text-lg text-primary mb-2">Nuestra Historia</div>
+<p class="font-body-md text-xs text-secondary">© 2024 Nuestra Historia. Forever &amp; Always.</p>
+</footer>
+</div>
+</main>
+<script>
+        // Simple search interaction mock
+        const searchInput = document.querySelector('input[type="text"]');
+        if(searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                console.log('Filtrando por: ' + e.target.value);
+            });
+        }
+    </script>
+
+
+</body></html>

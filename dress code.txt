@@ -1,0 +1,205 @@
+<!DOCTYPE html><html lang="es" class="light" style=""><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#62635f",
+                    "inverse-primary": "#e9c349",
+                    "primary-container": "#d4af37",
+                    "on-error": "#ffffff",
+                    "on-background": "#1a1c1a",
+                    "tertiary-container": "#b7b2a7",
+                    "error": "#ba1a1a",
+                    "secondary-fixed": "#e3e3de",
+                    "background": "#faf9f6",
+                    "primary": "#735c00",
+                    "surface-tint": "#735c00",
+                    "on-tertiary-fixed": "#1e1c14",
+                    "on-tertiary-container": "#48453c",
+                    "on-secondary-fixed": "#1a1c19",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#c6c7c2",
+                    "tertiary-fixed-dim": "#cbc6ba",
+                    "inverse-surface": "#2f312f",
+                    "surface": "#faf9f6",
+                    "error-container": "#ffdad6",
+                    "on-surface-variant": "#4d4635",
+                    "tertiary": "#625e55",
+                    "on-tertiary-fixed-variant": "#4a473e",
+                    "tertiary-fixed": "#e8e2d6",
+                    "primary-fixed-dim": "#e9c349",
+                    "surface-container-high": "#e9e8e5",
+                    "on-surface": "#1a1c1a",
+                    "surface-container": "#efeeeb",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#f2f1ee",
+                    "outline-variant": "#d0c5af",
+                    "on-primary-container": "#554300",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#e3e2e0",
+                    "outline": "#7f7663",
+                    "primary-fixed": "#ffe088",
+                    "on-primary-fixed": "#241a00",
+                    "secondary-container": "#e0e0db",
+                    "surface-dim": "#dbdad7",
+                    "on-secondary-fixed-variant": "#454744",
+                    "surface-container-low": "#f4f3f1",
+                    "surface-container-highest": "#e3e2e0",
+                    "surface-bright": "#faf9f6",
+                    "secondary": "#5d5f5b",
+                    "on-primary-fixed-variant": "#574500",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "section-padding-desktop": "120px",
+                    "section-padding-mobile": "64px",
+                    "container-max": "1200px",
+                    "gutter": "24px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Playfair Display"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "label-caps": ["Montserrat"],
+                    "headline-sm": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "body-lg": ["Montserrat"],
+                    "body-md": ["Montserrat"]
+            },
+            "fontSize": {
+                    "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+                    "display-lg-mobile": ["40px", { "lineHeight": "1.2", "fontWeight": "400" }],
+                    "label-caps": ["12px", { "lineHeight": "1.0", "letterSpacing": "0.2em", "fontWeight": "600" }],
+                    "headline-sm": ["24px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                    "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "400" }],
+                    "body-lg": ["18px", { "lineHeight": "1.8", "letterSpacing": "0.01em", "fontWeight": "300" }],
+                    "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+            }
+          },
+        },
+      }
+    }catch(_e){}</script></head><body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed font-body-md overflow-x-hidden">
+
+    <!-- TopNavBar -->
+    <nav id="top-nav" class="fixed top-0 w-full z-50 transition-all duration-500 ease-in-out bg-surface/80 backdrop-blur-md shadow-sm">
+        <div class="flex justify-between items-center max-w-container-max mx-auto px-gutter py-4">
+            <a href="#" class="font-display-lg text-headline-sm text-primary tracking-widest">Nuestra Historia</a>
+            
+            <!-- Desktop Links -->
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#" class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300">Our Story</a>
+                <a href="#" class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300">Events</a>
+                <a href="#" class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300">Gallery</a>
+                <a href="#" class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300">RSVP</a>
+                <a href="#" class="font-label-caps text-label-caps bg-primary text-on-primary px-6 py-2 transition-all duration-300 hover:opacity-90">Registry</a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden text-primary">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-[160px] pb-section-padding-mobile md:pb-section-padding-desktop text-center px-gutter max-w-4xl mx-auto reveal">
+        <span class="font-label-caps text-label-caps text-primary tracking-[0.3em] mb-4 block">DRESS CODE</span>
+        <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-6">Código de Vestimenta</h1>
+        <div class="w-12 h-[1px] bg-primary/30 mx-auto mb-8"></div>
+        <h2 class="font-headline-sm text-headline-sm italic text-secondary mb-4">Formal</h2>
+        <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+            Queremos que os sintáis vuestra mejor versión. El evento será de etiqueta formal, combinando elegancia y comodidad para celebrar bajo las estrellas.
+        </p>
+    </header>
+
+    <!-- Dress Code Sections (Bento-inspired Grid) -->
+    <main class="max-w-container-max mx-auto px-gutter mb-section-padding-desktop"><div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch"><!-- Para Ellos -->
+            <section class="flex flex-col reveal">
+                <div class="flex-grow flex flex-col justify-center px-4 text-center md:text-left mb-8">
+                    <h3 class="font-display-lg text-headline-md text-primary mb-4">Para Ellos</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-6">
+                        La etiqueta para los caballeros consiste en un traje sastre en tonos oscuros como gris marengo, azul marino o negro, acompañado de camisa formal y corbata.
+                    </p>
+                    <div class="flex items-center justify-center md:justify-start space-x-2 text-primary/60">
+                        <span class="material-symbols-outlined text-[18px]">verified</span>
+                        <span class="font-label-caps text-[10px] tracking-widest">MODA CLÁSICA</span>
+                    </div>
+                </div>
+                <div class="relative aspect-[3/4] overflow-hidden image-hover champagne-shadow">
+                    <img class="w-full h-full object-cover transition-transform duration-1000" src="https://lh3.googleusercontent.com/aida/AP1WRLvdDu5kS43p_BpOOjH3lB31JiUBwHo_zYZqliSjrwfqPAzNV3XWaNUVr4hzblEQPd1XXTpIZEqMn_8L24mznhpQMFdL64byoQMeLAQf_DurdNDSip37nWfLfulPCfIdEGul_IL98I41IOK7o0ft2NL6xpDrfdIR7OJRWUDiS0UIExsb58DtlRI06PN7yQhIeq9qj3OBxnVQvD6vB3nnaAGgvHGn-R-8ipPoS20M_vRZClH8PU2c3PCn_uIE" alt="Para Ellos">
+                    <div class="absolute inset-0 border-[12px] border-surface/20 pointer-events-none"></div>
+                </div>
+            </section>
+
+            <!-- Para Ellas -->
+            <section class="flex flex-col reveal">
+                <div class="flex-grow flex flex-col justify-center px-4 text-center md:text-left mb-8">
+                    <h3 class="font-display-lg text-headline-md text-primary mb-4">Para Ellas</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-6">
+                        La etiqueta sugerida para las damas es de vestido formal, ya sea midi o largo, en tonos elegantes y sofisticados.
+                    </p>
+                    <div class="flex items-center justify-center md:justify-start space-x-2 text-primary/60">
+                        <span class="material-symbols-outlined text-[18px]">flare</span>
+                        <span class="font-label-caps text-[10px] tracking-widest">ESTILO ETÉREO</span>
+                    </div>
+                </div>
+                <div class="relative aspect-[3/4] overflow-hidden image-hover champagne-shadow">
+                    <img class="w-full h-full object-cover transition-transform duration-1000" src="https://lh3.googleusercontent.com/aida/AP1WRLtKIozmbWNu8FzSAQP0AkBInBKH-xisc7wWYS3skV-MVPjqQqZk8mZawMBsh4EbaK7GyDRriDbYofFJBQokjXsj78EzbAgvFWjd7lZ6FMGZ3YHAa82F8oyk5mEgC1BDNHXHSFEC-YjH2LRFIFXaycCUw5FW109ga0YkGp4hiH-tmuoqzF1z-y_O-U-ZMhjCuQWC_Fmh_5gZ8VBUizsiCGQ5QuHsjYCoOY9Vm34yjz7ZKo5jBC2JAkXsM332" alt="Para Ellas">
+                    <div class="absolute inset-0 border-[12px] border-surface/20 pointer-events-none"></div>
+                </div>
+            </section></div></main>
+
+    <!-- Additional Advice Section -->
+    <section class="bg-surface-container-low py-section-padding-desktop reveal">
+        <div class="max-w-container-max mx-auto px-gutter text-center">
+            <h3 class="font-display-lg text-headline-md text-primary mb-12">Consejos Adicionales</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-4xl mx-auto">
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-full border border-outline-variant flex items-center justify-center mb-6 text-primary">
+                        <span class="material-symbols-outlined text-[32px]">park</span>
+                    </div>
+                    <h4 class="font-label-caps text-label-caps text-on-surface mb-3 uppercase tracking-[0.1em]">El Terreno</h4>
+                    <p class="font-body-md text-body-md text-on-surface-variant max-w-xs">
+                        Nuestra ceremonia tendrá lugar en un jardín. Os recomendamos tener cuidado con los tacones finos; las bases anchas o cuñas serán vuestras mejores aliadas.
+                    </p>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-full border border-outline-variant flex items-center justify-center mb-6 text-primary">
+                        <span class="material-symbols-outlined text-[32px]">ac_unit</span>
+                    </div>
+                    <h4 class="font-label-caps text-label-caps text-on-surface mb-3 uppercase tracking-[0.1em]">El Clima</h4>
+                    <p class="font-body-md text-body-md text-on-surface-variant max-w-xs">
+                        Al caer la noche, la brisa del jardín puede ser fresca. Sugerimos traer un chal o prenda ligera para disfrutar de la cena cómodamente.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="mt-20">
+                <a href="/" class="inline-flex items-center space-x-3 group">
+                    <span class="material-symbols-outlined text-primary group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                    <span class="font-label-caps text-label-caps text-primary border-b border-primary/20 pb-1 group-hover:border-primary/60 transition-all">Volver al Inicio</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="w-full py-section-padding-desktop bg-surface-container-low border-t border-outline-variant">
+        <div class="flex flex-col items-center justify-center space-y-unit text-center w-full px-gutter">
+            <h2 class="font-display-lg text-headline-md text-primary mb-4">Nuestra Historia</h2>
+            <div class="flex space-x-8 mb-8">
+                <a href="#" class="font-body-md text-secondary hover:text-primary transition-opacity underline decoration-primary/30 underline-offset-4">Privacy Policy</a>
+                <a href="#" class="font-body-md text-secondary hover:text-primary transition-opacity underline decoration-primary/30 underline-offset-4">Contact Us</a>
+            </div>
+            </div></footer></body></html>

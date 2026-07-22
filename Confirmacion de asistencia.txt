@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nuestra Historia - RSVP Confirmation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&amp;family=Playfair+Display:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#574500",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#faf9f6",
+                        "surface-variant": "#e3e2e0",
+                        "outline": "#7f7663",
+                        "background": "#faf9f6",
+                        "on-secondary-container": "#62635f",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e3e2e0",
+                        "primary-fixed-dim": "#e9c349",
+                        "inverse-primary": "#e9c349",
+                        "on-surface-variant": "#4d4635",
+                        "secondary-container": "#e0e0db",
+                        "on-primary-container": "#554300",
+                        "outline-variant": "#d0c5af",
+                        "tertiary-container": "#b7b2a7",
+                        "surface-bright": "#faf9f6",
+                        "secondary": "#5d5f5b",
+                        "on-primary": "#ffffff",
+                        "primary": "#735c00",
+                        "on-primary-fixed": "#241a00",
+                        "inverse-on-surface": "#f2f1ee",
+                        "surface-tint": "#735c00",
+                        "tertiary-fixed-dim": "#cbc6ba",
+                        "surface-dim": "#dbdad7",
+                        "primary-fixed": "#ffe088",
+                        "on-tertiary-fixed-variant": "#4a473e",
+                        "inverse-surface": "#2f312f",
+                        "secondary-fixed-dim": "#c6c7c2",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#e3e3de",
+                        "on-secondary-fixed": "#1a1c19",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#efeeeb",
+                        "tertiary": "#625e55",
+                        "surface-container-high": "#e9e8e5",
+                        "tertiary-fixed": "#e8e2d6",
+                        "primary-container": "#d4af37",
+                        "surface-container-low": "#f4f3f1",
+                        "on-tertiary-fixed": "#1e1c14",
+                        "on-surface": "#1a1c1a",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1a1c1a",
+                        "on-tertiary-container": "#48453c",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#454744",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1200px",
+                        "section-padding-desktop": "120px",
+                        "gutter": "24px",
+                        "unit": "8px",
+                        "section-padding-mobile": "64px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Montserrat"],
+                        "body-lg": ["Montserrat"],
+                        "headline-sm": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "display-lg-mobile": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "label-caps": ["Montserrat"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.8", "letterSpacing": "0.01em", "fontWeight": "300" }],
+                        "headline-sm": ["24px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "400" }],
+                        "display-lg-mobile": ["40px", { "lineHeight": "1.2", "fontWeight": "400" }],
+                        "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1.0", "letterSpacing": "0.2em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .champagne-shadow {
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.08);
+        }
+        
+        .fade-up-enter {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .fade-up-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 800ms cubic-bezier(0.4, 0, 0.2, 1), transform 800ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<!-- Top Navigation from Shared Components is intentionally omitted here as this is a transactional success screen, 
+         following the rule: "Automatic Suppression: You MUST exclude the navigation shell if the page intent is: 
+         Linear/Transactional... 'Success/Confirmation' splash screens." -->
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center px-gutter py-section-padding-desktop">
+<div class="max-w-[800px] w-full text-center fade-up-element fade-up-enter">
+<!-- Logo & Brand Header -->
+<div class="mb-12 flex flex-col items-center">
+<img alt="Nuestra Historia Logo" class="w-32 h-32 object-contain mb-8" src="https://lh3.googleusercontent.com/aida/AP1WRLuako6cstzAWsHNS7fPUs4CQgGYpd7M7f6ow5oVU_tfCTKJHzh1__HaWoljvI_xIyq4pS0U5baFU0HrHM49KNyGyNeu8l__g-rUQLT6umdh6dopo7FaYKcZk3r_M7dzI4oLaNaadSdZZ0oJvWA48vkDNkFGQw3FhlVvD-7XfGnbdVnXgyiR0x2Y03kBnrlD77zFcd89KTppQgIcu-7Q0fjzIZVOpQr9lBkqCuYjwa3kJr9E1sGNx-MyriEW"/>
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary-container mb-4 font-headline-md tracking-widest">
+                    Confirmación Exitosa
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+                    ¡Estamos muy emocionados de compartir este día tan especial con ustedes! Gracias por hacérnoslo saber.
+                </p>
+</div>
+<!-- RSVP Summary Card -->
+<div class="bg-surface-container-lowest border border-tertiary-fixed champagne-shadow rounded-DEFAULT p-8 md:p-12 mb-12 mx-auto max-w-xl">
+<h2 class="font-headline-sm text-headline-sm text-primary mb-8 border-b border-primary/20 pb-4 inline-block px-8">
+                    Your Selection
+                </h2>
+<div class="space-y-6 text-left max-w-sm mx-auto">
+<div class="flex justify-between items-center border-b border-surface-variant pb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Status</span>
+<span class="font-body-md text-body-md text-primary flex items-center">
+<span class="material-symbols-outlined mr-2" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            Attending
+                        </span>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8">
+<a class="inline-block bg-primary-container text-on-primary px-8 py-4 font-label-caps text-label-caps tracking-widest transition-opacity hover:opacity-90 w-full sm:w-auto text-center rounded-DEFAULT" href="#">
+                    Back to Home
+                </a>
+<a class="inline-flex items-center justify-center border border-primary-container text-primary-container px-8 py-4 font-label-caps text-label-caps tracking-widest transition-colors hover:bg-primary-container/5 w-full sm:w-auto text-center rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined mr-2">calendar_today</span>
+                    Add to Calendar
+                </a>
+</div>
+</div>
+</main>
+<!-- Footer from Shared Components -->
+<footer class="bg-surface-container-low w-full py-section-padding-desktop border-t border-outline-variant flex flex-col items-center justify-center space-y-unit text-center px-gutter">
+<h2 class="font-display-lg text-headline-md text-primary mb-4">Nuestra Historia</h2>
+<div class="flex space-x-6 mb-6">
+<a class="font-body-md text-body-md text-secondary hover:text-primary underline decoration-primary/30 underline-offset-4 opacity-90 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-secondary hover:text-primary underline decoration-primary/30 underline-offset-4 opacity-90 hover:opacity-100 transition-opacity" href="#">Contact Us</a>
+</div>
+<p class="font-body-md text-body-md text-secondary">
+            © 2024 Nuestra Historia. Forever &amp; Always.
+        </p>
+</footer>
+<script>
+        // Simple entry animation
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const elements = document.querySelectorAll('.fade-up-element');
+                elements.forEach(el => {
+                    el.classList.add('fade-up-enter-active');
+                    el.classList.remove('fade-up-enter');
+                });
+            }, 100);
+        });
+    </script>
+</body></html>

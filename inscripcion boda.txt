@@ -1,0 +1,273 @@
+<!DOCTYPE html><html class="scroll-smooth" lang="es"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#faf9f6",
+                    "surface-container-low": "#f4f3f1",
+                    "surface": "#faf9f6",
+                    "primary-fixed-dim": "#e9c349",
+                    "on-background": "#1a1c1a",
+                    "primary": "#735c00",
+                    "on-tertiary-fixed-variant": "#4a473e",
+                    "tertiary": "#625e55",
+                    "on-tertiary-container": "#48453c",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#b7b2a7",
+                    "on-primary-fixed-variant": "#574500",
+                    "secondary-container": "#e0e0db",
+                    "secondary": "#5d5f5b",
+                    "surface-container": "#efeeeb",
+                    "secondary-fixed": "#e3e3de",
+                    "on-surface": "#1a1c1a",
+                    "on-secondary-fixed-variant": "#454744",
+                    "on-secondary-container": "#62635f",
+                    "on-primary-fixed": "#241a00",
+                    "surface-dim": "#dbdad7",
+                    "primary-fixed": "#ffe088",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#cbc6ba",
+                    "surface-container-high": "#e9e8e5",
+                    "inverse-on-surface": "#f2f1ee",
+                    "error-container": "#ffdad6",
+                    "on-surface-variant": "#4d4635",
+                    "on-primary-container": "#554300",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e3e2e0",
+                    "secondary-fixed-dim": "#c6c7c2",
+                    "surface-tint": "#735c00",
+                    "outline-variant": "#d0c5af",
+                    "on-tertiary-fixed": "#1e1c14",
+                    "error": "#ba1a1a",
+                    "outline": "#7f7663",
+                    "background": "#faf9f6",
+                    "on-secondary-fixed": "#1a1c19",
+                    "inverse-primary": "#e9c349",
+                    "primary-container": "#d4af37",
+                    "inverse-surface": "#2f312f",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#e8e2d6",
+                    "surface-variant": "#e3e2e0"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-max": "1200px",
+                    "section-padding-desktop": "120px",
+                    "unit": "8px",
+                    "section-padding-mobile": "64px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Playfair Display"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "body-lg": ["Montserrat"],
+                    "label-caps": ["Montserrat"],
+                    "headline-md": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "body-md": ["Montserrat"]
+            },
+            "fontSize": {
+                    "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.8", "letterSpacing": "0.01em", "fontWeight": "300"}],
+                    "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.2em", "fontWeight": "600"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "400"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    }catch(_e){}}catch(_e){}</script></head><body class="shimmer-bg text-on-background font-body-md min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/20 transition-all duration-300">
+<div class="flex justify-between items-center max-w-container-max mx-auto px-gutter py-5">
+<span class="font-display-lg text-headline-sm text-primary tracking-[0.2em] uppercase">Nuestra Historia</span>
+<div class="hidden md:flex space-x-12">
+<a class="font-label-caps text-[11px] text-on-surface-variant hover:text-primary transition-colors duration-300 tracking-[0.2em]" href="#">OUR STORY</a>
+<a class="font-label-caps text-[11px] text-on-surface-variant hover:text-primary transition-colors duration-300 tracking-[0.2em]" href="#">EVENTS</a>
+<a class="font-label-caps text-[11px] text-on-surface-variant hover:text-primary transition-colors duration-300 tracking-[0.2em]" href="#">GALLERY</a>
+<a class="font-label-caps text-[11px] text-primary border-b border-primary/50 pb-1 tracking-[0.2em]" href="#">RSVP</a>
+</div>
+<button class="bg-primary-container text-on-primary-container px-8 py-3 font-label-caps text-[10px] tracking-widest transition-all duration-500 ease-in-out hover:bg-primary hover:text-on-primary rounded-sm">REGISTRY</button>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-grow flex items-center justify-center pt-40 pb-section-padding-desktop px-gutter relative overflow-hidden">
+<!-- Background Decor -->
+<div class="absolute inset-0 pointer-events-none opacity-20 flex justify-center items-center">
+<div class="w-[800px] h-[800px] border-[0.5px] border-primary/10 rounded-full absolute"></div>
+<div class="w-[1100px] h-[1100px] border-[0.5px] border-primary/5 rounded-full absolute"></div>
+</div>
+<div class="w-full max-w-[760px] z-10 mx-auto" id="rsvp-container">
+<!-- Step 1: Initial Search -->
+<section class="animate-card bg-surface p-12 md:p-24 text-center champagne-shadow border border-primary/10 rounded-xl relative overflow-hidden" id="step-search"><div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary-container/40 to-transparent"></div><span class="material-symbols-outlined stagger-1 mb-8 block text-6xl text-primary/70 animate-float">local_florist</span><h1 class="stagger-2 font-display-lg md:text-[56px] text-5xl mb-8 text-primary tracking-[0.15em] uppercase font-light">Confirmar Asistencia</h1><div class="stagger-2 decorative-line mb-10"></div><p class="stagger-3 font-body-lg text-secondary mb-12 max-w-[440px] mx-auto font-light leading-relaxed">Por favor, completa los detalles para encontrar tu invitación personalizada.</p><div class="stagger-3 space-y-8 max-w-[480px] mx-auto mb-16"><div class="relative"><input class="modern-input w-full bg-transparent py-4 px-4 font-body-lg text-on-surface placeholder-outline/50 text-center text-xl outline-none border-0 border-b border-outline-variant/30 rounded-none focus:ring-0 focus:border-primary focus:bg-surface-container-low transition-all duration-300" id="guest-name-input" placeholder="Nombre y Apellido" type="text"></div><div class="flex flex-col space-y-4"><p class="font-label-caps text-[10px] text-outline tracking-[0.2em] uppercase">¿Podrás acompañarnos?</p><div class="flex justify-center gap-4"><label class="flex-1 cursor-pointer group"><input type="radio" name="attendance" value="yes" class="hidden peer" checked=""><div class="py-3 px-4 border border-outline-variant/30 rounded-sm text-[11px] font-label-caps tracking-widest transition-all duration-300 peer-checked:bg-primary peer-checked:text-on-primary peer-checked:border-primary group-hover:border-primary/50">ASISTIRÉ</div></label><label class="flex-1 cursor-pointer group"><input type="radio" name="attendance" value="no" class="hidden peer"><div class="py-3 px-4 border border-outline-variant/30 rounded-sm text-[11px] font-label-caps tracking-widest transition-all duration-300 peer-checked:bg-primary peer-checked:text-on-primary peer-checked:border-primary group-hover:border-primary/50">NO ASISTIRÉ</div></label><label class="flex-1 cursor-pointer group"><input type="radio" name="attendance" value="maybe" class="hidden peer"><div class="py-3 px-4 border border-outline-variant/30 rounded-sm text-[11px] font-label-caps tracking-widest transition-all duration-300 peer-checked:bg-primary peer-checked:text-on-primary peer-checked:border-primary group-hover:border-primary/50">TENTATIVO</div></label></div></div><div class="flex flex-col space-y-4"><p class="font-label-caps text-[10px] text-outline tracking-[0.2em] uppercase">Número de Invitados</p><div class="relative inline-block mx-auto w-full max-w-[200px]"><select class="w-full bg-transparent border-0 border-b border-outline-variant/30 py-3 px-4 font-body-md text-on-surface text-center focus:ring-0 focus:border-primary appearance-none cursor-pointer"><option value="1">1 Persona</option><option value="2">2 Personas</option><option value="3">3 Personas</option><option value="4">4 Personas</option></select></div></div></div><div class="stagger-4"><button class="btn-premium btn-pulse hover:scale-105 transition-all duration-300 bg-primary text-on-primary px-14 py-5 font-label-caps text-[12px] tracking-[0.3em] w-full max-w-[340px] mx-auto block rounded-sm shadow-sm" onclick="handleSearch()">BUSCAR INVITACIÓN</button></div></section>
+<!-- Step 2: Found Invitation (Success) -->
+<section class="hidden animate-card bg-surface p-12 md:p-24 text-center champagne-shadow border border-outline-variant/10 rounded-xl relative" id="step-found">
+<div class="mb-10">
+<span class="material-symbols-outlined text-primary-container text-7xl opacity-80">mark_email_read</span>
+</div>
+<h2 class="font-display-lg text-headline-md mb-4 text-primary uppercase tracking-widest">Invitación Encontrada</h2>
+<div class="decorative-line mb-10"></div>
+<p class="font-body-lg text-secondary mb-4 italic">Nos complace invitar a:</p>
+<p class="font-display-lg text-[48px] text-on-surface mb-20 text-primary-container" id="guest-display-name">Invitado Especial</p>
+<div class="flex flex-col sm:flex-row justify-center gap-8 max-w-[640px] mx-auto">
+<button class="btn-premium flex-1 bg-primary text-on-primary py-5 px-8 font-label-caps text-[11px] tracking-[0.2em] rounded-sm" onclick="handleConfirm()">
+                    CONFIRMAR ASISTENCIA
+                </button>
+<button class="btn-premium flex-1 border border-outline text-secondary py-5 px-8 font-label-caps text-[11px] tracking-[0.2em] hover:bg-surface-container-low rounded-sm" onclick="handleDecline()">
+                    NO PODRÉ ASISTIR
+                </button>
+</div>
+</section>
+<!-- Step 2b: Not Found -->
+<section class="hidden animate-card bg-surface p-12 md:p-24 text-center champagne-shadow border border-outline-variant/10 rounded-xl relative" id="step-not-found">
+<div class="mb-10">
+<span class="material-symbols-outlined text-outline text-7xl opacity-40">sentiment_dissatisfied</span>
+</div>
+<h2 class="font-display-lg text-headline-md mb-8 text-on-surface uppercase tracking-widest">Nombre no localizado</h2>
+<div class="decorative-line mb-10"></div>
+<p class="font-body-lg text-secondary mb-16 max-w-[440px] mx-auto font-light leading-relaxed">
+                No pudimos encontrar una invitación con ese nombre. Por favor, revisa la ortografía o contáctanos directamente para asistirte.
+            </p>
+<button class="btn-premium border-b-2 border-primary text-primary font-label-caps text-label-caps tracking-[0.2em] pb-2 px-4" onclick="resetFlow()">
+                VOLVER A INTENTAR
+            </button>
+</section>
+<!-- Step 3: Success-->
+<section class="hidden animate-card bg-surface p-12 md:p-24 text-center champagne-shadow border border-outline-variant/10 rounded-xl relative overflow-hidden" id="step-success">
+<div class="absolute top-0 left-0 w-full h-[2px] bg-primary-container"></div>
+<span class="material-symbols-outlined text-primary-container text-6xl mb-8 block">favorite</span>
+<h2 class="font-display-lg text-[56px] mb-8 text-primary leading-tight font-light uppercase tracking-tighter">¡Gracias!</h2>
+<div class="decorative-line mb-10"></div>
+<p class="font-body-lg text-secondary mb-16 max-w-[440px] mx-auto font-light italic">
+                "Estamos inmensamente felices de que nos acompañes a celebrar nuestro amor."
+            </p>
+<div class="bg-surface-container-low p-10 text-center mx-auto max-w-[440px] mb-16 border border-outline-variant/20 rounded-sm">
+<p class="font-label-caps text-[10px] text-outline mb-8 tracking-[0.4em] uppercase">Detalles de Confirmación</p>
+<div class="space-y-6">
+<p class="font-body-md text-on-surface flex justify-between border-b border-outline-variant/20 pb-4">
+<span class="">Estado</span>
+<span class="text-primary font-semibold tracking-wide">Confirmado</span>
+</p>
+<p class="font-body-md text-on-surface flex justify-between border-b border-outline-variant/20 pb-4">
+<span class="">Invitados</span>
+<span id="summary-guests" class="">2 personas</span>
+</p>
+<p class="font-body-md text-on-surface flex justify-between pb-2">
+<span class="">Fecha</span>
+<span class="text-secondary font-light">15.08.2024</span>
+</p>
+</div>
+</div>
+<button class="font-label-caps text-label-caps text-primary tracking-[0.2em] hover:text-primary-container transition-all border-b border-primary/20 pb-1" onclick="resetFlow()">
+                VOLVER AL INICIO
+            </button>
+</section>
+<!-- Step 3b: Decline Screen -->
+<section class="hidden animate-card bg-surface p-12 md:p-24 text-center champagne-shadow border border-outline-variant/10 rounded-xl relative" id="step-decline">
+<span class="material-symbols-outlined text-outline-variant text-6xl mb-8 block">mail</span>
+<h2 class="font-display-lg text-[44px] mb-8 text-primary font-light tracking-wide uppercase">Te extrañaremos</h2>
+<div class="decorative-line mb-10"></div>
+<p class="font-body-lg text-secondary mb-16 max-w-[440px] mx-auto font-light leading-relaxed">
+                Gracias por informarnos. Tu respuesta ha sido guardada y lamentamos mucho que no puedas estar presente en este día.
+            </p>
+<button class="btn-premium border border-outline-variant px-12 py-5 text-secondary font-label-caps text-label-caps tracking-[0.2em] rounded-sm" onclick="resetFlow()">
+                REGRESAR
+            </button>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-20 bg-surface-container-low border-t border-outline-variant/10">
+<div class="flex flex-col items-center justify-center space-y-8 text-center w-full px-gutter max-w-container-max mx-auto">
+<span class="font-display-lg text-headline-sm text-primary tracking-[0.3em] uppercase opacity-80">Nuestra Historia</span>
+<p class="font-body-md text-[13px] text-secondary font-light tracking-widest uppercase">© 2024 Nuestra Historia • Forever &amp; Always</p>
+<div class="flex space-x-12 mt-12 border-t border-outline-variant/20 pt-10 w-full max-w-[340px] justify-center opacity-60">
+<a class="font-label-caps text-[9px] text-secondary hover:text-primary tracking-[0.2em] uppercase transition-colors" href="#">Privacy</a>
+<a class="font-label-caps text-[9px] text-secondary hover:text-primary tracking-[0.2em] uppercase transition-colors" href="#">Contact</a>
+</div>
+</div>
+</footer>
+<script>
+    const sections = {
+        search: document.getElementById('step-search'),
+        found: document.getElementById('step-found'),
+        notFound: document.getElementById('step-not-found'),
+        success: document.getElementById('step-success'),
+        decline: document.getElementById('step-decline')
+    };
+
+    function hideAll() {
+        Object.values(sections).forEach(s => {
+            s.classList.add('hidden');
+            s.classList.remove('animate-card');
+        });
+    }
+
+    function showSection(sectionId) {
+        const section = sections[sectionId];
+        section.classList.remove('hidden');
+        // Trigger reflow to restart animation
+        void section.offsetWidth; 
+        section.classList.add('animate-card');
+    }
+
+    function handleSearch() {
+        const name = document.getElementById('guest-name-input').value.trim().toLowerCase();
+        hideAll();
+        
+        if (name === "" || name === "error") {
+            showSection('notFound');
+        } else {
+            const formattedName = name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            document.getElementById('guest-display-name').innerText = formattedName;
+            showSection('found');
+        }
+    }
+
+    function handleConfirm() {
+        hideAll();
+        showSection('success');
+        createConfetti();
+    }
+
+    function handleDecline() {
+        hideAll();
+        showSection('decline');
+    }
+
+    function resetFlow() {
+        hideAll();
+        document.getElementById('guest-name-input').value = "";
+        showSection('search');
+    }
+
+    function createConfetti() {
+        const container = document.getElementById('step-success');
+        const colors = ['#d4af37', '#e9c349', '#ffe088', '#735c00', '#faf9f6'];
+        
+        for (let i = 0; i < 70; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti', 'animate-fall');
+            
+            const size = Math.random() * 8 + 4 + 'px';
+            confetti.style.width = size;
+            confetti.style.height = size;
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            confetti.style.animationDuration = Math.random() * 3 + 3 + 's';
+            confetti.style.opacity = Math.random() * 0.6 + 0.4;
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+            
+            container.appendChild(confetti);
+            setTimeout(() =></script></body></html>

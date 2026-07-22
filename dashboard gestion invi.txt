@@ -1,0 +1,378 @@
+<!DOCTYPE html><html lang="es" class="light" style=""><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Montserrat:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f4f3f1",
+                    "on-primary-container": "#554300",
+                    "inverse-surface": "#2f312f",
+                    "surface-tint": "#735c00",
+                    "secondary": "#5d5f5b",
+                    "tertiary": "#625e55",
+                    "surface-bright": "#faf9f6",
+                    "on-secondary-fixed": "#1a1c19",
+                    "tertiary-fixed": "#e8e2d6",
+                    "primary": "#735c00",
+                    "error": "#ba1a1a",
+                    "background": "#faf9f6",
+                    "surface-container-highest": "#e3e2e0",
+                    "secondary-fixed": "#e3e3de",
+                    "on-error": "#ffffff",
+                    "surface-container": "#efeeeb",
+                    "surface": "#faf9f6",
+                    "on-primary-fixed-variant": "#574500",
+                    "on-background": "#1a1c1a",
+                    "on-error-container": "#93000a",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#4d4635",
+                    "on-surface": "#1a1c1a",
+                    "on-tertiary-fixed-variant": "#4a473e",
+                    "on-primary-fixed": "#241a00",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#dbdad7",
+                    "inverse-on-surface": "#f2f1ee",
+                    "outline": "#7f7663",
+                    "primary-fixed": "#ffe088",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#e3e2e0",
+                    "outline-variant": "#d0c5af",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed": "#1e1c14",
+                    "tertiary-container": "#b7b2a7",
+                    "primary-fixed-dim": "#e9c349",
+                    "primary-container": "#d4af37",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#48453c",
+                    "surface-container-high": "#e9e8e5",
+                    "tertiary-fixed-dim": "#cbc6ba",
+                    "secondary-container": "#e0e0db",
+                    "on-secondary-container": "#62635f",
+                    "on-secondary-fixed-variant": "#454744",
+                    "inverse-primary": "#e9c349",
+                    "secondary-fixed-dim": "#c6c7c2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "unit": "8px",
+                    "section-padding-mobile": "64px",
+                    "section-padding-desktop": "120px",
+                    "container-max": "1200px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Montserrat"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "label-caps": ["Montserrat"],
+                    "body-md": ["Montserrat"],
+                    "display-lg": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "1.8", "letterSpacing": "0.01em", "fontWeight": "300"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.2em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="flex min-h-screen">
+<!-- Sidebar Navigation -->
+<aside class="w-64 bg-surface-container-lowest border-r border-outline-variant flex flex-col fixed h-full z-20">
+<div class="p-8">
+<h1 class="font-display-lg text-headline-sm tracking-widest text-primary-container">NUETRA HISTORIA</h1>
+</div>
+<nav class="flex-1 px-4 space-y-2 mt-4">
+<a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container-low transition-colors duration-200">
+<span class="material-symbols-outlined" data-original-icon="dashboard">dashboard</span>
+<span class="font-label-caps text-label-caps">Panel de Control</span>
+</a>
+<a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg nav-item-active transition-colors duration-200 text-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-label-caps text-label-caps">Invitados</span>
+</a>
+<a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container-low transition-colors duration-200">
+<span class="material-symbols-outlined" data-original-icon="calendar_month">calendar_month</span>
+<span class="font-label-caps text-label-caps">Eventos</span>
+</a>
+<a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container-low transition-colors duration-200">
+<span class="material-symbols-outlined" data-original-icon="gallery_thumbnail">gallery_thumbnail</span>
+<span class="font-label-caps text-label-caps">Galería</span>
+</a>
+<a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container-low transition-colors duration-200">
+<span class="material-symbols-outlined" data-original-icon="card_giftcard">card_giftcard</span>
+<span class="font-label-caps text-label-caps">Mesa de Regalos</span>
+</a>
+<a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-secondary hover:bg-surface-container-low transition-colors duration-200">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Configuración</span>
+</a>
+</nav>
+<div class="p-6 border-t border-outline-variant">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-primary-fixed-dim flex items-center justify-center text-on-primary-fixed font-bold">
+                    A
+                </div>
+<div>
+<p class="text-on-surface font-label-caps text-[10px]">ADMINISTRADOR</p>
+<p class="text-secondary text-[12px] font-body-md">Adriana &amp; Mateo</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 flex-1 flex flex-col relative overflow-x-hidden">
+<!-- Header -->
+<header class="h-20 bg-surface/80 backdrop-blur-md flex items-center justify-between px-gutter border-b border-outline-variant sticky top-0 z-10">
+<div>
+<h2 class="font-headline-sm text-on-surface">Gestión de Invitados</h2>
+<p class="text-[12px] text-secondary font-body-md">Organiza y administra la lista de asistentes a tu gran día.</p>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input type="text" placeholder="Buscar invitado..." class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-body-md focus:ring-1 focus:ring-primary focus:border-primary w-64 transition-all duration-300">
+</div>
+<button class="flex items-center space-x-2 px-6 py-2 border text-primary font-label-caps text-label-caps hover:bg-primary/5 transition-colors duration-300 rounded-lg border-primary-container hover:scale-105 hover:shadow-md">
+<span class="material-symbols-outlined text-[18px]">upload</span>
+<span class="">IMPORTAR</span>
+</button><button class="flex items-center space-x-2 px-6 py-2 border text-primary font-label-caps text-label-caps hover:bg-primary/5 transition-colors duration-300 rounded-lg border-primary-container hover:scale-105 hover:shadow-md">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span class="">EXPORTAR</span>
+</button>
+<button class="flex items-center space-x-2 px-6 py-2 text-white font-label-caps text-label-caps hover:bg-primary/90 transition-all duration-300 rounded-lg shadow-md bg-primary-container hover:scale-105 hover:shadow-lg">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+<span class="">AÑADIR INVITADO</span>
+</button>
+</div>
+</header>
+<!---->
+<div class="p-gutter flex flex-col space-y-8">
+<!-- Filters & Stats -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex items-center space-x-2 bg-surface-container border border-outline-variant p-1 rounded-xl">
+<button class="px-6 py-2 font-label-caps text-[11px] rounded-lg bg-surface-container-lowest shadow-sm text-primary-container transition-transform duration-200 hover:scale-105">TODOS (142)</button>
+<button class="px-6 py-2 font-label-caps text-[11px] rounded-lg text-secondary hover:text-primary transition-colors transition-transform duration-200 hover:scale-105">FAMILIA (56)</button>
+<button class="px-6 py-2 font-label-caps text-[11px] rounded-lg text-secondary hover:text-primary transition-colors transition-transform duration-200 hover:scale-105">AMIGOS (72)</button>
+<button class="px-6 py-2 font-label-caps text-[11px] rounded-lg text-secondary hover:text-primary transition-colors transition-transform duration-200 hover:scale-105">CONOCIDOS (14)</button>
+</div>
+<div class="flex space-x-6 items-center">
+<div class="flex items-center space-x-2">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+<span class="text-body-md text-[14px] text-secondary">84 Confirmados</span>
+</div>
+<div class="flex items-center space-x-2">
+<div class="w-2 h-2 rounded-full bg-amber-500"></div>
+<span class="text-body-md text-[14px] text-secondary">46 Pendientes</span>
+</div>
+<div class="flex items-center space-x-2">
+<div class="w-2 h-2 rounded-full bg-red-400"></div>
+<span class="text-body-md text-[14px] text-secondary">12 No asistirán</span>
+</div>
+</div>
+</div>
+<!-- Guests Table Container -->
+<div class="bg-surface-container-lowest rounded-2xl ethereal-shadow border border-outline-variant overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50 border-b border-outline-variant">
+<th class="px-6 py-4 font-label-caps text-[10px] text-outline tracking-widest uppercase">Invitado</th>
+<th class="px-6 py-4 font-label-caps text-[10px] text-outline tracking-widest uppercase">Categoría</th>
+<th class="px-6 py-4 font-label-caps text-[10px] text-outline tracking-widest uppercase">Estado</th>
+<th class="px-6 py-4 font-label-caps text-[10px] text-outline tracking-widest uppercase">Requerimientos / Notas</th>
+<th class="px-6 py-4 font-label-caps text-[10px] text-outline tracking-widest uppercase text-right">Acciones</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors duration-200 transition-all duration-300 hover:-translate-y-1 hover:bg-surface-container-low" style="transform: scale(1); box-shadow: none;">
+<td class="px-6 py-5">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded-full border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a sophisticated woman with soft lighting and a warm, elegant background, styled like a luxury wedding invitation editorial. The lighting is high-key and serene, emphasizing a minimalist and premium aesthetic. The colors are muted champagnes and ivories with subtle golden accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlkLcoOCO1q8ztpjOVTNouJv_aKtG-ihhqGvK_DmCkcQX2T58HoHUbbHZ9PEZrHY8RywQfy9-eF7GEHkroe2lo9KkmuY79eGlSvLVYR5o0Xc_E-HmOEgunLnHfUxHQmEWRNa1Hmq9lUOSteT6QeQC1Ee_y9cBhDdGjpWp7auWZXCdSjvr8HXrO23Feb998-AJCcaZRyf7IiS3XOo0NU_-ZHRF45KQPvgZwEMFkrE6q4OaeRyZtKjhU9g">
+</div>
+<div>
+<p class="font-headline-sm text-[16px] text-on-surface font-display-lg">Sofía García &amp; Familia</p>
+<p class="text-[12px] text-outline font-body-md">4 Integrantes</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant text-[11px] font-label-caps rounded-full">FAMILIA</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center space-x-2 px-3 py-1 bg-green-500/10 text-green-700 font-medium text-[11px] font-label-caps rounded-full w-fit transition-all duration-300 ease-in-out hover:brightness-95">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span class="">Confirmado</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-[13px] text-secondary font-body-md max-w-xs italic">"Sin gluten para el hijo menor, alérgico a las nueces."</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end space-x-2">
+<button class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-2 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors duration-200 transition-all duration-300 hover:-translate-y-1 hover:bg-surface-container-low" style="transform: scale(1); box-shadow: none;">
+<td class="px-6 py-5">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded-full border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A profile photo of a smiling man in a tailored light gray suit, set against a blurred garden background with warm golden hour lighting. The image evokes a timeless, high-end wedding atmosphere with editorial clarity and soft contrast. Part of an elegant user interface for a wedding management app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAi_W74iAZ3LDc9HEsxaFssgevgEHHWN3W7Sj5lf7P7L3EIBLj-fGNJtZ8oBJNMRjHval2phz1z6n8xeE5IrOCsmX-CELiJgbULOUyBomwldXcuT0fzlAUREr75U6P3Wn6gXzahkII3H3bP5m_GbEDXt7eFjv_Q8Bn32DkxD1uHqQ2urA7oKz_V6LmPO256Nkd_WJ8UnhXgL7F2Onko5-_D5sHu5WPL9tT3X19bjajLTIwDvJBjanHWZg">
+</div>
+<div class="">
+<p class="font-headline-sm text-[16px] text-on-surface font-display-lg">Carlos Mendoza</p>
+<p class="text-[12px] text-outline font-body-md">Individual</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[11px] font-label-caps rounded-full">AMIGO</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center space-x-2 px-3 py-1 bg-amber-500/10 text-amber-600 font-medium text-[11px] font-label-caps rounded-full w-fit transition-all duration-300 ease-in-out hover:brightness-95">
+<span class="material-symbols-outlined text-[18px]">pending</span>
+<span class="">Pendiente</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-[13px] text-secondary font-body-md italic">—</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end space-x-2">
+<button class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-2 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors duration-200 transition-all duration-300 hover:-translate-y-1 hover:bg-surface-container-low" style="transform: scale(1); box-shadow: none;">
+<td class="px-6 py-5">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded-full border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a young couple laughing together, dressed in elegant cocktail attire. The scene is bright and airy with soft beige and cream tones, suggesting a joyful and refined pre-wedding event. The lighting is diffused and natural, matching a high-end minimalist design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPbEhAEUpET50P3-vR8imiBHhtZ_Sm6TfeGpjC0wyYxlepXw-g7b_uvt-LU1B4AVDd614xJ-xKVH_7qO8UWoxmIaR2dmbF09WIuyKmufcTRWWf59ey9qf264K9WmWpiKhX4I8kZpHAgFP07DZOAgnHU_CoLnwAap5FfN8fiyehqHesuvjMGMRfRqC1tTpSWfF4tNeItn9_jw4CmT8QZnFQYv93P1PR2mYOby6zaW7qd53i76nOIF94UA">
+</div>
+<div>
+<p class="font-headline-sm text-[16px] text-on-surface font-display-lg">Lucía &amp; Roberto</p>
+<p class="text-[12px] text-outline font-body-md">Pareja</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[11px] font-label-caps rounded-full">AMIGO</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center space-x-2 px-3 py-1 bg-red-400/10 text-red-500 font-medium text-[11px] font-label-caps rounded-full w-fit transition-all duration-300 ease-in-out hover:brightness-95">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+<span class="">No asistirá</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-[13px] text-secondary font-body-md max-w-xs italic">"Viaje de trabajo programado para esa fecha."</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end space-x-2">
+<button class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-2 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors duration-200 transition-all duration-300 hover:-translate-y-1 hover:bg-surface-container-low" style="transform: scale(1); box-shadow: none;">
+<td class="px-6 py-5">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded-full border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of an elderly gentleman with a kind expression, wearing a navy blue blazer and white shirt. The lighting is warm and cinematic, emphasizing textures and a respectful, premium mood. The overall aesthetic is clean and elegant, aligned with a heritage-focused wedding theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA--IVuzSezD0hisNideVR2i4dt8LoegZunQ7JL61pPg_Rs4tv1FjQIHX89bpvgbBrheNHm1bSrlafIwqHQBCoxxAtCElX-R8OsvTBo3z2eSSPoRw50pdM_c4wDCQ_TBcv6nAY20KHklIPz9oRXmeFFAHWv9KVKqAXppRdLP9EVPKu3_aZs2yTF4NCWCc08uSYguqCG3y-1W64dwpecjl95wDBcuqNISjy39OypMc1ChSp8K8g1wV5MFA">
+</div>
+<div class="">
+<p class="font-headline-sm text-[16px] text-on-surface font-display-lg">Abuelo Ricardo</p>
+<p class="text-[12px] text-outline font-body-md">Individual</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant text-[11px] font-label-caps rounded-full">FAMILIA</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center space-x-2 px-3 py-1 bg-green-500/10 text-green-700 font-medium text-[11px] font-label-caps rounded-full w-fit transition-all duration-300 ease-in-out hover:brightness-95">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span class="">Confirmado</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-[13px] text-secondary font-body-md max-w-xs italic">"Necesita silla de ruedas para la ceremonia."</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end space-x-2">
+<button class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-2 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="bg-surface-container-low/20 px-6 py-4 border-t border-outline-variant flex items-center justify-between">
+<span class="text-body-md text-[13px] text-secondary">Mostrando 1-10 de 142 invitados</span>
+<div class="flex items-center space-x-1">
+<button class="p-2 text-outline hover:text-primary transition-colors disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-primary text-white text-[12px] font-label-caps">1</button>
+<button class="w-8 h-8 rounded-full text-secondary hover:bg-surface-container-low text-[12px] font-label-caps transition-colors">2</button>
+<button class="w-8 h-8 rounded-full text-secondary hover:bg-surface-container-low text-[12px] font-label-caps transition-colors">3</button>
+<span class="px-2 text-outline">...</span>
+<button class="w-8 h-8 rounded-full text-secondary hover:bg-surface-container-low text-[12px] font-label-caps transition-colors">15</button>
+<button class="p-2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Summary Cards (Bento Style) -->
+
+</div>
+<!-- Footer -->
+<footer class="mt-auto border-t border-outline-variant bg-surface-container-low py-8 px-gutter">
+<div class="flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex items-center space-x-6">
+<h4 class="font-display-lg text-headline-sm text-primary-container">NUETRA HISTORIA</h4>
+<p class="text-[12px] text-secondary font-body-md">© 2024 Nuestra Historia. Forever &amp; Always.</p>
+</div>
+<div class="flex space-x-6">
+<a class="text-[12px] font-label-caps text-secondary hover:text-primary transition-colors" href="#">POLÍTICA DE PRIVACIDAD</a>
+<a class="text-[12px] font-label-caps text-secondary hover:text-primary transition-colors" href="#">SOPORTE TÉCNICO</a>
+</div>
+</div>
+</footer>
+</main>
+<!-- Simple Hover Micro-interaction Script -->
+<script class="">
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'scale(1.002)';
+                row.style.boxShadow = '0 4px 20px rgba(212, 175, 55, 0.05)';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'scale(1)';
+                row.style.boxShadow = 'none';
+            });
+        });
+    </script>
+
+
+
+</body></html>
