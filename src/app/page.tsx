@@ -58,10 +58,12 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <img 
             alt="Ivan y Dana" 
-            className="w-full h-full object-cover scale-105 transition-transform duration-1000 brightness-75 object-[40%_40%]" 
+            className="w-full h-full object-cover grayscale contrast-[0.92] brightness-[0.88] object-[15%_8%] md:object-[18%_5%] transition-all duration-1000 scale-100" 
             src="/fotos/foto1.jpg" 
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-surface/60 via-surface/40 to-surface/90 backdrop-blur-[1px]"></div>
+          {/* Gradient overlay for soft-focus vintage effect & left-to-right balance */}
+          <div className="absolute inset-0 bg-gradient-to-r from-surface/20 via-surface/45 to-surface/85 backdrop-blur-[0.5px]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-surface/50 via-transparent to-surface/85"></div>
         </div>
 
         <div className="relative z-10 text-center px-4 py-8 sm:px-10 sm:py-12 md:px-16 md:py-16 max-w-3xl mx-2 sm:mx-4 backdrop-blur-xl rounded-3xl border border-white/60 bg-white/50 dark:bg-black/50 shadow-2xl animate-float-y">
