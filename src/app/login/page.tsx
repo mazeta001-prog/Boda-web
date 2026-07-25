@@ -95,22 +95,22 @@ export default function NovioLogin() {
       </div>
 
       {/* Main Content */}
-      <main className="relative z-10 flex min-h-screen items-center justify-center px-4 sm:px-gutter py-12">
-        <div className="w-full max-w-[440px] glass-modern p-8 sm:p-12 text-center animate-card shadow-2xl rounded-3xl border border-white/40">
+      <main className="relative z-10 flex min-h-screen items-center justify-center px-3 sm:px-gutter py-8 sm:py-12">
+        <div className="w-full max-w-[440px] glass-modern p-5 sm:p-8 md:p-12 text-center animate-card shadow-2xl rounded-3xl border border-white/40">
           
           {/* Logo / Header */}
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <Link href="/" className="inline-block group">
-              <span className="font-display-lg text-2xl sm:text-3xl text-primary font-bold tracking-[0.15em] uppercase block">
+              <span className="font-display-lg text-xl sm:text-3xl text-primary font-bold tracking-[0.15em] uppercase block">
                 Nuestra Historia
               </span>
-              <span className="text-[10px] text-secondary font-label-caps tracking-[0.3em] uppercase block mt-1">
+              <span className="text-[10px] text-secondary font-label-caps tracking-[0.2em] sm:tracking-[0.3em] uppercase block mt-1">
                 Panel de Administración Novios
               </span>
             </Link>
           </div>
 
-          <div className="decorative-line mb-8"></div>
+          <div className="decorative-line mb-6 sm:mb-8"></div>
 
           {/* Error Message */}
           {error && (
@@ -120,7 +120,7 @@ export default function NovioLogin() {
           )}
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
             {/* Usuario */}
             <div className="text-left">
               <label htmlFor="username" className="font-label-caps text-[11px] text-secondary mb-1.5 block uppercase tracking-wider font-bold">
@@ -131,7 +131,7 @@ export default function NovioLogin() {
                   type="text" 
                   id="username" 
                   placeholder="2112" 
-                  className="w-full py-3 px-4 bg-surface-container-low/80 border border-outline-variant/60 rounded-xl text-sm font-body-md text-on-surface outline-none focus:border-primary transition-all"
+                  className="w-full py-3 px-4 bg-surface-container-low/80 border border-outline-variant/60 rounded-xl text-sm font-body-md text-on-surface outline-none focus:border-primary transition-all min-h-[44px]"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={isLoading}
@@ -153,7 +153,7 @@ export default function NovioLogin() {
                   type="password" 
                   id="password" 
                   placeholder="••••••••" 
-                  className="w-full py-3 px-4 bg-surface-container-low/80 border border-outline-variant/60 rounded-xl text-sm font-body-md text-on-surface outline-none focus:border-primary transition-all"
+                  className="w-full py-3 px-4 bg-surface-container-low/80 border border-outline-variant/60 rounded-xl text-sm font-body-md text-on-surface outline-none focus:border-primary transition-all min-h-[44px]"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
@@ -166,11 +166,11 @@ export default function NovioLogin() {
             </div>
 
             {/* Submit Button */}
-            <div className="pt-4">
+            <div className="pt-3 sm:pt-4">
               <button 
                 type="submit" 
                 disabled={isLoading}
-                className="w-full bg-primary text-on-primary py-3.5 px-6 font-label-caps text-xs uppercase tracking-widest font-bold rounded-xl flex justify-center items-center gap-2 hover:bg-primary-container transition-all shadow-md hover:scale-[1.02] disabled:opacity-60"
+                className="w-full bg-primary text-on-primary py-3.5 px-6 font-label-caps text-xs uppercase tracking-wider sm:tracking-widest font-bold rounded-xl flex justify-center items-center gap-2 hover:bg-primary-container transition-all shadow-md hover:scale-[1.02] disabled:opacity-60 min-h-[44px]"
               >
                 {isLoading ? (
                   <>
@@ -187,7 +187,7 @@ export default function NovioLogin() {
             <div className="pt-2">
               <Link 
                 href="/" 
-                className="font-label-caps text-[11px] text-secondary hover:text-primary transition-colors tracking-widest uppercase"
+                className="font-label-caps text-[11px] text-secondary hover:text-primary transition-colors tracking-widest uppercase inline-block py-2"
               >
                 ← Volver a la Invitación
               </Link>
@@ -197,8 +197,8 @@ export default function NovioLogin() {
       </main>
 
       {/* Footer */}
-      <footer className="fixed bottom-6 left-0 right-0 z-10 text-center pointer-events-none">
-        <p className="font-body-md text-[10px] text-white/70 tracking-[0.3em] uppercase">
+      <footer className="relative mt-auto sm:fixed sm:bottom-6 left-0 right-0 z-10 text-center pointer-events-none pb-4 sm:pb-0">
+        <p className="font-body-md text-[10px] text-white/70 tracking-[0.2em] sm:tracking-[0.3em] uppercase">
           Nuestra Historia • Control Center
         </p>
       </footer>

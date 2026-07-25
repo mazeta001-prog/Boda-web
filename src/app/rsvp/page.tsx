@@ -479,88 +479,89 @@ export default function RSVPForm() {
         <div className="w-full max-w-[760px] z-10 mx-auto" id="rsvp-container">
           
           {/* Step Indicator Header */}
-          <div className="flex items-center justify-center gap-3 sm:gap-6 mb-8 text-center">
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-label-caps tracking-widest transition-all duration-300 ${
+          <div className="flex items-center justify-center gap-1.5 sm:gap-6 mb-6 sm:mb-8 text-center">
+            <div className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-label-caps tracking-wider sm:tracking-widest transition-all duration-300 ${
               step === 'search'
                 ? 'bg-primary text-on-primary shadow-sm font-semibold' 
                 : 'bg-surface-container-high/80 text-secondary dark:bg-surface-dim/80'
             }`}>
-              <span className="w-4 h-4 rounded-full border border-current flex items-center justify-center text-[10px]">1</span>
+              <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border border-current flex items-center justify-center text-[9px] sm:text-[10px]">1</span>
               <span>VERIFICACIÓN</span>
             </div>
             
-            <div className="w-6 sm:w-10 h-[1px] bg-primary/30"></div>
+            <div className="w-3 sm:w-10 h-[1px] bg-primary/30"></div>
 
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-label-caps tracking-widest transition-all duration-300 ${
+            <div className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-label-caps tracking-wider sm:tracking-widest transition-all duration-300 ${
               step === 'found'
                 ? 'bg-primary text-on-primary shadow-sm font-semibold' 
                 : 'bg-surface-container-high/80 text-secondary dark:bg-surface-dim/80'
             }`}>
-              <span className="w-4 h-4 rounded-full border border-current flex items-center justify-center text-[10px]">2</span>
+              <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border border-current flex items-center justify-center text-[9px] sm:text-[10px]">2</span>
               <span>CONFIRMACIÓN</span>
             </div>
 
-            <div className="w-6 sm:w-10 h-[1px] bg-primary/30"></div>
+            <div className="w-3 sm:w-10 h-[1px] bg-primary/30"></div>
 
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-label-caps tracking-widest transition-all duration-300 ${
+            <div className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-label-caps tracking-wider sm:tracking-widest transition-all duration-300 ${
               step === 'success' || step === 'decline'
                 ? 'bg-primary text-on-primary shadow-sm font-semibold' 
                 : 'bg-surface-container-high/80 text-secondary dark:bg-surface-dim/80'
             }`}>
-              <span className="w-4 h-4 rounded-full border border-current flex items-center justify-center text-[10px]">3</span>
+              <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border border-current flex items-center justify-center text-[9px] sm:text-[10px]">3</span>
               <span>LISTO</span>
             </div>
           </div>
 
           {/* STEP 1: INVITATION LOOKUP SYSTEM */}
           {(step === 'search') && (
-            <section className="animate-card bg-surface dark:bg-surface-dim p-8 sm:p-14 md:p-16 text-center champagne-shadow border border-primary/20 rounded-2xl relative overflow-hidden backdrop-blur-md">
+            <section className="animate-card bg-surface dark:bg-surface-dim p-5 sm:p-14 md:p-16 text-center champagne-shadow border border-primary/20 rounded-2xl relative overflow-hidden backdrop-blur-md">
               {/* Top Accent Line */}
               <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-primary-container/70 to-transparent"></div>
               
-              <span className="material-symbols-outlined mb-6 block text-5xl sm:text-6xl text-primary/80 animate-float-y">
+              <span className="material-symbols-outlined mb-4 sm:mb-6 block text-4xl sm:text-6xl text-primary/80 animate-float-y">
                 local_florist
               </span>
 
-              <h1 className="font-display-lg text-3xl sm:text-4xl md:text-5xl mb-4 text-primary dark:text-primary-fixed tracking-[0.12em] uppercase font-light">
+              <h1 className="font-display-lg text-2xl sm:text-4xl md:text-5xl mb-3 sm:mb-4 text-primary dark:text-primary-fixed tracking-[0.08em] sm:tracking-[0.12em] uppercase font-light">
                 Verificación de Invitación
               </h1>
               
-              <div className="decorative-line mb-8"></div>
+              <div className="decorative-line mb-6 sm:mb-8"></div>
               
-              <p className="font-body-lg text-secondary dark:text-on-surface-variant/90 mb-8 max-w-[520px] mx-auto font-light leading-relaxed text-sm sm:text-base">
+              <p className="font-body-lg text-secondary dark:text-on-surface-variant/90 mb-6 sm:mb-8 max-w-[520px] mx-auto font-light leading-relaxed text-xs sm:text-base">
                 Ingresa el nombre y apellido exactos tal como figuran en tu tarjeta de invitación para verificar la asistencia.
               </p>
 
               {/* Number of Guests Selector (1 to 5 Guests) */}
-              <div className="mb-10 max-w-[480px] mx-auto">
-                <label className="block font-label-caps text-xs text-outline dark:text-outline-variant mb-3 text-center uppercase tracking-wider font-semibold">
+              <div className="mb-8 sm:mb-10 max-w-[480px] mx-auto">
+                <label className="block font-label-caps text-[11px] sm:text-xs text-outline dark:text-outline-variant mb-3 text-center uppercase tracking-wider font-semibold">
                   ¿Cuántas invitaciones deseas verificar?
                 </label>
-                <div className="grid grid-cols-5 gap-2">
+                <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
                   {[1, 2, 3, 4, 5].map((count) => (
                     <button
                       key={count}
                       type="button"
                       onClick={() => handleGuestCountChange(count)}
-                      className={`py-3 px-1.5 rounded-xl text-xs font-label-caps font-semibold text-center transition-all border ${
+                      className={`py-2.5 sm:py-3 px-1 rounded-xl text-xs font-label-caps font-semibold text-center transition-all border flex flex-col items-center justify-center ${
                         selectedGuestCount === count
                           ? 'bg-primary text-on-primary border-primary shadow-sm scale-[1.03]'
                           : 'border-outline-variant/40 bg-surface-container-lowest dark:bg-surface-container-highest/20 text-on-surface hover:border-primary/40'
                       }`}
                     >
-                      {count} {count === 1 ? 'Invitado' : 'Invitados'}
+                      <span className="text-sm sm:text-base font-bold">{count}</span>
+                      <span className="text-[9px] font-normal leading-none hidden sm:inline">{count === 1 ? 'Invitado' : 'Invitados'}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Dynamic Guest Search Cards */}
-              <div className="space-y-6 max-w-[500px] mx-auto mb-10 text-left">
+              <div className="space-y-6 max-w-[500px] mx-auto mb-8 sm:mb-10 text-left">
                 {guestSlots.map((slot) => (
                   <div 
                     key={slot.id} 
-                    className="p-6 rounded-2xl border border-outline-variant/40 bg-surface-container-low/60 dark:bg-surface-container-highest/20 backdrop-blur-xs transition-all"
+                    className="p-4 sm:p-6 rounded-2xl border border-outline-variant/40 bg-surface-container-low/60 dark:bg-surface-container-highest/20 backdrop-blur-xs transition-all"
                   >
                     <div className="flex items-center justify-between mb-4 border-b border-outline-variant/20 pb-3">
                       <span className="font-label-caps text-xs text-primary dark:text-primary-fixed tracking-widest uppercase font-bold">
@@ -703,18 +704,18 @@ export default function RSVPForm() {
               <div className="space-y-4 max-w-[400px] mx-auto">
                 <button 
                   disabled={isSearching || isRateLimited || guestSlots.every(s => !s.firstName.trim() && !s.lastName.trim())}
-                  className="btn-premium btn-shine hover:scale-105 transition-all duration-300 bg-primary text-on-primary px-8 py-4 font-label-caps text-[11px] sm:text-xs tracking-[0.25em] w-full flex items-center justify-center gap-3 rounded-xl shadow-md disabled:opacity-40 font-bold" 
+                  className="btn-premium btn-shine hover:scale-105 transition-all duration-300 bg-primary text-on-primary px-6 py-4 font-label-caps text-xs tracking-wider sm:tracking-[0.2em] w-full flex items-center justify-center gap-2 sm:gap-3 rounded-xl shadow-md disabled:opacity-40 font-bold" 
                   onClick={handleSearch}
                 >
                   {isSearching ? (
                     <>
                       <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
-                      <span>BUSCANDO INVITACIONES...</span>
+                      <span>VERIFICANDO INVITACIÓN...</span>
                     </>
                   ) : (
                     <>
                       <span className="material-symbols-outlined text-lg">verified</span>
-                      <span>SEARCH INVITATIONS / BUSCAR INVITACIONES</span>
+                      <span>BUSCAR MI INVITACIÓN</span>
                     </>
                   )}
                 </button>
@@ -723,7 +724,7 @@ export default function RSVPForm() {
                 {hasAtLeastOneFound && (
                   <button
                     onClick={handleProceedToRSVP}
-                    className="btn-premium w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 px-6 font-label-caps text-xs tracking-[0.2em] rounded-xl shadow-md font-bold transition-all flex items-center justify-center gap-2"
+                    className="btn-premium w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 px-6 font-label-caps text-xs tracking-wider rounded-xl shadow-md font-bold transition-all flex items-center justify-center gap-2"
                   >
                     <span>CONTINUAR CON LA ASISTENCIA ({foundGuestsList.length}) →</span>
                   </button>
@@ -770,7 +771,7 @@ export default function RSVPForm() {
 
           {/* STEP 2: RSVP CONFIRMATION FOR VERIFIED GUESTS */}
           {(step === 'found' && hasAtLeastOneFound) && (
-            <section className="animate-card bg-surface dark:bg-surface-dim p-8 sm:p-12 md:p-16 text-center champagne-shadow border border-primary/20 rounded-2xl relative backdrop-blur-md">
+            <section className="animate-card bg-surface dark:bg-surface-dim p-5 sm:p-12 md:p-16 text-center champagne-shadow border border-primary/20 rounded-2xl relative backdrop-blur-md">
               <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-primary-container/70 to-transparent"></div>
 
               <div className="mb-6 inline-flex p-4 rounded-full bg-primary/10 text-primary">
@@ -789,14 +790,14 @@ export default function RSVPForm() {
                   return (
                     <div 
                       key={guest.id}
-                      className="bg-surface-container-low/80 dark:bg-surface-container-highest/30 p-6 rounded-2xl border border-outline-variant/30 backdrop-blur-xs"
+                      className="bg-surface-container-low/80 dark:bg-surface-container-highest/30 p-5 sm:p-6 rounded-2xl border border-outline-variant/30 backdrop-blur-xs"
                     >
                       <div className="text-center">
                         <p className="font-body-lg text-secondary dark:text-on-surface-variant text-xs mb-1 uppercase tracking-wider font-label-caps font-semibold">
                           Invitado Registrado
                         </p>
                         
-                        <h3 className="font-display-lg text-2xl sm:text-3xl text-primary-container dark:text-inverse-primary font-normal leading-tight">
+                        <h3 className="font-display-lg text-xl sm:text-3xl text-primary-container dark:text-inverse-primary font-normal leading-tight">
                           {guest.full_name}
                         </h3>
                         
@@ -812,10 +813,10 @@ export default function RSVPForm() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
+              <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 max-w-md mx-auto">
                 <button 
                   disabled={isSubmitting}
-                  className="btn-premium btn-shine flex-1 bg-primary text-on-primary py-4 px-6 font-label-caps text-[11px] sm:text-xs tracking-[0.2em] rounded-xl shadow-md font-bold disabled:opacity-50 flex items-center justify-center gap-2" 
+                  className="btn-premium btn-shine flex-1 bg-primary text-on-primary py-4 px-6 font-label-caps text-[11px] sm:text-xs tracking-wider sm:tracking-[0.2em] rounded-xl shadow-md font-bold disabled:opacity-50 flex items-center justify-center gap-2" 
                   onClick={handleConfirmAll}
                 >
                   {isSubmitting ? (
@@ -833,7 +834,7 @@ export default function RSVPForm() {
                 
                 <button 
                   disabled={isSubmitting}
-                  className="btn-premium flex-1 border border-outline-variant/60 text-secondary hover:text-on-surface py-4 px-6 font-label-caps text-[11px] sm:text-xs tracking-[0.2em] hover:bg-surface-container-low rounded-xl font-semibold disabled:opacity-50" 
+                  className="btn-premium flex-1 border border-outline-variant/60 text-secondary hover:text-on-surface py-4 px-6 font-label-caps text-[11px] sm:text-xs tracking-wider sm:tracking-[0.2em] hover:bg-surface-container-low rounded-xl font-semibold disabled:opacity-50" 
                   onClick={handleDeclineAll}
                 >
                   NO PODRÉ ASISTIR
@@ -853,7 +854,7 @@ export default function RSVPForm() {
 
           {/* STEP 3: SUCCESS CONFIRMATION */}
           {(step === 'success') && (
-            <section className="animate-card bg-surface dark:bg-surface-dim p-8 sm:p-14 md:p-16 text-center champagne-shadow border border-primary/20 rounded-2xl relative overflow-hidden backdrop-blur-md">
+            <section className="animate-card bg-surface dark:bg-surface-dim p-5 sm:p-14 md:p-16 text-center champagne-shadow border border-primary/20 rounded-2xl relative overflow-hidden backdrop-blur-md">
               {/* Top Golden Accent */}
               <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-primary-container to-transparent"></div>
               
@@ -961,7 +962,7 @@ export default function RSVPForm() {
       {/* Report Issue Modal Overlay */}
       {isIssueModalOpen && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-surface dark:bg-surface-dim border border-outline-variant/60 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative overflow-hidden text-left animate-card">
+          <div className="bg-surface dark:bg-surface-dim border border-outline-variant/60 rounded-3xl p-5 sm:p-8 max-w-md w-full shadow-2xl relative overflow-hidden text-left animate-card max-h-[90vh] overflow-y-auto">
             {/* Close Button */}
             <button
               type="button"

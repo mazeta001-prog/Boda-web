@@ -42,7 +42,8 @@ export default function Sidebar({ variant = 'novios', isOpenMobile = false, onCl
         {onCloseMobile && (
           <button 
             onClick={onCloseMobile}
-            className="md:hidden p-1 text-secondary hover:text-on-surface"
+            className="md:hidden p-2 text-secondary hover:text-on-surface rounded-xl hover:bg-surface-container-low transition-colors touch-target"
+            aria-label="Cerrar menú"
           >
             <span className="material-symbols-outlined text-xl">close</span>
           </button>

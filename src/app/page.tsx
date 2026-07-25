@@ -58,45 +58,43 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <img 
             alt="Ivan y Dana" 
-            className="w-full h-full object-cover grayscale contrast-[0.92] brightness-[0.88] object-[15%_8%] md:object-[18%_5%] transition-all duration-1000 scale-100" 
+            className="w-full h-full object-cover scale-105 transition-transform duration-1000 brightness-75 object-[40%_40%]" 
             src="/fotos/foto1.jpg" 
           />
-          {/* Gradient overlay for soft-focus vintage effect & left-to-right balance */}
-          <div className="absolute inset-0 bg-gradient-to-r from-surface/20 via-surface/45 to-surface/85 backdrop-blur-[0.5px]"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-surface/50 via-transparent to-surface/85"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-surface/60 via-surface/40 to-surface/90 backdrop-blur-[1px]"></div>
         </div>
 
-        <div className="relative z-10 text-center px-4 py-8 sm:px-10 sm:py-12 md:px-16 md:py-16 max-w-3xl mx-2 sm:mx-4 backdrop-blur-xl rounded-3xl border border-white/60 bg-white/50 dark:bg-black/50 shadow-2xl animate-float-y">
-          <span className="material-symbols-outlined text-primary text-3xl mb-2 animate-pulse">local_florist</span>
+        <div className="relative z-10 text-center px-4 py-6 sm:px-10 sm:py-12 md:px-16 md:py-16 max-w-3xl mx-3 sm:mx-4 backdrop-blur-xl rounded-3xl border border-white/60 bg-white/50 dark:bg-black/50 shadow-2xl animate-float-y">
+          <span className="material-symbols-outlined text-primary text-2xl sm:text-3xl mb-1.5 sm:mb-2 animate-pulse">local_florist</span>
           
-          <p className="font-label-caps text-xs sm:text-sm text-secondary tracking-[0.2em] sm:tracking-[0.3em] uppercase mb-2 font-bold">
+          <p className="font-label-caps text-xs sm:text-sm text-secondary tracking-[0.15em] sm:tracking-[0.3em] uppercase mb-1.5 sm:mb-2 font-bold">
             ¡Nos Casamos!
           </p>
 
-          <h1 className="font-display-lg text-3xl sm:text-6xl md:text-7xl text-primary mb-4 tracking-tight font-extrabold">
+          <h1 className="font-display-lg text-3xl sm:text-6xl md:text-7xl text-primary mb-3 sm:mb-4 tracking-tight font-extrabold">
             Ivan &amp; Dana
           </h1>
 
-          <div className="flex justify-center items-center gap-4 mb-6">
-            <div className="h-[1px] w-12 bg-primary/40"></div>
-            <span className="material-symbols-outlined text-primary text-base">favorite</span>
-            <div className="h-[1px] w-12 bg-primary/40"></div>
+          <div className="flex justify-center items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
+            <div className="h-[1px] w-8 sm:w-12 bg-primary/40"></div>
+            <span className="material-symbols-outlined text-primary text-sm sm:text-base">favorite</span>
+            <div className="h-[1px] w-8 sm:w-12 bg-primary/40"></div>
           </div>
 
-          <p className="font-body-lg text-xs sm:text-base text-on-surface mb-8 max-w-xl mx-auto font-light leading-relaxed">
+          <p className="font-body-lg text-xs sm:text-base text-on-surface mb-6 sm:mb-8 max-w-xl mx-auto font-light leading-relaxed">
             Nos encantaría celebrar el día más importante de nuestras vidas acompañados de nuestros seres queridos.
           </p>
 
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-2.5 sm:gap-4 w-full">
             <Link 
-              className="w-full sm:w-auto font-label-caps text-xs sm:text-sm border-2 border-primary bg-primary text-on-primary px-6 sm:px-8 py-3.5 sm:py-4 rounded-full hover:bg-primary-container hover:border-primary-container transition-all duration-300 tracking-[0.15em] sm:tracking-[0.2em] shadow-lg hover:scale-105 btn-shine font-bold text-center" 
+              className="w-full sm:w-auto font-label-caps text-[11px] sm:text-sm border-2 border-primary bg-primary text-on-primary px-5 sm:px-8 py-3 sm:py-4 rounded-full hover:bg-primary-container hover:border-primary-container transition-all duration-300 tracking-[0.12em] sm:tracking-[0.2em] shadow-lg hover:scale-105 btn-shine font-bold text-center" 
               href="/rsvp"
             >
               BUSCAR MI INVITACIÓN (RSVP)
             </Link>
             
             <Link 
-              className="w-full sm:w-auto font-label-caps text-xs sm:text-sm border border-outline-variant bg-surface-container-lowest/80 text-on-surface px-6 sm:px-8 py-3.5 sm:py-4 rounded-full hover:bg-surface-container transition-all duration-300 tracking-[0.15em] sm:tracking-[0.2em] font-bold text-center" 
+              className="w-full sm:w-auto font-label-caps text-[11px] sm:text-sm border border-outline-variant bg-surface-container-lowest/80 text-on-surface px-5 sm:px-8 py-3 sm:py-4 rounded-full hover:bg-surface-container transition-all duration-300 tracking-[0.12em] sm:tracking-[0.2em] font-bold text-center" 
               href="#details"
             >
               VER DETALLES
@@ -110,10 +108,10 @@ export default function Home() {
       </header>
 
       {/* Countdown Section */}
-      <section className="py-12 sm:py-20 bg-surface border-y border-outline-variant/30 reveal active">
+      <section className="py-8 sm:py-16 bg-surface border-y border-outline-variant/30 reveal active">
         <div className="max-w-container-max mx-auto px-4 sm:px-gutter text-center">
-          <div className="inline-block border border-primary/40 rounded-full px-6 sm:px-8 py-2 sm:py-2.5 mb-8 sm:mb-10 bg-primary/5">
-            <h2 className="font-label-caps text-xs text-primary tracking-widest font-bold">CUENTA REGRESIVA</h2>
+          <div className="inline-block border border-primary/40 rounded-full px-5 sm:px-8 py-1.5 sm:py-2.5 mb-6 sm:mb-10 bg-primary/5">
+            <h2 className="font-label-caps text-[11px] sm:text-xs text-primary tracking-widest font-bold">CUENTA REGRESIVA</h2>
           </div>
 
           {isExpired ? (
@@ -121,30 +119,30 @@ export default function Home() {
               <span className="font-display-lg text-2xl sm:text-3xl text-primary font-bold">¡El gran día ha llegado!</span>
             </div>
           ) : (
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-8 md:gap-12" id="countdown">
-              <div className="flex flex-col items-center bg-surface-container-lowest border border-outline-variant/40 p-3 sm:p-6 rounded-2xl min-w-[70px] sm:min-w-[110px] shadow-xs">
-                <span className="font-display-lg text-2xl sm:text-5xl text-primary font-bold">
+            <div className="grid grid-cols-4 gap-1.5 sm:gap-6 md:gap-10 max-w-2xl mx-auto" id="countdown">
+              <div className="flex flex-col items-center justify-center bg-surface-container-lowest border border-outline-variant/40 p-2 sm:p-5 md:p-6 rounded-2xl shadow-xs w-full">
+                <span className="font-display-lg text-xl sm:text-4xl md:text-5xl text-primary font-bold">
                   {String(timeLeft.days).padStart(3, '0')}
                 </span>
-                <span className="font-label-caps text-[9px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.2em] text-secondary mt-1.5 sm:mt-2 border-t border-primary/20 pt-1.5 sm:pt-2 w-full text-center font-bold">DÍAS</span>
+                <span className="font-label-caps text-[8px] sm:text-[10px] tracking-wider sm:tracking-[0.2em] text-secondary mt-1 sm:mt-2 border-t border-primary/20 pt-1 sm:pt-2 w-full text-center font-bold">DÍAS</span>
               </div>
-              <div className="flex flex-col items-center bg-surface-container-lowest border border-outline-variant/40 p-3 sm:p-6 rounded-2xl min-w-[70px] sm:min-w-[110px] shadow-xs">
-                <span className="font-display-lg text-2xl sm:text-5xl text-primary font-bold">
+              <div className="flex flex-col items-center justify-center bg-surface-container-lowest border border-outline-variant/40 p-2 sm:p-5 md:p-6 rounded-2xl shadow-xs w-full">
+                <span className="font-display-lg text-xl sm:text-4xl md:text-5xl text-primary font-bold">
                   {String(timeLeft.hours).padStart(2, '0')}
                 </span>
-                <span className="font-label-caps text-[9px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.2em] text-secondary mt-1.5 sm:mt-2 border-t border-primary/20 pt-1.5 sm:pt-2 w-full text-center font-bold">HORAS</span>
+                <span className="font-label-caps text-[8px] sm:text-[10px] tracking-wider sm:tracking-[0.2em] text-secondary mt-1 sm:mt-2 border-t border-primary/20 pt-1 sm:pt-2 w-full text-center font-bold">HORAS</span>
               </div>
-              <div className="flex flex-col items-center bg-surface-container-lowest border border-outline-variant/40 p-3 sm:p-6 rounded-2xl min-w-[70px] sm:min-w-[110px] shadow-xs">
-                <span className="font-display-lg text-2xl sm:text-5xl text-primary font-bold">
+              <div className="flex flex-col items-center justify-center bg-surface-container-lowest border border-outline-variant/40 p-2 sm:p-5 md:p-6 rounded-2xl shadow-xs w-full">
+                <span className="font-display-lg text-xl sm:text-4xl md:text-5xl text-primary font-bold">
                   {String(timeLeft.minutes).padStart(2, '0')}
                 </span>
-                <span className="font-label-caps text-[9px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.2em] text-secondary mt-1.5 sm:mt-2 border-t border-primary/20 pt-1.5 sm:pt-2 w-full text-center font-bold">MINUTOS</span>
+                <span className="font-label-caps text-[8px] sm:text-[10px] tracking-wider sm:tracking-[0.2em] text-secondary mt-1 sm:mt-2 border-t border-primary/20 pt-1 sm:pt-2 w-full text-center font-bold">MINUTOS</span>
               </div>
-              <div className="flex flex-col items-center bg-surface-container-lowest border border-outline-variant/40 p-3 sm:p-6 rounded-2xl min-w-[70px] sm:min-w-[110px] shadow-xs">
-                <span className="font-display-lg text-2xl sm:text-5xl text-primary font-bold">
+              <div className="flex flex-col items-center justify-center bg-surface-container-lowest border border-outline-variant/40 p-2 sm:p-5 md:p-6 rounded-2xl shadow-xs w-full">
+                <span className="font-display-lg text-xl sm:text-4xl md:text-5xl text-primary font-bold">
                   {String(timeLeft.seconds).padStart(2, '0')}
                 </span>
-                <span className="font-label-caps text-[9px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.2em] text-secondary mt-1.5 sm:mt-2 border-t border-primary/20 pt-1.5 sm:pt-2 w-full text-center font-bold">SEGUNDOS</span>
+                <span className="font-label-caps text-[8px] sm:text-[10px] tracking-wider sm:tracking-[0.2em] text-secondary mt-1 sm:mt-2 border-t border-primary/20 pt-1 sm:pt-2 w-full text-center font-bold">SEGUNDOS</span>
               </div>
             </div>
           )}
@@ -152,35 +150,35 @@ export default function Home() {
       </section>
 
       {/* Story Section */}
-      <section className="py-24 bg-surface-container-lowest reveal active" id="story">
+      <section className="py-12 sm:py-20 md:py-24 bg-surface-container-lowest reveal active" id="story">
         <div className="max-w-container-max mx-auto px-4 sm:px-gutter">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="order-2 md:order-1">
-              <h2 className="font-display-lg text-3xl md:text-4xl text-primary mb-6 font-bold">Nuestra Historia</h2>
-              <p className="font-body-lg text-on-surface-variant mb-10 italic border-l-4 border-primary pl-6 py-2 leading-relaxed text-sm sm:text-base">
+              <h2 className="font-display-lg text-2xl sm:text-3xl md:text-4xl text-primary mb-4 sm:mb-6 font-bold">Nuestra Historia</h2>
+              <p className="font-body-lg text-on-surface-variant mb-8 sm:mb-10 italic border-l-4 border-primary pl-4 sm:pl-6 py-2 leading-relaxed text-xs sm:text-base">
                 De un grupo de amigos que surgió en un retiro de la iglesia en el 2015, Dios comenzó a trabajar nuestros corazones y prepararlos para la bendición con la que hoy contamos. Siendo amigos y guardando nuestros corazones el uno para el otro. El resto, es una historia que Dios sigue escribiendo.
               </p>
-              <div className="space-y-10 border-l-2 border-primary/30 pl-8 ml-2">
+              <div className="space-y-8 sm:space-y-10 border-l-2 border-primary/30 pl-6 sm:pl-8 ml-1 sm:ml-2">
                 <div className="relative group">
-                  <div className="absolute -left-[41px] top-1.5 w-4 h-4 bg-primary rounded-full ring-4 ring-surface-container-lowest group-hover:scale-125 transition-transform duration-300"></div>
-                  <h3 className="font-label-caps text-xs text-primary mb-1 tracking-widest font-bold">PRIMER ENCUENTRO</h3>
-                  <p className="font-body-md text-secondary text-sm">El salón del Segundo piso de la iglesia en ese entonces de 11-12 años, fue el lugar donde hace años, nuestra historia se empezó a escribir sin que nos diéramos cuenta.</p>
+                  <div className="absolute -left-[33px] sm:-left-[41px] top-1.5 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-primary rounded-full ring-4 ring-surface-container-lowest group-hover:scale-125 transition-transform duration-300"></div>
+                  <h3 className="font-label-caps text-[11px] sm:text-xs text-primary mb-1 tracking-widest font-bold">PRIMER ENCUENTRO</h3>
+                  <p className="font-body-md text-secondary text-xs sm:text-sm leading-relaxed">El salón del Segundo piso de la iglesia en ese entonces de 11-12 años, fue el lugar donde hace años, nuestra historia se empezó a escribir sin que nos diéramos cuenta.</p>
                 </div>
                 <div className="relative group">
-                  <div className="absolute -left-[41px] top-1.5 w-4 h-4 bg-primary rounded-full ring-4 ring-surface-container-lowest group-hover:scale-125 transition-transform duration-300"></div>
-                  <h3 className="font-label-caps text-xs text-primary mb-1 tracking-widest font-bold">PRIMERA CITA</h3>
-                  <p className="font-body-md text-secondary text-sm">En pleno verano un 24 de agosto del 2021 fuimos nada más y nada menos que al zoológico. Entre risas nerviosas y el inicio de una nueva aventura, caminar y coger calor, nunca fue tan lindo.</p>
+                  <div className="absolute -left-[33px] sm:-left-[41px] top-1.5 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-primary rounded-full ring-4 ring-surface-container-lowest group-hover:scale-125 transition-transform duration-300"></div>
+                  <h3 className="font-label-caps text-[11px] sm:text-xs text-primary mb-1 tracking-widest font-bold">PRIMERA CITA</h3>
+                  <p className="font-body-md text-secondary text-xs sm:text-sm leading-relaxed">En pleno verano un 24 de agosto del 2021 fuimos nada más y nada menos que al zoológico. Entre risas nerviosas y el inicio de una nueva aventura, caminar y coger calor, nunca fue tan lindo.</p>
                 </div>
                 <div className="relative group">
-                  <div className="absolute -left-[41px] top-1.5 w-4 h-4 bg-primary rounded-full ring-4 ring-surface-container-lowest group-hover:scale-125 transition-transform duration-300"></div>
-                  <h3 className="font-label-caps text-xs text-primary mb-1 tracking-widest font-bold">LA PROPUESTA</h3>
-                  <p className="font-body-md text-secondary text-sm">Lo que era la grabación de un video promocional en una cocina, en lo que nos gusta, resultó ser el plop twist más lindo que hemos recibido.</p>
+                  <div className="absolute -left-[33px] sm:-left-[41px] top-1.5 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-primary rounded-full ring-4 ring-surface-container-lowest group-hover:scale-125 transition-transform duration-300"></div>
+                  <h3 className="font-label-caps text-[11px] sm:text-xs text-primary mb-1 tracking-widest font-bold">LA PROPUESTA</h3>
+                  <p className="font-body-md text-secondary text-xs sm:text-sm leading-relaxed">Lo que era la grabación de un video promocional en una cocina, en lo que nos gusta, resultó ser el plop twist más lindo que hemos recibido.</p>
                 </div>
               </div>
             </div>
 
-            <div className="order-1 md:order-2 grid grid-cols-2 gap-4">
-              <div className="space-y-4">
+            <div className="order-1 md:order-2 grid grid-cols-2 gap-3 sm:gap-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="aspect-[3/4] overflow-hidden rounded-2xl champagne-shadow border border-outline-variant/30">
                   <img 
                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" 
@@ -196,7 +194,7 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <div className="pt-8">
+              <div className="pt-6 sm:pt-8">
                 <div className="aspect-[3/4] overflow-hidden rounded-2xl champagne-shadow border border-outline-variant/30">
                   <img 
                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" 
@@ -211,33 +209,33 @@ export default function Home() {
       </section>
 
       {/* Details Section */}
-      <section className="py-24 bg-surface-container-low reveal active" id="details">
+      <section className="py-12 sm:py-20 md:py-24 bg-surface-container-low reveal active" id="details">
         <div className="max-w-container-max mx-auto px-4 sm:px-gutter">
-          <div className="text-center mb-16">
-            <h2 className="font-display-lg text-3xl md:text-4xl text-primary mb-3 font-bold">Los Detalles</h2>
-            <p className="font-body-lg text-secondary text-sm">Todo lo que necesitas saber para acompañarnos.</p>
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="font-display-lg text-2xl sm:text-3xl md:text-4xl text-primary mb-2 sm:mb-3 font-bold">Los Detalles</h2>
+            <p className="font-body-lg text-secondary text-xs sm:text-sm">Todo lo que necesitas saber para acompañarnos.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-surface-container-lowest p-8 text-center rounded-2xl border border-outline-variant/30 group hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
-              <span className="material-symbols-outlined text-4xl text-primary mb-4 group-hover:scale-110 transition-transform">calendar_month</span>
-              <h3 className="font-label-caps text-xs text-primary mb-3 tracking-widest font-bold">FECHA Y HORA</h3>
-              <p className="font-body-lg font-bold text-on-surface mb-1">20 de Diciembre, 2026</p>
-              <p className="font-body-md text-secondary text-sm">16:00 Horas</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="bg-surface-container-lowest p-6 sm:p-8 text-center rounded-2xl border border-outline-variant/30 group hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
+              <span className="material-symbols-outlined text-3xl sm:text-4xl text-primary mb-3 sm:mb-4 group-hover:scale-110 transition-transform">calendar_month</span>
+              <h3 className="font-label-caps text-xs text-primary mb-2 sm:mb-3 tracking-widest font-bold">FECHA Y HORA</h3>
+              <p className="font-body-lg font-bold text-on-surface mb-1 text-sm sm:text-base">20 de Diciembre, 2026</p>
+              <p className="font-body-md text-secondary text-xs sm:text-sm">16:00 Horas</p>
             </div>
 
-            <div className="bg-surface-container-lowest p-8 text-center rounded-2xl border border-outline-variant/30 group hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
-              <span className="material-symbols-outlined text-4xl text-primary mb-4 group-hover:scale-110 transition-transform">location_on</span>
-              <h3 className="font-label-caps text-xs text-primary mb-3 tracking-widest font-bold">LUGAR</h3>
-              <p className="font-body-lg font-bold text-on-surface mb-1">Praedium Garden</p>
+            <div className="bg-surface-container-lowest p-6 sm:p-8 text-center rounded-2xl border border-outline-variant/30 group hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
+              <span className="material-symbols-outlined text-3xl sm:text-4xl text-primary mb-3 sm:mb-4 group-hover:scale-110 transition-transform">location_on</span>
+              <h3 className="font-label-caps text-xs text-primary mb-2 sm:mb-3 tracking-widest font-bold">LUGAR</h3>
+              <p className="font-body-lg font-bold text-on-surface mb-1 text-sm sm:text-base">Praedium Garden</p>
               <p className="font-body-md text-primary italic text-xs mb-2">(Jardín Mediterráneo)</p>
               <p className="font-body-sm text-secondary text-xs leading-relaxed">Av. Hípica V Centenario Km. 14 Las Américas, Santo Domingo Este</p>
             </div>
 
-            <div className="bg-surface-container-lowest p-8 text-center rounded-2xl border border-outline-variant/30 group hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
-              <span className="material-symbols-outlined text-4xl text-primary mb-4 group-hover:scale-110 transition-transform">checkroom</span>
-              <h3 className="font-label-caps text-xs text-primary mb-3 tracking-widest font-bold">DRESS CODE</h3>
-              <p className="font-body-lg font-bold text-on-surface mb-5">Formal de Jardín</p>
+            <div className="bg-surface-container-lowest p-6 sm:p-8 text-center rounded-2xl border border-outline-variant/30 group hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
+              <span className="material-symbols-outlined text-3xl sm:text-4xl text-primary mb-3 sm:mb-4 group-hover:scale-110 transition-transform">checkroom</span>
+              <h3 className="font-label-caps text-xs text-primary mb-2 sm:mb-3 tracking-widest font-bold">DRESS CODE</h3>
+              <p className="font-body-lg font-bold text-on-surface mb-4 sm:mb-5 text-sm sm:text-base">Formal de Jardín</p>
               <Link 
                 className="inline-block bg-primary text-on-primary font-label-caps text-xs px-6 py-2.5 rounded-full transition-all hover:bg-primary-container font-bold shadow-xs" 
                 href="/dress-code"
@@ -246,10 +244,10 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="bg-surface-container-lowest p-8 text-center rounded-2xl border border-outline-variant/30 group hover:-translate-y-2 hover:shadow-xl transition-all duration-300" id="registry">
-              <span className="material-symbols-outlined text-4xl text-primary mb-4 group-hover:scale-110 transition-transform">redeem</span>
-              <h3 className="font-label-caps text-xs text-primary mb-3 tracking-widest font-bold">REGALOS</h3>
-              <p className="font-body-md text-secondary text-xs mb-5">Vuestra presencia es nuestro mejor regalo. Si queréis tener un detalle...</p>
+            <div className="bg-surface-container-lowest p-6 sm:p-8 text-center rounded-2xl border border-outline-variant/30 group hover:-translate-y-2 hover:shadow-xl transition-all duration-300" id="registry">
+              <span className="material-symbols-outlined text-3xl sm:text-4xl text-primary mb-3 sm:mb-4 group-hover:scale-110 transition-transform">redeem</span>
+              <h3 className="font-label-caps text-xs text-primary mb-2 sm:mb-3 tracking-widest font-bold">REGALOS</h3>
+              <p className="font-body-md text-secondary text-xs mb-4 sm:mb-5 leading-relaxed">Vuestra presencia es nuestro mejor regalo. Si queréis tener un detalle...</p>
               <Link 
                 className="inline-block bg-primary text-on-primary font-label-caps text-xs px-6 py-2.5 rounded-full transition-all hover:bg-primary-container font-bold shadow-xs" 
                 href="https://listaderegalos.casacuesta.com/Event/DANA-and-DANA?utm_source=share"
@@ -261,7 +259,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-12 h-[380px] w-full rounded-2xl overflow-hidden border border-outline-variant/30 shadow-md relative">
+          <div className="mt-8 sm:mt-12 h-[300px] sm:h-[380px] w-full rounded-2xl overflow-hidden border border-outline-variant/30 shadow-md relative">
             <iframe 
               src="https://maps.google.com/maps?q=Praedium+Garden+Events,Santo+Domingo&t=&z=16&ie=UTF8&iwloc=&output=embed" 
               className="absolute inset-0 w-full h-full border-0 opacity-90"
@@ -273,7 +271,7 @@ export default function Home() {
               href="https://maps.app.goo.gl/HjJDVV2HS6zfYF9z5" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="absolute bottom-6 right-6 z-10 bg-white dark:bg-zinc-900 px-6 py-3 rounded-full shadow-lg flex items-center gap-2 border border-primary/30 text-primary hover:bg-primary hover:text-white transition-all font-bold text-xs font-label-caps"
+              className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-10 bg-white dark:bg-zinc-900 px-5 py-3 rounded-full shadow-lg flex items-center justify-center gap-2 border border-primary/30 text-primary hover:bg-primary hover:text-white transition-all font-bold text-xs font-label-caps"
             >
               <span className="material-symbols-outlined text-lg">pin_drop</span>
               <span>Abrir en Google Maps</span>
@@ -283,10 +281,10 @@ export default function Home() {
       </section>
 
       {/* Gallery Section */}
-      <section className="py-24 bg-surface-container-lowest reveal active" id="gallery">
+      <section className="py-12 sm:py-20 md:py-24 bg-surface-container-lowest reveal active" id="gallery">
         <div className="max-w-container-max mx-auto px-4 sm:px-gutter">
-          <h2 className="font-display-lg text-3xl md:text-4xl text-primary text-center mb-16 font-bold">Nuestros Momentos</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <h2 className="font-display-lg text-2xl sm:text-3xl md:text-4xl text-primary text-center mb-10 sm:mb-16 font-bold">Nuestros Momentos</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             <div className="relative group overflow-hidden rounded-2xl border border-outline-variant/30 shadow-sm aspect-[3/4]">
               <img 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 

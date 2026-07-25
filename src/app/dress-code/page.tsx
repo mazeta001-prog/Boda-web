@@ -26,54 +26,54 @@ export default function DressCode() {
       <Navbar variant="dress-code" />
 
       {/* Hero Section */}
-      <header className="pt-[160px] pb-12 text-center px-gutter max-w-4xl mx-auto reveal">
-        <span className="font-label-caps text-xs text-primary tracking-[0.3em] mb-4 block uppercase font-bold">DRESS CODE</span>
-        <h1 className="font-display-lg text-4xl sm:text-6xl text-primary mb-6 font-bold">Código de Vestimenta</h1>
-        <div className="w-12 h-[1px] bg-primary/30 mx-auto mb-8"></div>
-        <p className="font-body-lg text-sm sm:text-base text-on-surface-variant leading-relaxed max-w-2xl mx-auto font-light">
+      <header className="pt-28 sm:pt-36 md:pt-[160px] pb-8 sm:pb-12 text-center px-gutter max-w-4xl mx-auto reveal">
+        <span className="font-label-caps text-xs text-primary tracking-[0.2em] sm:tracking-[0.3em] mb-3 sm:mb-4 block uppercase font-bold">DRESS CODE</span>
+        <h1 className="font-display-lg text-3xl sm:text-5xl md:text-6xl text-primary mb-4 sm:mb-6 font-bold">Código de Vestimenta</h1>
+        <div className="w-12 h-[1px] bg-primary/30 mx-auto mb-6 sm:mb-8"></div>
+        <p className="font-body-lg text-xs sm:text-base text-on-surface-variant leading-relaxed max-w-2xl mx-auto font-light">
           Colores vivos e intensos que transmiten alegría, celebración y energía. Ideales para una boda tropical al aire libre.
         </p>
       </header>
 
       {/* Color Palette Section */}
-      <section className="max-w-container-max mx-auto px-gutter mb-20 text-center reveal">
-        <h3 className="font-label-caps text-xs text-secondary mb-10 tracking-[0.2em] uppercase font-bold">Paleta de Colores</h3>
-        <div className="flex flex-wrap justify-center gap-6 md:gap-12">
+      <section className="max-w-container-max mx-auto px-gutter mb-12 sm:mb-20 text-center reveal">
+        <h3 className="font-label-caps text-xs text-secondary mb-6 sm:mb-10 tracking-[0.2em] uppercase font-bold">Paleta de Colores</h3>
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-12">
           <div className="flex flex-col items-center group">
-            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-wedding-fucsia shadow-lg transition-transform group-hover:scale-110 mb-3 border border-white/20"></div>
-            <span className="font-label-caps text-[10px] tracking-widest text-on-surface-variant font-bold">FUCSIA</span>
+            <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-wedding-fucsia shadow-lg transition-transform group-hover:scale-110 mb-2 sm:mb-3 border border-white/20"></div>
+            <span className="font-label-caps text-[9px] sm:text-[10px] tracking-widest text-on-surface-variant font-bold">FUCSIA</span>
           </div>
           <div className="flex flex-col items-center group">
-            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-wedding-coral shadow-lg transition-transform group-hover:scale-110 mb-3 border border-white/20"></div>
-            <span className="font-label-caps text-[10px] tracking-widest text-on-surface-variant font-bold">CORAL</span>
+            <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-wedding-coral shadow-lg transition-transform group-hover:scale-110 mb-2 sm:mb-3 border border-white/20"></div>
+            <span className="font-label-caps text-[9px] sm:text-[10px] tracking-widest text-on-surface-variant font-bold">CORAL</span>
           </div>
           <div className="flex flex-col items-center group">
-            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-wedding-amarillo shadow-lg transition-transform group-hover:scale-110 mb-3 border border-white/20"></div>
-            <span className="font-label-caps text-[10px] tracking-widest text-on-surface-variant font-bold">AMARILLO</span>
+            <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-wedding-amarillo shadow-lg transition-transform group-hover:scale-110 mb-2 sm:mb-3 border border-white/20"></div>
+            <span className="font-label-caps text-[9px] sm:text-[10px] tracking-widest text-on-surface-variant font-bold">AMARILLO</span>
           </div>
           <div className="flex flex-col items-center group">
-            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-wedding-verde shadow-lg transition-transform group-hover:scale-110 mb-3 border border-white/20"></div>
-            <span className="font-label-caps text-[10px] tracking-widest text-on-surface-variant font-bold">VERDE LIMÓN</span>
+            <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-wedding-verde shadow-lg transition-transform group-hover:scale-110 mb-2 sm:mb-3 border border-white/20"></div>
+            <span className="font-label-caps text-[9px] sm:text-[10px] tracking-widest text-on-surface-variant font-bold">VERDE LIMÓN</span>
           </div>
           <div className="flex flex-col items-center group">
-            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-wedding-turquesa shadow-lg transition-transform group-hover:scale-110 mb-3 border border-white/20"></div>
-            <span className="font-label-caps text-[10px] tracking-widest text-on-surface-variant font-bold">TURQUESA</span>
+            <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-wedding-turquesa shadow-lg transition-transform group-hover:scale-110 mb-2 sm:mb-3 border border-white/20"></div>
+            <span className="font-label-caps text-[9px] sm:text-[10px] tracking-widest text-on-surface-variant font-bold">TURQUESA</span>
           </div>
           <div className="flex flex-col items-center group">
-            <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-wedding-azul shadow-lg transition-transform group-hover:scale-110 mb-3 border border-white/20"></div>
-            <span className="font-label-caps text-[10px] tracking-widest text-on-surface-variant font-bold">AZUL COBALTO</span>
+            <div className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-wedding-azul shadow-lg transition-transform group-hover:scale-110 mb-2 sm:mb-3 border border-white/20"></div>
+            <span className="font-label-caps text-[9px] sm:text-[10px] tracking-widest text-on-surface-variant font-bold">AZUL COBALTO</span>
           </div>
         </div>
       </section>
 
       {/* Dress Code Sections (Bento-inspired Grid) */}
-      <main className="max-w-container-max mx-auto px-gutter mb-section-padding-desktop">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
+      <main className="max-w-container-max mx-auto px-gutter mb-12 sm:mb-20 md:mb-section-padding-desktop">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-stretch">
           {/* Para Ellos */}
           <section className="flex flex-col reveal">
-            <div className="flex-grow flex flex-col justify-center px-4 text-center md:text-left mb-8">
-              <h3 className="font-display-lg text-2xl md:text-3xl text-primary mb-4 font-bold">Para Ellos</h3>
-              <p className="font-body-md text-sm sm:text-base text-on-surface-variant leading-relaxed mb-6">
+            <div className="flex-grow flex flex-col justify-center px-2 sm:px-4 text-center md:text-left mb-6 sm:mb-8">
+              <h3 className="font-display-lg text-2xl md:text-3xl text-primary mb-3 sm:mb-4 font-bold">Para Ellos</h3>
+              <p className="font-body-md text-xs sm:text-base text-on-surface-variant leading-relaxed mb-4 sm:mb-6">
                 Los hombres pueden usar trajes en tonos claros con sacos (blazers) o chacabanas blancas con detalles sutiles de la paleta de colores, acompañadas de camisas blancas, siguiendo un estilo sofisticado y tropical.
               </p>
               <div className="flex items-center justify-center md:justify-start space-x-2 text-primary/60">
@@ -87,15 +87,15 @@ export default function DressCode() {
                 src="/hombres.png" 
                 alt="Etiqueta masculina" 
               />
-              <div className="absolute inset-0 border-[12px] border-surface/10 pointer-events-none"></div>
+              <div className="absolute inset-0 border-4 sm:border-[12px] border-surface/10 pointer-events-none"></div>
             </div>
           </section>
 
           {/* Para Ellas */}
           <section className="flex flex-col reveal">
-            <div className="flex-grow flex flex-col justify-center px-4 text-center md:text-left mb-8">
-              <h3 className="font-display-lg text-2xl md:text-3xl text-primary mb-4 font-bold">Para Ellas</h3>
-              <p className="font-body-md text-sm sm:text-base text-on-surface-variant leading-relaxed mb-6">
+            <div className="flex-grow flex flex-col justify-center px-2 sm:px-4 text-center md:text-left mb-6 sm:mb-8">
+              <h3 className="font-display-lg text-2xl md:text-3xl text-primary mb-3 sm:mb-4 font-bold">Para Ellas</h3>
+              <p className="font-body-md text-xs sm:text-base text-on-surface-variant leading-relaxed mb-4 sm:mb-6">
                 Las mujeres pueden usar vestidos largos o midi, en telas fluidas y frescas, priorizando los colores alegres e intensos.
               </p>
               <div className="flex items-center justify-center md:justify-start space-x-2 text-primary/60">
@@ -109,14 +109,14 @@ export default function DressCode() {
                 src="/mujeres.jpg" 
                 alt="Etiqueta femenina" 
               />
-              <div className="absolute inset-0 border-[12px] border-surface/10 pointer-events-none"></div>
+              <div className="absolute inset-0 border-4 sm:border-[12px] border-surface/10 pointer-events-none"></div>
             </div>
           </section>
         </div>
       </main>
 
       {/* Key Advice Section */}
-      <section className="bg-surface-container-low py-section-padding-desktop reveal">
+      <section className="bg-surface-container-low py-12 sm:py-20 md:py-section-padding-desktop reveal">
         <div className="max-w-container-max mx-auto px-gutter">
           <div className="text-center mb-16">
             <h3 className="font-display-lg text-3xl md:text-4xl text-primary mb-4 font-bold">Consejos Clave</h3>

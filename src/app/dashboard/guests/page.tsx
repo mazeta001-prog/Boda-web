@@ -320,16 +320,17 @@ We can't wait to celebrate with you!`;
       {/* Main Content */}
       <main className="md:ml-64 flex-1 flex flex-col relative overflow-x-hidden min-w-0">
         {/* Header */}
-        <header className="h-20 bg-surface/80 backdrop-blur-md flex flex-wrap items-center justify-between px-4 sm:px-gutter border-b border-outline-variant sticky top-0 z-10 gap-3 py-2">
-          <div className="flex items-center gap-3">
+        <header className="min-h-[64px] bg-surface/80 backdrop-blur-md flex flex-wrap items-center justify-between px-3 sm:px-gutter border-b border-outline-variant sticky top-0 z-10 gap-2.5 py-3">
+          <div className="flex items-center gap-2.5">
             <button 
               onClick={() => setIsMobileSidebarOpen(true)}
-              className="md:hidden p-2 text-secondary hover:text-primary transition-colors bg-surface-container-low rounded-xl"
+              className="md:hidden p-2 text-secondary hover:text-primary transition-colors bg-surface-container-low rounded-xl touch-target"
+              aria-label="Abrir menú"
             >
               <span className="material-symbols-outlined text-[20px]">menu</span>
             </button>
             <div>
-              <h2 className="font-headline-sm text-lg sm:text-headline-sm text-on-surface font-bold">Gestión de Invitados</h2>
+              <h2 className="font-headline-sm text-base sm:text-headline-sm text-on-surface font-bold">Gestión de Invitados</h2>
               <p className="text-[12px] text-secondary font-body-md hidden sm:block">Organiza y administra la lista de asistentes a tu gran día.</p>
             </div>
           </div>
@@ -351,7 +352,7 @@ We can't wait to celebrate with you!`;
             {selectedGuestIds.length > 0 && (
               <button 
                 onClick={() => setIsBatchDeleteModalOpen(true)}
-                className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-label-caps text-xs font-bold rounded-xl transition-all shadow-md animate-in fade-in duration-200"
+                className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-label-caps text-xs font-bold rounded-xl transition-all shadow-md animate-in fade-in duration-200 min-h-[40px]"
                 title="Eliminar invitados seleccionados"
               >
                 <span className="material-symbols-outlined text-[18px]">delete_sweep</span>
@@ -362,7 +363,7 @@ We can't wait to celebrate with you!`;
             {/* Import Button */}
             <button 
               onClick={() => setIsImportModalOpen(true)}
-              className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 border text-primary font-label-caps text-xs hover:bg-primary/5 transition-all duration-200 rounded-xl border-primary-container shadow-2xs font-bold"
+              className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 border text-primary font-label-caps text-xs hover:bg-primary/5 transition-all duration-200 rounded-xl border-primary-container shadow-2xs font-bold min-h-[40px]"
               title="Importar archivo Excel de invitados"
             >
               <span className="material-symbols-outlined text-[18px]">upload</span>
@@ -372,7 +373,7 @@ We can't wait to celebrate with you!`;
             {/* Export Button */}
             <button 
               onClick={handleExportExcel}
-              className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 border text-primary font-label-caps text-xs hover:bg-primary/5 transition-all duration-200 rounded-xl border-primary-container shadow-2xs font-bold"
+              className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 border text-primary font-label-caps text-xs hover:bg-primary/5 transition-all duration-200 rounded-xl border-primary-container shadow-2xs font-bold min-h-[40px]"
               title="Exportar lista actual a Excel (.xlsx)"
             >
               <span className="material-symbols-outlined text-[18px]">download</span>
@@ -382,7 +383,7 @@ We can't wait to celebrate with you!`;
             {/* Add Guest Button */}
             <button 
               onClick={() => setIsCreateModalOpen(true)}
-              className="flex items-center space-x-1.5 px-3.5 sm:px-5 py-2 text-on-primary font-label-caps text-xs font-bold hover:bg-primary-container transition-all duration-200 rounded-xl shadow-xs bg-primary"
+              className="flex items-center space-x-1.5 px-3.5 sm:px-5 py-2 text-on-primary font-label-caps text-xs font-bold hover:bg-primary-container transition-all duration-200 rounded-xl shadow-xs bg-primary min-h-[40px]"
             >
               <span className="material-symbols-outlined text-[18px]">person_add</span>
               <span>AÑADIR INVITADO</span>
@@ -391,8 +392,9 @@ We can't wait to celebrate with you!`;
             {/* Configuración / Settings Button */}
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="p-2 border text-secondary hover:text-on-surface border-outline-variant/60 hover:bg-surface-container-low transition-all rounded-xl"
+              className="p-2 border text-secondary hover:text-on-surface border-outline-variant/60 hover:bg-surface-container-low transition-all rounded-xl touch-target"
               title="Configuración y Cerrar Sesión"
+              aria-label="Configuración"
             >
               <span className="material-symbols-outlined text-[20px]">settings</span>
             </button>
@@ -400,7 +402,7 @@ We can't wait to celebrate with you!`;
         </header>
 
         {/* Content Body */}
-        <div className="p-4 sm:p-gutter flex flex-col space-y-6">
+        <div className="p-3 sm:p-gutter flex flex-col space-y-5 sm:space-y-6">
           {/* Mobile Search Bar */}
           <div className="sm:hidden relative">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg">search</span>
@@ -415,7 +417,7 @@ We can't wait to celebrate with you!`;
 
           {/* Filters & Stats Header */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex items-center gap-1.5 bg-surface-container border border-outline-variant p-1 rounded-xl overflow-x-auto max-w-full">
+            <div className="flex items-center gap-1.5 bg-surface-container border border-outline-variant p-1 rounded-xl overflow-x-auto max-w-full no-scrollbar">
               {/* Select All Toggle Button */}
               <button 
                 onClick={handleToggleSelectAll}

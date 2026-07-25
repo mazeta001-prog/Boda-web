@@ -34,7 +34,7 @@ export default function Navbar({ variant = 'main' }: NavbarProps) {
       <div className="flex justify-between items-center max-w-container-max mx-auto px-4 sm:px-gutter">
         {/* Brand / Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <span className="font-display-lg text-lg sm:text-headline-sm text-primary tracking-[0.15em] uppercase font-bold group-hover:opacity-80 transition-opacity">
+          <span className="font-display-lg text-base sm:text-lg md:text-headline-sm text-primary tracking-wider sm:tracking-[0.15em] uppercase font-bold group-hover:opacity-80 transition-opacity">
             Nuestra Historia
           </span>
         </Link>
@@ -73,7 +73,7 @@ export default function Navbar({ variant = 'main' }: NavbarProps) {
           
           <button 
             onClick={() => setIsOpen(!isOpen)} 
-            className="md:hidden p-2 text-primary hover:bg-surface-container-low rounded-xl transition-colors"
+            className="md:hidden p-2.5 text-primary hover:bg-surface-container-low active:bg-surface-container rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label="Abrir menú"
           >
             <span className="material-symbols-outlined text-2xl">{isOpen ? 'close' : 'menu'}</span>
@@ -83,38 +83,39 @@ export default function Navbar({ variant = 'main' }: NavbarProps) {
 
       {/* Mobile Menu Dropdown */}
       {isOpen && (
-        <div className="md:hidden bg-surface-container-lowest border-b border-outline-variant/40 px-6 py-6 space-y-4 shadow-xl animate-in slide-in-from-top-2 duration-200">
+        <div className="md:hidden bg-surface-container-lowest/95 backdrop-blur-xl border-b border-outline-variant/40 px-5 py-4 space-y-1 shadow-2xl animate-in slide-in-from-top-2 duration-200">
           <Link 
             href="/#story" 
-            className="block font-label-caps text-xs text-on-surface hover:text-primary transition-colors py-2 border-b border-outline-variant/20"
+            className="flex items-center font-label-caps text-sm text-on-surface hover:text-primary transition-colors py-3 px-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container border-b border-outline-variant/10 font-medium"
             onClick={() => setIsOpen(false)}
           >
             Historia
           </Link>
           <Link 
             href="/#details" 
-            className="block font-label-caps text-xs text-on-surface hover:text-primary transition-colors py-2 border-b border-outline-variant/20"
+            className="flex items-center font-label-caps text-sm text-on-surface hover:text-primary transition-colors py-3 px-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container border-b border-outline-variant/10 font-medium"
             onClick={() => setIsOpen(false)}
           >
             Eventos
           </Link>
           <Link 
             href="/dress-code" 
-            className="block font-label-caps text-xs text-on-surface hover:text-primary transition-colors py-2 border-b border-outline-variant/20"
+            className="flex items-center font-label-caps text-sm text-on-surface hover:text-primary transition-colors py-3 px-3 rounded-xl hover:bg-surface-container-low active:bg-surface-container border-b border-outline-variant/10 font-medium"
             onClick={() => setIsOpen(false)}
           >
             Dress Code
           </Link>
           <Link 
             href="/rsvp" 
-            className="block font-label-caps text-xs text-primary font-bold transition-colors py-2 border-b border-outline-variant/20"
+            className="flex items-center justify-between font-label-caps text-sm text-primary font-bold transition-colors py-3 px-3 rounded-xl bg-primary/10 hover:bg-primary/20 border-b border-outline-variant/10"
             onClick={() => setIsOpen(false)}
           >
-            RSVP (Buscar Invitación)
+            <span>RSVP (Buscar Invitación)</span>
+            <span className="material-symbols-outlined text-base">arrow_forward</span>
           </Link>
           <Link 
             href="/login" 
-            className="block font-label-caps text-xs text-secondary hover:text-primary transition-colors py-2"
+            className="flex items-center font-label-caps text-sm text-secondary hover:text-primary transition-colors py-3 px-3 rounded-xl hover:bg-surface-container-low font-medium"
             onClick={() => setIsOpen(false)}
           >
             Acceso Novios
