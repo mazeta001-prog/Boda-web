@@ -11,20 +11,27 @@ import {
   ActivityActionType 
 } from '@/types/database';
 
-const supabaseUrl = 
-  process.env.NEXT_PUBLIC_SUPABASE_URL || 
-  process.env.VITE_SUPABASE_URL || 
-  'https://oxiubezpkxqxnhqvpmvf.supabase.co';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
 
-const supabaseAnonKey = 
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY || 
-  'sb_publishable_AnCnhh5HWOnheVLelqjCRA_D5RAmRPl';
+function isValidSupabaseUrl(value: string | undefined): value is string {
+  if (!value) return false;
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' || url.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
 
-export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+function initializeSupabase(): SupabaseClient | null {
+  if (!isValidSupabaseUrl(supabaseUrl) || !supabaseAnonKey) return null;
+  return createClient(supabaseUrl, supabaseAnonKey);
+}
+
+export const supabase = initializeSupabase();
+export const isSupabaseConfigured = supabase !== null;
 
 /**
  * Retrieves the current Supabase Auth session.
