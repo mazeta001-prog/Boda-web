@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import { DashboardMetrics, BudgetItem } from '@/types/database';
 
 interface MetricCardsGridProps {
@@ -37,13 +38,25 @@ export function MetricCardsGrid({
     <div className="space-y-10 mb-12">
       {/* Group 1: Invitados (Guests Overview) */}
       <div>
-        <div className="flex items-center gap-2 mb-4">
-          <span className="material-symbols-outlined text-primary text-xl">group</span>
-          <h2 className="font-headline-sm text-lg font-bold text-on-surface">Gestión de Invitados</h2>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-xl">group</span>
+            <h2 className="font-headline-sm text-lg font-bold text-on-surface">Gestión de Invitados</h2>
+          </div>
+          <Link 
+            href="/dashboard/guests"
+            className="text-xs font-label-caps font-bold text-primary hover:underline flex items-center gap-1"
+          >
+            <span>Ver todos los invitados</span>
+            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+          </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {/* 1. Total Guests */}
-          <div className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-primary/50 transition-all">
+          <Link
+            href="/dashboard/guests"
+            className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-primary/50 hover:shadow-md transition-all cursor-pointer block"
+          >
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
               <span className="material-symbols-outlined text-6xl text-primary">groups</span>
             </div>
@@ -53,12 +66,18 @@ export function MetricCardsGrid({
                 <span className="text-4xl font-display-lg font-bold text-on-surface">{metrics.totalGuests}</span>
                 <span className="text-xs font-body-md text-secondary">personas</span>
               </div>
-              <p className="mt-3 text-xs text-secondary font-body-md">Incluye acompañantes registrados</p>
+              <p className="mt-3 text-xs text-primary font-bold flex items-center gap-1 group-hover:underline">
+                <span>Ver lista completa</span>
+                <span className="material-symbols-outlined text-xs">chevron_right</span>
+              </p>
             </div>
-          </div>
+          </Link>
 
           {/* 2. Confirmed Guests */}
-          <div className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-emerald-500/50 transition-all">
+          <Link
+            href="/dashboard/guests?status=confirmed"
+            className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-emerald-500/60 hover:shadow-md transition-all cursor-pointer block"
+          >
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
               <span className="material-symbols-outlined text-6xl text-emerald-600">check_circle</span>
             </div>
@@ -71,11 +90,18 @@ export function MetricCardsGrid({
               <div className="w-full bg-surface-variant h-1.5 rounded-full mt-3 overflow-hidden">
                 <div className="bg-emerald-600 h-full rounded-full transition-all duration-500" style={{ width: `${guestConfirmationRate}%` }}></div>
               </div>
+              <p className="mt-2 text-[11px] text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-1 group-hover:underline">
+                <span>Ver invitados confirmados</span>
+                <span className="material-symbols-outlined text-xs">chevron_right</span>
+              </p>
             </div>
-          </div>
+          </Link>
 
           {/* 3. Pending Guests */}
-          <div className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-amber-500/50 transition-all">
+          <Link
+            href="/dashboard/guests?status=pending"
+            className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-amber-500/60 hover:shadow-md transition-all cursor-pointer block"
+          >
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
               <span className="material-symbols-outlined text-6xl text-amber-600">pending</span>
             </div>
@@ -85,12 +111,18 @@ export function MetricCardsGrid({
                 <span className="text-4xl font-display-lg font-bold text-amber-700 dark:text-amber-400">{metrics.pendingGuests}</span>
                 <span className="text-xs font-body-md text-amber-600">Por responder</span>
               </div>
-              <p className="mt-3 text-xs text-secondary font-body-md">Recordatorios activos</p>
+              <p className="mt-3 text-xs text-amber-700 dark:text-amber-300 font-bold flex items-center gap-1 group-hover:underline">
+                <span>Ver invitados pendientes</span>
+                <span className="material-symbols-outlined text-xs">chevron_right</span>
+              </p>
             </div>
-          </div>
+          </Link>
 
           {/* 4. Declined Guests */}
-          <div className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-rose-500/50 transition-all">
+          <Link
+            href="/dashboard/guests?status=declined"
+            className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-rose-500/60 hover:shadow-md transition-all cursor-pointer block"
+          >
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
               <span className="material-symbols-outlined text-6xl text-rose-600">cancel</span>
             </div>
@@ -100,9 +132,12 @@ export function MetricCardsGrid({
                 <span className="text-4xl font-display-lg font-bold text-rose-700 dark:text-rose-400">{metrics.declinedGuests}</span>
                 <span className="text-xs font-body-md text-rose-600">No asistirán</span>
               </div>
-              <p className="mt-3 text-xs text-secondary font-body-md">Notificados formalmente</p>
+              <p className="mt-3 text-xs text-rose-700 dark:text-rose-300 font-bold flex items-center gap-1 group-hover:underline">
+                <span>Ver quienes declinaron</span>
+                <span className="material-symbols-outlined text-xs">chevron_right</span>
+              </p>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
 

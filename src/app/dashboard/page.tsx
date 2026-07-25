@@ -18,11 +18,17 @@ import { CreateBudgetItemModal } from '@/components/dashboard/CreateBudgetItemMo
 import { DeleteBudgetItemModal } from '@/components/dashboard/DeleteBudgetItemModal';
 import { SetTotalBudgetModal } from '@/components/dashboard/SetTotalBudgetModal';
 import { ActivityHistoryModal } from '@/components/dashboard/ActivityHistoryModal';
+import { InvitationIssuesPanel } from '@/components/dashboard/InvitationIssuesPanel';
 import { DashboardSkeleton } from '@/components/dashboard/SkeletonLoader';
 import { isSupabaseConfigured } from '@/lib/supabaseClient';
 import { BudgetItem } from '@/types/database';
 
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+
 export default function AdminDashboard() {
+  const router = useRouter();
+  const { session, loading: authLoading } = useAuth();
   const [daysLeft, setDaysLeft] = useState<number>(0);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -35,6 +41,12 @@ export default function AdminDashboard() {
   const [isSetTotalBudgetOpen, setIsSetTotalBudgetOpen] = useState(false);
   const [editingBudgetItem, setEditingBudgetItem] = useState<BudgetItem | null>(null);
   const [deletingBudgetItem, setDeletingBudgetItem] = useState<BudgetItem | null>(null);
+
+  useEffect(() => {
+    if (!authLoading && isSupabaseConfigured && !session) {
+      router.push('/login');
+    }
+  }, [authLoading, session, router]);
 
   const {
     loading,
@@ -167,7 +179,7 @@ export default function AdminDashboard() {
                 }}
               />
 
-              {/* Main 2-Column Section: Audit Feed + Quick Actions */}
+              {/* Main 2-Column Section: Audit Feed + Quick Actions & Reported Issues */}
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 {/* Audit Timeline Feed */}
                 <div className="xl:col-span-1">
@@ -177,8 +189,14 @@ export default function AdminDashboard() {
                   />
                 </div>
 
-                {/* Quick Actions Bento */}
-                <div className="xl:col-span-2">
+                {/* Right Column: Reported Issues Panel + Quick Actions Bento */}
+                <div className="xl:col-span-2 space-y-8">
+                  <InvitationIssuesPanel
+                    notifications={notifications}
+                    activityLogs={activityLogs}
+                    onMarkRead={(id) => markNotificationRead(id)}
+                  />
+
                   <QuickActionsBento
                     onOpenCreateGuest={() => setIsCreateGuestOpen(true)}
                   />

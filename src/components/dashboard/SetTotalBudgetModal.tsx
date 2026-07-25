@@ -149,10 +149,10 @@ export function SetTotalBudgetModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-on-surface/30 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="fixed inset-0" onClick={onClose} />
-      <div className="relative w-full max-w-2xl bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-2xl overflow-hidden z-10 p-6 animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-2xl bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-2xl overflow-hidden z-10 p-4 sm:p-6 animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
         
         {/* Header */}
-        <div className="flex justify-between items-center mb-6 pb-3 border-b border-outline-variant/30">
+        <div className="flex justify-between items-center mb-4 pb-3 border-b border-outline-variant/30 shrink-0">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-2xl">account_balance_wallet</span>
             <div>
@@ -169,13 +169,13 @@ export function SetTotalBudgetModal({
         </div>
 
         {errorMessage && (
-          <div className="mb-4 p-3 rounded-xl bg-error/10 text-error text-xs font-body-md border border-error/20 flex items-center gap-2">
+          <div className="mb-4 p-3 rounded-xl bg-error/10 text-error text-xs font-body-md border border-error/20 flex items-center gap-2 shrink-0">
             <span className="material-symbols-outlined text-sm">error</span>
             {errorMessage}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5 flex-1 overflow-y-auto pr-1">
 
           {/* EDITABLE TOTAL BUDGET INPUT FIELD */}
           <div className="bg-primary/5 p-4 rounded-2xl border border-primary/30">
@@ -188,7 +188,7 @@ export function SetTotalBudgetModal({
                 type="number"
                 required
                 min="0"
-                step="1000"
+                step="any"
                 placeholder="Ej. 1000000"
                 value={totalGoalInput}
                 onChange={e => setTotalGoalInput(e.target.value === '' ? '' : Number(e.target.value))}
@@ -272,7 +272,7 @@ export function SetTotalBudgetModal({
                           <input
                             type="number"
                             min="0"
-                            step="500"
+                            step="any"
                             placeholder="0"
                             value={item.allocated || ''}
                             onChange={e => handleItemChange(item.tempId, 'allocated', Number(e.target.value) || 0)}
@@ -288,7 +288,7 @@ export function SetTotalBudgetModal({
                           <input
                             type="number"
                             min="0"
-                            step="500"
+                            step="any"
                             placeholder="0"
                             value={item.used || ''}
                             onChange={e => handleItemChange(item.tempId, 'used', Number(e.target.value) || 0)}

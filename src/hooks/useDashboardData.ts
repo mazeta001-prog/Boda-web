@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   supabase, 
   isSupabaseConfigured, 
-  localDB 
+  localDB,
+  ensureAdminSession 
 } from '@/lib/supabaseClient';
 import { 
   Guest, 
@@ -19,7 +20,10 @@ import {
   SearchResults 
 } from '@/types/database';
 
+import { useAuth } from '@/context/AuthContext';
+
 export function useDashboardData() {
+  const { session: authSession, refreshSession } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,6 +41,29 @@ export function useDashboardData() {
   const fetchData = useCallback(async () => {
     try {
       if (isSupabaseConfigured && supabase) {
+        let activeSession = authSession;
+        if (!activeSession) {
+          activeSession = await refreshSession();
+        }
+
+        console.log("CURRENT SESSION:", activeSession);
+        if (activeSession) {
+          console.log("CURRENT USER ID (auth.uid()):", activeSession.user?.id);
+        } else {
+          console.warn("No active session found. Redirecting to /login...");
+          if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+          }
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("guests")
+          .select("*");
+
+        console.log("GUESTS DATA:", data);
+        console.log("GUESTS ERROR:", error);
+
         const [
           { data: guestsData, error: guestsErr },
           { data: eventsData, error: eventsErr },
@@ -57,20 +84,23 @@ export function useDashboardData() {
           supabase.from('notifications').select('*').order('created_at', { ascending: false })
         ]);
 
+        console.log("GUESTS DATA:", guestsData);
+        console.log("GUESTS ERROR:", guestsErr);
+
         if (guestsErr) console.warn('Supabase guests fetch:', guestsErr.message);
         if (eventsErr) console.warn('Supabase events fetch:', eventsErr.message);
 
         // Fall back to local DB if remote empty or errored
         const local = localDB.getDB();
-        setGuests((guestsData && guestsData.length > 0) ? (guestsData as Guest[]) : local.guests);
-        setEvents((eventsData && eventsData.length > 0) ? (eventsData as EventItem[]) : local.events);
-        setTables((tablesData && tablesData.length > 0) ? (tablesData as TableItem[]) : local.tables);
-        setGifts((giftsData && giftsData.length > 0) ? (giftsData as GiftItem[]) : local.gifts);
-        setInvitations((invsData && invsData.length > 0) ? (invsData as InvitationItem[]) : local.invitations);
-        setBudget((budgetData && budgetData.length > 0) ? (budgetData as BudgetItem[]) : local.budget);
+        setGuests(guestsData ? (guestsData as Guest[]) : local.guests);
+        setEvents(eventsData ? (eventsData as EventItem[]) : local.events);
+        setTables(tablesData ? (tablesData as TableItem[]) : local.tables);
+        setGifts(giftsData ? (giftsData as GiftItem[]) : local.gifts);
+        setInvitations(invsData ? (invsData as InvitationItem[]) : local.invitations);
+        setBudget(budgetData ? (budgetData as BudgetItem[]) : local.budget);
         setTotalBudgetGoal(local.total_budget || 1000000);
-        setActivityLogs((logsData && logsData.length > 0) ? (logsData as ActivityLog[]) : local.activity_logs);
-        setNotifications((notifsData && notifsData.length > 0) ? (notifsData as NotificationItem[]) : local.notifications);
+        setActivityLogs(logsData ? (logsData as ActivityLog[]) : local.activity_logs);
+        setNotifications(notifsData ? (notifsData as NotificationItem[]) : local.notifications);
       } else {
         // Load from LocalDB
         const local = localDB.getDB();
@@ -146,13 +176,10 @@ export function useDashboardData() {
 
   // Calculate live statistics
   const metrics: DashboardMetrics = useMemo(() => {
-    // Total Guests: Sum of main guests + companions
-    const totalGuestsCount = guests.reduce((sum, g) => sum + 1 + (g.companions_count || 0), 0);
+    // Total Guests: Exact count of guest records (persons)
+    const totalGuestsCount = guests.length;
 
-    const confirmedGuestsCount = guests
-      .filter(g => g.status === 'confirmed')
-      .reduce((sum, g) => sum + 1 + (g.companions_count || 0), 0);
-
+    const confirmedGuestsCount = guests.filter(g => g.status === 'confirmed').length;
     const pendingGuestsCount = guests.filter(g => g.status === 'pending').length;
     const declinedGuestsCount = guests.filter(g => g.status === 'declined').length;
 
@@ -243,6 +270,7 @@ export function useDashboardData() {
 
     try {
       if (isSupabaseConfigured && supabase) {
+        await ensureAdminSession();
         const { data, error: insertErr } = await supabase
           .from('guests')
           .insert([guestData])
@@ -269,6 +297,7 @@ export function useDashboardData() {
 
     try {
       if (isSupabaseConfigured && supabase) {
+        await ensureAdminSession();
         const { error: updateErr } = await supabase
           .from('guests')
           .update(updates)
@@ -290,6 +319,7 @@ export function useDashboardData() {
 
     try {
       if (isSupabaseConfigured && supabase) {
+        await ensureAdminSession();
         const { error: deleteErr } = await supabase
           .from('guests')
           .delete()
@@ -301,6 +331,30 @@ export function useDashboardData() {
       }
     } catch (err: any) {
       console.error('Error deleting guest:', err);
+      fetchData();
+      throw err;
+    }
+  };
+
+  const deleteGuests = async (ids: string[]) => {
+    if (!ids || ids.length === 0) return;
+    const idSet = new Set(ids);
+    setGuests(prev => prev.filter(g => !idSet.has(g.id)));
+
+    try {
+      if (isSupabaseConfigured && supabase) {
+        await ensureAdminSession();
+        const { error: deleteErr } = await supabase
+          .from('guests')
+          .delete()
+          .in('id', ids);
+
+        if (deleteErr) throw deleteErr;
+      } else {
+        ids.forEach(id => localDB.deleteGuest(id));
+      }
+    } catch (err: any) {
+      console.error('Error batch deleting guests:', err);
       fetchData();
       throw err;
     }
@@ -318,6 +372,7 @@ export function useDashboardData() {
 
     try {
       if (isSupabaseConfigured && supabase) {
+        await ensureAdminSession();
         const { data, error: insertErr } = await supabase
           .from('events')
           .insert([eventData])
@@ -350,6 +405,7 @@ export function useDashboardData() {
 
     try {
       if (isSupabaseConfigured && supabase) {
+        await ensureAdminSession();
         const { data, error: insertErr } = await supabase
           .from('gifts')
           .insert([giftData])
@@ -382,6 +438,7 @@ export function useDashboardData() {
 
     try {
       if (isSupabaseConfigured && supabase) {
+        await ensureAdminSession();
         const { data, error: insertErr } = await supabase
           .from('budget')
           .insert([budgetData])
@@ -407,6 +464,7 @@ export function useDashboardData() {
 
     try {
       if (isSupabaseConfigured && supabase) {
+        await ensureAdminSession();
         const { error: updateErr } = await supabase
           .from('budget')
           .update(updates)
@@ -428,6 +486,7 @@ export function useDashboardData() {
 
     try {
       if (isSupabaseConfigured && supabase) {
+        await ensureAdminSession();
         const { error: deleteErr } = await supabase
           .from('budget')
           .delete()
@@ -452,6 +511,7 @@ export function useDashboardData() {
   const markNotificationRead = async (id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
     if (isSupabaseConfigured && supabase) {
+      await ensureAdminSession();
       await supabase.from('notifications').update({ read: true }).eq('id', id);
     } else {
       localDB.markNotificationRead(id);
@@ -461,6 +521,7 @@ export function useDashboardData() {
   const markAllNotificationsRead = async () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     if (isSupabaseConfigured && supabase) {
+      await ensureAdminSession();
       await supabase.from('notifications').update({ read: true }).neq('read', true);
     } else {
       localDB.markAllNotificationsRead();
@@ -490,6 +551,7 @@ export function useDashboardData() {
     createGuest,
     updateGuest,
     deleteGuest,
+    deleteGuests,
     createEvent,
     createGift,
     createBudgetItem,

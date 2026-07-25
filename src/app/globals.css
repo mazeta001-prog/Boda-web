@@ -9,6 +9,13 @@
   --font-playfair: 'Playfair Display', serif;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 body {
   background-color: #faf9f6;
   color: #1a1c1a;
@@ -18,6 +25,15 @@ body {
 html.dark body {
   background-color: #121312;
   color: #f2f1ee;
+}
+
+/* Hide scrollbar utility for mobile horizontal scroll elements */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Custom CSS Styles from project design system */

@@ -3,6 +3,8 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
+import { useAuth } from '@/context/AuthContext';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -11,23 +13,32 @@ interface SettingsModalProps {
 
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const router = useRouter();
+  const { signOut } = useAuth();
 
   if (!isOpen) return null;
 
-  const handleLogout = () => {
-    // Clear local session storage if any
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('wedding_auth_session');
-      sessionStorage.clear();
+  const handleLogout = async () => {
+    try {
+      if (isSupabaseConfigured && supabase) {
+        await supabase.auth.signOut();
+      }
+      await signOut();
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('wedding_auth_session');
+        sessionStorage.clear();
+      }
+      onClose();
+      router.push('/login');
     }
-    onClose();
-    router.push('/login');
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-on-surface/30 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="fixed inset-0" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-2xl overflow-hidden z-10 p-6 animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-md bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-2xl overflow-hidden z-10 p-4 sm:p-6 animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
         
         {/* Modal Header */}
         <div className="flex justify-between items-center mb-6 pb-3 border-b border-outline-variant/30">
@@ -53,7 +64,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           </div>
           <div className="min-w-0 flex-1">
             <span className="text-[10px] font-label-caps text-primary font-bold uppercase tracking-wider block">Sesión Activa</span>
-            <h4 className="font-bold text-sm text-on-surface truncate">Administrador (Iván &amp; Dana)</h4>
+            <h4 className="font-bold text-sm text-on-surface truncate">Administrador (Ivan &amp; Dana)</h4>
             <p className="text-xs text-secondary truncate">Panel de Gestión de Boda</p>
           </div>
         </div>

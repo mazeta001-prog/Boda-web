@@ -8,7 +8,7 @@ import { supabase, isSupabaseConfigured, localDB, normalizeString } from '@/lib/
 import { Guest } from '@/types/database';
 
 type StepType = 'search' | 'found' | 'success' | 'decline';
-type SlotStatus = 'waiting' | 'searching' | 'found' | 'not-found';
+type SlotStatus = 'waiting' | 'searching' | 'found' | 'ambiguous' | 'not-found';
 
 interface GuestSearchSlot {
   id: number;
@@ -16,6 +16,7 @@ interface GuestSearchSlot {
   lastName: string;
   status: SlotStatus;
   foundGuest: Guest | null;
+  candidateGuests?: Guest[];
   errorMessage: string | null;
 }
 
@@ -32,7 +33,7 @@ export default function RSVPForm() {
   
   // Dynamic Guest Search Slots (up to 5)
   const [guestSlots, setGuestSlots] = useState<GuestSearchSlot[]>([
-    { id: 1, firstName: '', lastName: '', status: 'waiting', foundGuest: null, errorMessage: null }
+    { id: 1, firstName: '', lastName: '', status: 'waiting', foundGuest: null, candidateGuests: [], errorMessage: null }
   ]);
 
   const [isSearching, setIsSearching] = useState(false);
@@ -50,6 +51,48 @@ export default function RSVPForm() {
   const [failedSearchAttempts, setFailedSearchAttempts] = useState<number>(0);
   const [isRateLimited, setIsRateLimited] = useState<boolean>(false);
 
+  // Issue Report Modal States
+  const [isIssueModalOpen, setIsIssueModalOpen] = useState(false);
+  const [issueName, setIssueName] = useState('');
+  const [issuePhone, setIssuePhone] = useState('');
+  const [issueComment, setIssueComment] = useState('');
+  const [isIssueSubmitting, setIsIssueSubmitting] = useState(false);
+  const [isIssueSuccess, setIsIssueSuccess] = useState(false);
+
+  // Submit issue report to Novios' Dashboard & notifications
+  const handleReportIssue = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!issueName.trim() || !issuePhone.trim() || !issueComment.trim()) return;
+
+    setIsIssueSubmitting(true);
+
+    try {
+      if (isSupabaseConfigured && supabase) {
+        await Promise.allSettled([
+          supabase.from('notifications').insert([{
+            title: '⚠️ Soporte de Invitados',
+            message: `${issueName.trim()} reportó un problema: "${issueComment.trim()}". Contacto WhatsApp: ${issuePhone.trim()}`,
+            type: 'warning'
+          }]),
+          supabase.from('activity_logs').insert([{
+            action_type: 'invitation_declined',
+            user_name: issueName.trim(),
+            details: `Reportó problema con su invitación: "${issueComment.trim()}" (WhatsApp: ${issuePhone.trim()})`
+          }])
+        ]);
+      }
+
+      localDB.reportInvitationIssue(issueName.trim(), issuePhone.trim(), issueComment.trim());
+      setIsIssueSuccess(true);
+    } catch (err) {
+      console.error('Error reporting issue:', err);
+      localDB.reportInvitationIssue(issueName.trim(), issuePhone.trim(), issueComment.trim());
+      setIsIssueSuccess(true);
+    } finally {
+      setIsIssueSubmitting(false);
+    }
+  };
+
   // Dietary restriction quick tags
   const dietaryOptions = ['Ninguna', 'Vegetariano', 'Vegano', 'Celíaco / Sin Gluten', 'Sin Lactosa'];
 
@@ -63,7 +106,7 @@ export default function RSVPForm() {
         if (existing) {
           newSlots.push(existing);
         } else {
-          newSlots.push({ id: i, firstName: '', lastName: '', status: 'waiting', foundGuest: null, errorMessage: null });
+          newSlots.push({ id: i, firstName: '', lastName: '', status: 'waiting', foundGuest: null, candidateGuests: [], errorMessage: null });
         }
       }
       return newSlots;
@@ -78,19 +121,51 @@ export default function RSVPForm() {
           ...slot,
           [field]: value,
           // Reset status to waiting if user changes inputs after search
-          status: slot.status === 'not-found' ? 'waiting' : slot.status,
-          errorMessage: slot.status === 'not-found' ? null : slot.errorMessage
+          status: (slot.status === 'not-found' || slot.status === 'ambiguous') ? 'waiting' : slot.status,
+          candidateGuests: [],
+          errorMessage: null
         };
       }
       return slot;
     }));
   };
 
-  // Execute exact match search for all filled guest slots
+  // Handler when user selects their nickname from candidate options
+  const handleSelectCandidate = (slotId: number, guest: Guest) => {
+    const nameParts = guest.full_name.trim().split(' ');
+    const autoFirstName = nameParts[0] || guest.full_name;
+    const autoLastName = nameParts.slice(1).join(' ') || '';
+
+    setGuestSlots(prev => prev.map(s => {
+      if (s.id === slotId) {
+        return {
+          ...s,
+          firstName: autoFirstName,
+          lastName: autoLastName,
+          status: 'found',
+          foundGuest: guest,
+          candidateGuests: [],
+          errorMessage: null
+        };
+      }
+      return s;
+    }));
+
+    setGuestCountMap(prev => ({
+      ...prev,
+      [guest.id]: prev[guest.id] || 1 + (guest.companions_count || 0)
+    }));
+
+    setDietaryMap(prev => ({
+      ...prev,
+      [guest.id]: prev[guest.id] !== undefined ? prev[guest.id] : (guest.dietary_restrictions || '')
+    }));
+  };
+
+  // Execute search for guest slots (Exact match -> Nickname match -> Ambiguous Candidate Selection)
   const handleSearch = async () => {
     if (isRateLimited) return;
 
-    // Check rate limiting (security rule)
     if (failedSearchAttempts >= 10) {
       setIsRateLimited(true);
       setTimeout(() => {
@@ -100,15 +175,14 @@ export default function RSVPForm() {
       return;
     }
 
-    const validSlotsToSearch = guestSlots.filter(s => s.firstName.trim() && s.lastName.trim());
+    const validSlotsToSearch = guestSlots.filter(s => s.firstName.trim() || s.lastName.trim());
     if (validSlotsToSearch.length === 0) return;
 
     setIsSearching(true);
 
-    // Set status to searching for active slots
     setGuestSlots(prev => prev.map(s => {
-      if (s.firstName.trim() && s.lastName.trim()) {
-        return { ...s, status: 'searching', errorMessage: null };
+      if (s.firstName.trim() || s.lastName.trim()) {
+        return { ...s, status: 'searching', errorMessage: null, candidateGuests: [] };
       }
       return s;
     }));
@@ -118,7 +192,11 @@ export default function RSVPForm() {
 
       if (isSupabaseConfigured && supabase) {
         const { data } = await supabase.from('guests').select('*');
-        if (data) dbGuests = data as Guest[];
+        if (data && data.length > 0) dbGuests = data as Guest[];
+      }
+
+      if (dbGuests.length === 0) {
+        dbGuests = localDB.getDB().guests;
       }
 
       let totalFailedInThisSearch = 0;
@@ -126,43 +204,72 @@ export default function RSVPForm() {
       const updatedSlots = await Promise.all(guestSlots.map(async (slot) => {
         const fName = slot.firstName.trim();
         const lName = slot.lastName.trim();
+        const fullQuery = `${fName} ${lName}`.trim();
+        const normQuery = normalizeString(fullQuery);
+        const normFName = normalizeString(fName);
+        const normLName = normalizeString(lName);
 
-        if (!fName || !lName) {
+        if (!fullQuery) {
           return slot;
         }
 
-        const target = normalizeString(`${fName} ${lName}`);
-        let matched: Guest | null = null;
+        // 1. Gather all database matches (exact full name, exact nickname, or partial matches)
+        const allMatches = dbGuests.filter(g => {
+          const normFull = normalizeString(g.full_name);
+          const normSansAmp = normalizeString(g.full_name.replace(/&/g, ' '));
+          const normNick = g.nickname ? normalizeString(g.nickname) : '';
 
-        // Exact match comparison against Supabase or LocalDB records
-        if (dbGuests.length > 0) {
-          matched = dbGuests.find(g => {
-            const normFull = normalizeString(g.full_name);
-            const normSansAmp = normalizeString(g.full_name.replace(/&/g, ' '));
-            return normFull === target || normSansAmp === target;
-          }) || null;
-        }
+          const isExactFull = normFull === normQuery || normSansAmp === normQuery;
+          const isExactNick = normNick && (normNick === normQuery || (normFName && normNick === normFName));
+          const matchFull = normQuery ? normFull.includes(normQuery) : false;
+          const matchFirst = normFName ? normFull.includes(normFName) : false;
+          const matchLast = normLName ? normFull.includes(normLName) : false;
+          const matchNick = normFName && normNick ? normNick.includes(normFName) : false;
 
-        if (!matched) {
-          matched = localDB.findExactGuestByFirstAndLastName(fName, lName);
-        }
+          return isExactFull || isExactNick || matchFull || (matchFirst && (matchLast || !lName)) || matchNick;
+        });
 
-        if (matched) {
-          return {
-            ...slot,
-            status: 'found' as SlotStatus,
-            foundGuest: matched,
-            errorMessage: null
-          };
-        } else {
+        // 2. Candidate disambiguation logic
+        const unclaimed = allMatches.filter(g => g.status === 'pending');
+        // Prioritize pending (unclaimed) invitations, or fallback to all matching invitations
+        const activeMatches = unclaimed.length > 0 ? unclaimed : allMatches;
+
+        // Case A: No matches at all
+        if (allMatches.length === 0) {
           totalFailedInThisSearch++;
           return {
             ...slot,
             status: 'not-found' as SlotStatus,
             foundGuest: null,
-            errorMessage: 'Invitation not found. Please verify that the first name and last name are spelled exactly as shown on your invitation.'
+            candidateGuests: [],
+            errorMessage: `No encontramos una invitación para "${fullQuery}". Por favor verifica la ortografía.`
           };
         }
+
+        // Case B: Exactly 1 candidate remaining -> Auto-select!
+        if (activeMatches.length === 1) {
+          const matchedGuest = activeMatches[0];
+          const nameParts = matchedGuest.full_name.trim().split(' ');
+          return {
+            ...slot,
+            firstName: nameParts[0] || matchedGuest.full_name,
+            lastName: nameParts.slice(1).join(' ') || '',
+            status: 'found' as SlotStatus,
+            foundGuest: matchedGuest,
+            candidateGuests: [],
+            errorMessage: null
+          };
+        }
+
+        // Case C: Multiple matching candidates (e.g. 2+ guests with exact same name or same first name/apodo)
+        // Show apodo options so the user can identify themselves with ¡SOY YO!
+        return {
+          ...slot,
+          status: 'ambiguous' as SlotStatus,
+          foundGuest: null,
+          candidateGuests: activeMatches,
+          errorMessage: null
+        };
       }));
 
       setGuestSlots(updatedSlots);
@@ -474,6 +581,12 @@ export default function RSVPForm() {
                             <span>Verificando...</span>
                           </span>
                         )}
+                        {slot.status === 'ambiguous' && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 text-[11px] font-label-caps font-bold border border-amber-500/30 animate-pulse">
+                            <span className="material-symbols-outlined text-sm">psychology</span>
+                            <span>¿Cuál eres tú?</span>
+                          </span>
+                        )}
                         {slot.status === 'found' && (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] font-label-caps font-bold border border-emerald-500/20">
                             <span className="material-symbols-outlined text-sm">check_circle</span>
@@ -492,7 +605,7 @@ export default function RSVPForm() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-[11px] font-label-caps text-secondary mb-1 uppercase tracking-wider font-semibold">
-                          First Name / Nombre <span className="text-rose-500">*</span>
+                          Nombre <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -500,14 +613,14 @@ export default function RSVPForm() {
                           value={slot.firstName}
                           onChange={(e) => updateSlotField(slot.id, 'firstName', e.target.value)}
                           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                          placeholder="Ej. Sofia"
+                          placeholder="Nombre"
                           className="modern-input w-full bg-transparent py-2.5 px-3 font-body-md text-on-surface text-sm outline-none focus:ring-0 transition-colors"
                         />
                       </div>
 
                       <div>
                         <label className="block text-[11px] font-label-caps text-secondary mb-1 uppercase tracking-wider font-semibold">
-                          Last Name / Apellido <span className="text-rose-500">*</span>
+                          Apellido <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -515,13 +628,60 @@ export default function RSVPForm() {
                           value={slot.lastName}
                           onChange={(e) => updateSlotField(slot.id, 'lastName', e.target.value)}
                           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                          placeholder="Ej. García"
+                          placeholder="Apellido"
                           className="modern-input w-full bg-transparent py-2.5 px-3 font-body-md text-on-surface text-sm outline-none focus:ring-0 transition-colors"
                         />
                       </div>
                     </div>
 
-                    {/* Exact Error Message Display (Strict Security Rule) */}
+                    {/* Ambiguous Candidates Selection UI (Nicknames / Apodos) */}
+                    {slot.status === 'ambiguous' && slot.candidateGuests && slot.candidateGuests.length > 0 && (
+                      <div className="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-3">
+                        <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-bold text-xs">
+                          <span className="material-symbols-outlined text-base shrink-0">badge</span>
+                          <span>Encontramos varias invitaciones coincidentes. Selecciona tu apodo para identificarte:</span>
+                        </div>
+
+                        <div className="space-y-2">
+                          {slot.candidateGuests.map((candidate) => (
+                            <button
+                              key={candidate.id}
+                              type="button"
+                              onClick={() => handleSelectCandidate(slot.id, candidate)}
+                              className="w-full p-3 rounded-xl bg-surface dark:bg-surface-dim border border-outline-variant/40 hover:border-primary hover:bg-primary/5 transition-all text-left flex items-center justify-between group cursor-pointer"
+                            >
+                              <div className="space-y-1">
+                                <p className="font-bold text-sm text-on-surface group-hover:text-primary transition-colors">
+                                  {candidate.full_name}
+                                </p>
+                                <div className="flex items-center gap-2 flex-wrap text-xs">
+                                  {candidate.nickname ? (
+                                    <span className="inline-block text-xs font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
+                                      Apodo: "{candidate.nickname}"
+                                    </span>
+                                  ) : (
+                                    <span className="text-secondary text-xs italic">
+                                      (Sin apodo)
+                                    </span>
+                                  )}
+                                  {candidate.category && (
+                                    <span className="text-secondary text-xs font-medium">
+                                      • {candidate.category}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-caps text-[10px] font-bold group-hover:scale-105 transition-transform shrink-0 shadow-xs">
+                                ¡SOY YO!
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Exact Error Message Display */}
                     {slot.status === 'not-found' && slot.errorMessage && (
                       <div className="mt-3 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-body-md leading-relaxed flex items-start gap-2" role="alert">
                         <span className="material-symbols-outlined text-base shrink-0 mt-0.5">error_outline</span>
@@ -542,7 +702,7 @@ export default function RSVPForm() {
               {/* Action Buttons */}
               <div className="space-y-4 max-w-[400px] mx-auto">
                 <button 
-                  disabled={isSearching || isRateLimited || guestSlots.every(s => !s.firstName.trim() || !s.lastName.trim())}
+                  disabled={isSearching || isRateLimited || guestSlots.every(s => !s.firstName.trim() && !s.lastName.trim())}
                   className="btn-premium btn-shine hover:scale-105 transition-all duration-300 bg-primary text-on-primary px-8 py-4 font-label-caps text-[11px] sm:text-xs tracking-[0.25em] w-full flex items-center justify-center gap-3 rounded-xl shadow-md disabled:opacity-40 font-bold" 
                   onClick={handleSearch}
                 >
@@ -568,6 +728,21 @@ export default function RSVPForm() {
                     <span>CONTINUAR CON LA ASISTENCIA ({foundGuestsList.length}) →</span>
                   </button>
                 )}
+
+                {/* Report Issue Trigger Button */}
+                <div className="pt-3 border-t border-outline-variant/20">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsIssueModalOpen(true);
+                      setIsIssueSuccess(false);
+                    }}
+                    className="text-xs text-secondary hover:text-primary transition-colors flex items-center justify-center gap-1.5 mx-auto font-medium cursor-pointer py-1 group"
+                  >
+                    <span className="material-symbols-outlined text-base text-amber-500 group-hover:scale-110 transition-transform">help_outline</span>
+                    <span className="underline decoration-dotted underline-offset-4">¿Tienes problemas con tu invitación? Escríbenos aquí</span>
+                  </button>
+                </div>
               </div>
 
               {/* Active Session Summary */}
@@ -782,6 +957,128 @@ export default function RSVPForm() {
 
         </div>
       </main>
+
+      {/* Report Issue Modal Overlay */}
+      {isIssueModalOpen && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-surface dark:bg-surface-dim border border-outline-variant/60 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative overflow-hidden text-left animate-card">
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsIssueModalOpen(false);
+                setIsIssueSuccess(false);
+              }}
+              className="absolute top-4 right-4 p-2 text-secondary hover:text-on-surface rounded-full transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-xl">close</span>
+            </button>
+
+            {!isIssueSuccess ? (
+              <form onSubmit={handleReportIssue} className="space-y-4">
+                <div className="text-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto mb-3">
+                    <span className="material-symbols-outlined text-2xl">support_agent</span>
+                  </div>
+                  <h3 className="font-display-lg text-xl text-primary font-bold uppercase tracking-wide">
+                    ¿Tienes problemas con tu invitación?
+                  </h3>
+                  <p className="text-xs text-secondary mt-1">
+                    Escríbenos tu nombre y lo que sucede. Tu mensaje llegará directamente al equipo de la boda.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-label-caps text-secondary mb-1 uppercase tracking-wider font-semibold">
+                    Tu Nombre Completo <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={issueName}
+                    onChange={(e) => setIssueName(e.target.value)}
+                    placeholder="Ej. Sofía García"
+                    className="modern-input w-full bg-transparent py-2.5 px-3 font-body-md text-on-surface text-sm outline-none rounded-xl border border-outline-variant/40 focus:border-primary transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-label-caps text-secondary mb-1 uppercase tracking-wider font-semibold">
+                    Tu Teléfono / WhatsApp <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={issuePhone}
+                    onChange={(e) => setIssuePhone(e.target.value)}
+                    placeholder="Ej. +1 (829) 669-3870"
+                    className="modern-input w-full bg-transparent py-2.5 px-3 font-body-md text-on-surface text-sm outline-none rounded-xl border border-outline-variant/40 focus:border-primary transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-label-caps text-secondary mb-1 uppercase tracking-wider font-semibold">
+                    Comentario / Detalle del problema <span className="text-rose-500">*</span>
+                  </label>
+                  <textarea
+                    required
+                    rows={3}
+                    value={issueComment}
+                    onChange={(e) => setIssueComment(e.target.value)}
+                    placeholder="Explícanos brevemente el problema (ej. no encuentro mi pase, se escribió mal mi apellido...)"
+                    className="modern-input w-full bg-transparent py-2.5 px-3 font-body-md text-on-surface text-sm outline-none rounded-xl border border-outline-variant/40 focus:border-primary transition-colors resize-none"
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={isIssueSubmitting || !issueName.trim() || !issuePhone.trim() || !issueComment.trim()}
+                    className="btn-premium w-full bg-primary text-on-primary py-3.5 px-6 font-label-caps text-xs tracking-widest rounded-xl font-bold shadow-md disabled:opacity-40 flex items-center justify-center gap-2"
+                  >
+                    {isIssueSubmitting ? (
+                      <>
+                        <span className="material-symbols-outlined text-base animate-spin">progress_activity</span>
+                        <span>ENVIANDO REPORTE...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="material-symbols-outlined text-base">send</span>
+                        <span>ENVIAR REPORTAR A LOS NOVIOS</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="py-4 text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
+                  <span className="material-symbols-outlined text-4xl">check_circle</span>
+                </div>
+                <h3 className="font-display-lg text-xl text-primary font-bold uppercase tracking-wide">
+                  ¡Reporte Enviado!
+                </h3>
+                <p className="text-xs sm:text-sm text-secondary max-w-xs mx-auto leading-relaxed">
+                  Gracias por tu mensaje. Tu reporte ha sido enviado a los novios. Te daremos respuesta en un plazo de <strong className="text-on-surface font-bold">24 a 48 horas</strong>.
+                </p>
+
+                <div className="pt-4 border-t border-outline-variant/30">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsIssueModalOpen(false);
+                      setIsIssueSuccess(false);
+                    }}
+                    className="btn-premium w-full bg-primary text-on-primary py-3.5 px-6 rounded-xl font-bold text-xs font-label-caps tracking-wider cursor-pointer shadow-md"
+                  >
+                    Entendido / Cerrar
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <Footer variant="rsvp" />
     </div>

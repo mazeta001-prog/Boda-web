@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { supabase, isSupabaseConfigured, ensureAdminSession } from '@/lib/supabaseClient';
 
 export default function NovioLogin() {
   const router = useRouter();
@@ -11,7 +12,17 @@ export default function NovioLogin() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (isSupabaseConfigured && supabase) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          router.push('/dashboard');
+        }
+      });
+    }
+  }, [router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -20,17 +31,51 @@ export default function NovioLogin() {
       return;
     }
 
-    if (username.trim() !== '2112' || password.trim() !== '2112') {
-      setError('Usuario o contraseña incorrectos.');
-      return;
-    }
-
     setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      if (isSupabaseConfigured && supabase) {
+        const email = username.includes('@') ? username.trim() : `${username.trim()}@boda.com`;
+        
+        let { data, error: authError } = await supabase.auth.signInWithPassword({
+          email,
+          password: password.trim()
+        });
+
+        if (authError && (authError.message.includes('Invalid login credentials') || authError.message.includes('User not found'))) {
+          // Auto create admin user in Supabase Auth if first time
+          const signUpRes = await supabase.auth.signUp({
+            email,
+            password: password.trim()
+          });
+          if (signUpRes.data?.session) {
+            authError = null;
+          }
+        }
+
+        if (authError) {
+          setError(authError.message || 'Usuario o contraseña incorrectos.');
+          setIsLoading(false);
+          return;
+        }
+
+        const {
+          data: { session },
+          error: debugSessionErr
+        } = await supabase.auth.getSession();
+
+        console.log("SESSION:", session);
+        console.log("USER:", session?.user);
+        console.log("AUTH ERROR:", debugSessionErr);
+      }
+
       router.push('/dashboard');
-    }, 1000);
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError(err.message || 'Ocurrió un error al iniciar sesión.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

@@ -111,6 +111,14 @@ export interface NotificationItem {
   created_at: string;
 }
 
+export interface ImportLog {
+  id: string;
+  filename: string;
+  records_imported: number;
+  imported_by?: string;
+  created_at: string;
+}
+
 export interface DashboardMetrics {
   totalGuests: number;
   confirmedGuests: number;

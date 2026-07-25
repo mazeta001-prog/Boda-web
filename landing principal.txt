@@ -249,23 +249,23 @@
 <div class="order-2 md:order-1">
 <h2 class="font-display-lg text-headline-md text-primary mb-8 reveal active">Nuestra Historia</h2>
 <p class="font-body-lg text-body-lg text-on-surface-variant mb-12 italic border-l-4 border-primary-container pl-6 py-2 reveal stagger-1 active">
-                        "Lo que comenzó como una coincidencia se convirtió en nuestra aventura más grande. Cada paso juntos nos ha llevado a este momento, donde decidimos entrelazar nuestros destinos para siempre."
-                    </p>
+    De un grupo de amigos que surgió en un retiro de la iglesia en el 2015, Dios comenzó a trabajar nuestros corazones y prepararlos para la bendición con la que hoy contamos. Siendo amigos y guardando nuestros corazones el uno para el otro. El resto, es una historia que Dios sigue escribiendo.
+</p>
 <div class="space-y-12 border-l border-primary/20 pl-10 ml-4">
 <div class="relative group reveal stagger-2 active">
 <div class="absolute -left-[45px] top-1/2 -translate-y-1/2 w-3 h-3 bg-primary-container rounded-full ring-4 ring-surface-container-lowest group-hover:scale-125 transition-transform duration-300"></div>
 <h3 class="font-label-caps text-label-caps text-primary mb-2 tracking-widest">PRIMER ENCUENTRO</h3>
-<p class="font-body-md text-on-surface-variant">Un café compartido bajo la lluvia de primavera. El momento en que supimos que algo especial estaba por comenzar.</p>
+<p class="font-body-md text-on-surface-variant">El salón del Segundo piso de la iglesia en ese entonces de 11-12 años, fue el lugar donde hace años, nuestra historia se empezó a escribir sin que nos diéramos cuenta.</p>
 </div>
 <div class="relative group reveal stagger-3 active">
 <div class="absolute -left-[45px] top-1/2 -translate-y-1/2 w-3 h-3 bg-primary-container rounded-full ring-4 ring-surface-container-lowest group-hover:scale-125 transition-transform duration-300"></div>
 <h3 class="font-label-caps text-label-caps text-primary mb-2 tracking-widest">PRIMERA CITA</h3>
-<p class="font-body-md text-on-surface-variant">Una cena que duró horas, llena de risas y confesiones. Descubrimos que nuestras almas hablaban el mismo idioma.</p>
+<p class="font-body-md text-on-surface-variant">En pleno verano un 24 de agosto del 2021 fuimos nada más y nada menos que al zoológico. Entre risas nerviosas y el inicio de una nueva aventura, caminar y coger calor, nunca fue tan lindo.</p>
 </div>
 <div class="relative group reveal stagger-4 active">
 <div class="absolute -left-[45px] top-1/2 -translate-y-1/2 w-3 h-3 bg-primary-container rounded-full ring-4 ring-surface-container-lowest group-hover:scale-125 transition-transform duration-300"></div>
 <h3 class="font-label-caps text-label-caps text-primary mb-2 tracking-widest">LA PROPUESTA</h3>
-<p class="font-body-md text-on-surface-variant">Bajo el cielo estrellado de los Pirineos, con una promesa eterna y un 'sí' que cambió nuestras vidas.</p>
+<p class="font-body-md text-on-surface-variant">Lo que era la grabación de un video promocional en una cocina, en lo que nos gusta, resultó ser el plop twist más lindo que hemos recibido.</p>
 </div>
 </div>
 </div>
@@ -309,7 +309,7 @@
 </div>
 <div class="bg-surface-container-lowest p-10 text-center rounded-2xl champagne-shadow border border-outline-variant/20 group hover:-translate-y-4 hover:shadow-xl transition-all duration-500 reveal stagger-3 active"><span class="material-symbols-outlined text-4xl text-primary mb-6 group-hover:scale-110 transition-transform">checkroom</span>
 <h3 class="font-label-caps text-label-caps text-primary mb-4 tracking-widest">DRESS CODE</h3>
-<p class="font-body-lg font-bold text-on-surface mb-6">Formal</p>
+<p class="font-body-lg font-bold text-on-surface mb-6">Formal de Jardín</p>
 <a class="inline-block bg-primary-container text-white font-label-caps text-[10px] px-6 py-2 rounded-full transition-all hover:bg-primary tracking-widest shadow-sm hover:scale-105 btn-shine" href="#">VER MÁS</a></div>
 <div class="bg-surface-container-lowest p-10 text-center rounded-2xl champagne-shadow border border-outline-variant/20 group hover:-translate-y-4 hover:shadow-xl transition-all duration-500 reveal stagger-4 active" id="registry">
 <span class="material-symbols-outlined text-4xl text-primary mb-6 group-hover:scale-110 transition-transform">redeem</span>

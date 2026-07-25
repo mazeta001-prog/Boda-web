@@ -11,14 +11,35 @@ import {
   ActivityActionType 
 } from '@/types/database';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = 
+  process.env.NEXT_PUBLIC_SUPABASE_URL || 
+  process.env.VITE_SUPABASE_URL || 
+  'https://oxiubezpkxqxnhqvpmvf.supabase.co';
+
+const supabaseAnonKey = 
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 
+  process.env.VITE_SUPABASE_PUBLISHABLE_KEY || 
+  'sb_publishable_AnCnhh5HWOnheVLelqjCRA_D5RAmRPl';
 
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
 
-export const supabase: SupabaseClient | null = isSupabaseConfigured
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+
+/**
+ * Retrieves the current Supabase Auth session.
+ * Returns null if no user is authenticated.
+ */
+export async function ensureAdminSession() {
+  if (!isSupabaseConfigured || !supabase) return null;
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session;
+  } catch (err) {
+    console.warn('Supabase session retrieval warning:', err);
+  }
+  return null;
+}
 
 // Local persistent storage key for demo/fallback production readiness when Supabase credentials are pending
 const STORAGE_KEY = 'wedding_dashboard_db_v4';
@@ -38,15 +59,15 @@ export interface DBState {
 const INITIAL_DB: DBState = {
   guests: [
     {
-      id: 'g-1',
+      id: '11111111-1111-4111-a111-111111111111',
       full_name: 'Sofia García',
       nickname: 'Sofi',
       category: 'Familia',
       email: 'sofia.garcia@example.com',
       phone: '+34 612 345 678',
       status: 'confirmed',
-      event_id: 'e-1',
-      table_id: 't-1',
+      event_id: '66666666-6666-4666-a666-666666666666',
+      table_id: '88888888-8888-4888-a888-888888888888',
       companions_count: 3,
       dietary_restrictions: 'Sin gluten',
       invitation_sent: true,
@@ -55,14 +76,14 @@ const INITIAL_DB: DBState = {
       updated_at: new Date(Date.now() - 3600000 * 2).toISOString(),
     },
     {
-      id: 'g-2',
+      id: '22222222-2222-4222-a222-222222222222',
       full_name: 'Javier Martínez',
       nickname: 'Javi',
       category: 'Amigos',
       email: 'javier.m@example.com',
       phone: '+34 622 987 654',
       status: 'declined',
-      event_id: 'e-1',
+      event_id: '66666666-6666-4666-a666-666666666666',
       table_id: undefined,
       companions_count: 0,
       dietary_restrictions: 'Ninguna',
@@ -72,15 +93,15 @@ const INITIAL_DB: DBState = {
       updated_at: new Date(Date.now() - 3600000 * 5).toISOString(),
     },
     {
-      id: 'g-3',
+      id: '33333333-3333-4333-a333-333333333333',
       full_name: 'Carlos & Elena',
       nickname: 'Carlitos',
       category: 'Familia',
       email: 'carlos.elena@example.com',
       phone: '+34 633 111 222',
       status: 'confirmed',
-      event_id: 'e-1',
-      table_id: 't-2',
+      event_id: '66666666-6666-4666-a666-666666666666',
+      table_id: '99999999-9999-4999-a999-999999999999',
       companions_count: 1,
       dietary_restrictions: 'Vegetariano',
       invitation_sent: true,
@@ -89,13 +110,13 @@ const INITIAL_DB: DBState = {
       updated_at: new Date(Date.now() - 3600000 * 24).toISOString(),
     },
     {
-      id: 'g-4',
+      id: '44444444-4444-4444-a444-444444444444',
       full_name: 'Lucía Fernández',
       nickname: 'Lu',
       category: 'Amigos',
       email: 'lucia.f@example.com',
       status: 'pending',
-      event_id: 'e-1',
+      event_id: '66666666-6666-4666-a666-666666666666',
       companions_count: 1,
       invitation_sent: true,
       invitation_opened: false,
@@ -103,19 +124,58 @@ const INITIAL_DB: DBState = {
       updated_at: new Date(Date.now() - 3600000 * 48).toISOString(),
     },
     {
-      id: 'g-5',
+      id: '55555555-5555-4555-a555-555555555555',
       full_name: 'Mateo Ruiz',
       nickname: 'Teo',
       category: 'Conocidos',
       email: 'mateo.ruiz@example.com',
       status: 'confirmed',
-      event_id: 'e-2',
-      table_id: 't-1',
+      event_id: '77777777-7777-4777-a777-777777777777',
+      table_id: '88888888-8888-4888-a888-888888888888',
       companions_count: 2,
       invitation_sent: true,
       invitation_opened: true,
       created_at: new Date(Date.now() - 3600000 * 12).toISOString(),
       updated_at: new Date(Date.now() - 3600000 * 12).toISOString(),
+    },
+    {
+      id: 'c1111111-1111-4111-a111-111111111111',
+      full_name: 'Cristian Pérez',
+      nickname: 'El Moreno',
+      category: 'Amigos',
+      email: 'cristian.perez1@example.com',
+      status: 'pending',
+      companions_count: 1,
+      invitation_sent: true,
+      invitation_opened: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    {
+      id: 'c2222222-2222-4222-a222-222222222222',
+      full_name: 'Cristian Pérez',
+      nickname: 'El Rubio',
+      category: 'Familia',
+      email: 'cristian.perez2@example.com',
+      status: 'pending',
+      companions_count: 0,
+      invitation_sent: true,
+      invitation_opened: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    {
+      id: 'c3333333-3333-4333-a333-333333333333',
+      full_name: 'Cristian Díaz',
+      nickname: 'Tío Cristian',
+      category: 'Familia',
+      email: 'cristian.diaz@example.com',
+      status: 'pending',
+      companions_count: 2,
+      invitation_sent: true,
+      invitation_opened: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     }
   ],
   events: [],
@@ -453,6 +513,18 @@ class LocalDBManager {
   markAllNotificationsRead() {
     const db = this.getDB();
     db.notifications.forEach(n => n.read = true);
+    this.saveDB(db);
+  }
+
+  reportInvitationIssue(name: string, phone: string, comment: string) {
+    const db = this.getDB();
+    this.logActivity(db, 'invitation_declined', name, `Reportó un problema con su invitación: "${comment}" (WhatsApp: ${phone})`);
+    this.addNotification(
+      db,
+      '⚠️ Soporte de Invitados',
+      `${name} reportó un problema: "${comment}". Contacto WhatsApp: ${phone}`,
+      'warning'
+    );
     this.saveDB(db);
   }
 

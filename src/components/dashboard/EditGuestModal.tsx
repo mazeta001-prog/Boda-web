@@ -70,8 +70,8 @@ export function EditGuestModal({ guest, isOpen, onClose, onSubmit }: EditGuestMo
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-on-surface/30 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="fixed inset-0" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-2xl overflow-hidden z-10 p-6 animate-in zoom-in-95 duration-200">
-        <div className="flex justify-between items-center mb-6 pb-3 border-b border-outline-variant/30">
+      <div className="relative w-full max-w-lg bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-2xl overflow-hidden z-10 p-4 sm:p-6 animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
+        <div className="flex justify-between items-center mb-4 pb-3 border-b border-outline-variant/30 shrink-0">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-2xl">edit_note</span>
             <h3 className="font-headline-sm text-lg font-bold text-on-surface">Editar Invitado</h3>
@@ -85,13 +85,13 @@ export function EditGuestModal({ guest, isOpen, onClose, onSubmit }: EditGuestMo
         </div>
 
         {errorMessage && (
-          <div className="mb-4 p-3 rounded-xl bg-error/10 text-error text-xs font-body-md border border-error/20 flex items-center gap-2">
+          <div className="mb-4 p-3 rounded-xl bg-error/10 text-error text-xs font-body-md border border-error/20 flex items-center gap-2 shrink-0">
             <span className="material-symbols-outlined text-sm">error</span>
             {errorMessage}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 max-h-[75vh] overflow-y-auto pr-1">
+        <form onSubmit={handleSubmit} className="space-y-4 flex-1 overflow-y-auto pr-1">
           <div>
             <label className="block text-xs font-label-caps text-secondary mb-1">Nombre Completo *</label>
             <input

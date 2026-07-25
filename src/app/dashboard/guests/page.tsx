@@ -11,15 +11,32 @@ import { ImportGuestsModal } from '@/components/dashboard/ImportGuestsModal';
 import { SettingsModal } from '@/components/dashboard/SettingsModal';
 import { generateGuestExcelBuffer } from '@/lib/excelImporter';
 import { Guest } from '@/types/database';
-import { supabase, isSupabaseConfigured, localDB } from '@/lib/supabaseClient';
+import { supabase, isSupabaseConfigured, localDB, ensureAdminSession } from '@/lib/supabaseClient';
+
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function GuestManagement() {
+  const router = useRouter();
+  const { session, loading: authLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('ALL');
+  const [activeStatusFilter, setActiveStatusFilter] = useState<'ALL' | 'confirmed' | 'pending' | 'declined'>('ALL');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  // Read initial status filter from URL if present e.g. /dashboard/guests?status=confirmed
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const statusParam = params.get('status');
+      if (statusParam && ['confirmed', 'pending', 'declined'].includes(statusParam)) {
+        setActiveStatusFilter(statusParam as any);
+      }
+    }
+  }, []);
 
   // WhatsApp Sending & Toast State
   const [sendingGuestId, setSendingGuestId] = useState<string | null>(null);
@@ -28,6 +45,17 @@ export default function GuestManagement() {
   const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
   const [deletingGuest, setDeletingGuest] = useState<Guest | null>(null);
 
+  // Multi-select & Batch Delete States
+  const [selectedGuestIds, setSelectedGuestIds] = useState<string[]>([]);
+  const [isBatchDeleteModalOpen, setIsBatchDeleteModalOpen] = useState(false);
+  const [isBatchDeleting, setIsBatchDeleting] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && isSupabaseConfigured && !session) {
+      router.push('/login');
+    }
+  }, [authLoading, session, router]);
+
   const {
     guests,
     loading,
@@ -35,6 +63,7 @@ export default function GuestManagement() {
     createGuest,
     updateGuest,
     deleteGuest,
+    deleteGuests,
     refetch
   } = useDashboardData();
 
@@ -104,6 +133,7 @@ We can't wait to celebrate with you!`;
 
       // Logging & database update
       if (isSupabaseConfigured && supabase) {
+        await ensureAdminSession();
         await supabase.from('guests').update({ invitation_sent: true, updated_at: new Date().toISOString() }).eq('id', guest.id);
         await supabase.from('activity_logs').insert([{
           action_type: 'invitation_sent',
@@ -140,15 +170,22 @@ We can't wait to celebrate with you!`;
     return counts;
   }, [guests]);
 
-  // Live filtered guests
+  // Sorting state (default Alphabetical A-Z)
+  const [sortOrder, setSortOrder] = useState<'name_asc' | 'name_desc' | 'category' | 'newest'>('name_asc');
+
+  // Live filtered and sorted guests
   const filteredGuests = useMemo(() => {
-    return guests.filter(g => {
+    let result = guests.filter(g => {
       // Category filter
       if (activeCategory !== 'ALL') {
         const cat = (g.category || 'AMIGOS').toUpperCase();
         if (activeCategory === 'FAMILIA' && !cat.includes('FAMIL')) return false;
         if (activeCategory === 'AMIGOS' && (cat.includes('FAMIL') || cat.includes('CONOCI'))) return false;
         if (activeCategory === 'CONOCIDOS' && !cat.includes('CONOCI')) return false;
+      }
+      // Status filter
+      if (activeStatusFilter !== 'ALL') {
+        if (g.status !== activeStatusFilter) return false;
       }
       // Search term filter
       if (searchTerm.trim()) {
@@ -162,7 +199,26 @@ We can't wait to celebrate with you!`;
       }
       return true;
     });
-  }, [guests, activeCategory, searchTerm]);
+
+    // Alphabetical & Custom Sorting
+    return [...result].sort((a, b) => {
+      if (sortOrder === 'name_asc') {
+        return a.full_name.localeCompare(b.full_name, 'es', { sensitivity: 'base' });
+      }
+      if (sortOrder === 'name_desc') {
+        return b.full_name.localeCompare(a.full_name, 'es', { sensitivity: 'base' });
+      }
+      if (sortOrder === 'category') {
+        return (a.category || '').localeCompare(b.category || '', 'es');
+      }
+      if (sortOrder === 'newest') {
+        const dateA = new Date(a.created_at || 0).getTime();
+        const dateB = new Date(b.created_at || 0).getTime();
+        return dateB - dateA;
+      }
+      return 0;
+    });
+  }, [guests, activeCategory, activeStatusFilter, searchTerm, sortOrder]);
 
   // Live status counts
   const statusCounts = useMemo(() => {
@@ -200,7 +256,56 @@ We can't wait to celebrate with you!`;
     for (const g of newGuests) {
       await createGuest(g);
     }
+    if (isSupabaseConfigured && supabase && newGuests.length > 0) {
+      await ensureAdminSession();
+      await supabase.from('import_logs').insert([{
+        filename: 'Lista_Invitados_Import.xlsx',
+        records_imported: newGuests.length,
+        imported_by: 'Administrador (Dana & Ivan)'
+      }]);
+    }
     await refetch();
+  };
+
+  // Selection & Batch Delete Handlers
+  const isAllSelected = useMemo(() => {
+    return filteredGuests.length > 0 && filteredGuests.every(g => selectedGuestIds.includes(g.id));
+  }, [filteredGuests, selectedGuestIds]);
+
+  const handleToggleSelectAll = () => {
+    if (isAllSelected) {
+      setSelectedGuestIds([]);
+    } else {
+      setSelectedGuestIds(filteredGuests.map(g => g.id));
+    }
+  };
+
+  const handleToggleGuestSelect = (id: string) => {
+    setSelectedGuestIds(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleBatchDeleteConfirm = async () => {
+    if (selectedGuestIds.length === 0) return;
+    setIsBatchDeleting(true);
+    try {
+      await deleteGuests(selectedGuestIds);
+      setToast({
+        message: `Se eliminaron ${selectedGuestIds.length} invitados correctamente.`,
+        type: 'success'
+      });
+      setSelectedGuestIds([]);
+      setIsBatchDeleteModalOpen(false);
+    } catch (err: any) {
+      console.error('Error batch deleting guests:', err);
+      setToast({
+        message: err.message || 'Error al eliminar los invitados seleccionados.',
+        type: 'error'
+      });
+    } finally {
+      setIsBatchDeleting(false);
+    }
   };
 
   return (
@@ -241,6 +346,18 @@ We can't wait to celebrate with you!`;
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+
+            {/* Batch Delete Button (Active when guests selected) */}
+            {selectedGuestIds.length > 0 && (
+              <button 
+                onClick={() => setIsBatchDeleteModalOpen(true)}
+                className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-label-caps text-xs font-bold rounded-xl transition-all shadow-md animate-in fade-in duration-200"
+                title="Eliminar invitados seleccionados"
+              >
+                <span className="material-symbols-outlined text-[18px]">delete_sweep</span>
+                <span>BORRAR ({selectedGuestIds.length})</span>
+              </button>
+            )}
 
             {/* Import Button */}
             <button 
@@ -298,10 +415,28 @@ We can't wait to celebrate with you!`;
 
           {/* Filters & Stats Header */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-1.5 bg-surface-container border border-outline-variant p-1 rounded-xl">
+            <div className="flex items-center gap-1.5 bg-surface-container border border-outline-variant p-1 rounded-xl overflow-x-auto max-w-full">
+              {/* Select All Toggle Button */}
+              <button 
+                onClick={handleToggleSelectAll}
+                className={`px-3 py-1.5 font-label-caps text-[11px] rounded-lg transition-all shrink-0 flex items-center gap-1.5 font-bold border ${
+                  isAllSelected
+                    ? 'bg-primary text-on-primary border-primary shadow-xs'
+                    : 'bg-surface-container-lowest text-secondary hover:text-on-surface border-outline-variant/50'
+                }`}
+                title={isAllSelected ? 'Deseleccionar todos los invitados' : 'Seleccionar todos los invitados filtrados'}
+              >
+                <span className="material-symbols-outlined text-base">
+                  {isAllSelected ? 'check_box' : 'check_box_outline_blank'}
+                </span>
+                <span>{isAllSelected ? 'DESELECCIONAR TODO' : `SELECCIONAR TODO (${filteredGuests.length})`}</span>
+              </button>
+
+              <div className="h-4 w-[1px] bg-outline-variant/60 mx-1 shrink-0"></div>
+
               <button 
                 onClick={() => setActiveCategory('ALL')}
-                className={`px-4 sm:px-5 py-1.5 font-label-caps text-[11px] rounded-lg transition-all ${
+                className={`px-3.5 sm:px-5 py-1.5 font-label-caps text-[11px] rounded-lg transition-all shrink-0 ${
                   activeCategory === 'ALL'
                     ? 'bg-surface-container-lowest shadow-sm text-primary font-bold'
                     : 'text-secondary hover:text-on-surface'
@@ -311,7 +446,7 @@ We can't wait to celebrate with you!`;
               </button>
               <button 
                 onClick={() => setActiveCategory('FAMILIA')}
-                className={`px-4 sm:px-5 py-1.5 font-label-caps text-[11px] rounded-lg transition-all ${
+                className={`px-3.5 sm:px-5 py-1.5 font-label-caps text-[11px] rounded-lg transition-all shrink-0 ${
                   activeCategory === 'FAMILIA'
                     ? 'bg-surface-container-lowest shadow-sm text-primary font-bold'
                     : 'text-secondary hover:text-on-surface'
@@ -321,7 +456,7 @@ We can't wait to celebrate with you!`;
               </button>
               <button 
                 onClick={() => setActiveCategory('AMIGOS')}
-                className={`px-4 sm:px-5 py-1.5 font-label-caps text-[11px] rounded-lg transition-all ${
+                className={`px-3.5 sm:px-5 py-1.5 font-label-caps text-[11px] rounded-lg transition-all shrink-0 ${
                   activeCategory === 'AMIGOS'
                     ? 'bg-surface-container-lowest shadow-sm text-primary font-bold'
                     : 'text-secondary hover:text-on-surface'
@@ -331,7 +466,7 @@ We can't wait to celebrate with you!`;
               </button>
               <button 
                 onClick={() => setActiveCategory('CONOCIDOS')}
-                className={`px-4 sm:px-5 py-1.5 font-label-caps text-[11px] rounded-lg transition-all ${
+                className={`px-3.5 sm:px-5 py-1.5 font-label-caps text-[11px] rounded-lg transition-all shrink-0 ${
                   activeCategory === 'CONOCIDOS'
                     ? 'bg-surface-container-lowest shadow-sm text-primary font-bold'
                     : 'text-secondary hover:text-on-surface'
@@ -341,30 +476,233 @@ We can't wait to celebrate with you!`;
               </button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs font-body-md">
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-                <span className="text-secondary font-medium">{statusCounts.confirmed} Confirmados</span>
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-body-md">
+              {/* Alphabetical Sort Selector */}
+              <div className="flex items-center gap-1.5 bg-surface-container border border-outline-variant p-1 rounded-xl shrink-0">
+                <span className="material-symbols-outlined text-sm text-primary pl-2">sort_by_alpha</span>
+                <select
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value as any)}
+                  className="bg-transparent text-xs font-bold text-on-surface font-label-caps pr-3 py-1 outline-none cursor-pointer"
+                  title="Organizar por Abecedario"
+                >
+                  <option value="name_asc">Abecedario (A → Z)</option>
+                  <option value="name_desc">Abecedario (Z → A)</option>
+                  <option value="category">Por Parentezco</option>
+                  <option value="newest">Más Recientes</option>
+                </select>
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
-                <span className="text-secondary font-medium">{statusCounts.pending} Pendientes</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
-                <span className="text-secondary font-medium">{statusCounts.declined} No asistirán</span>
-              </div>
+
+              <div className="h-4 w-[1px] bg-outline-variant/60 hidden sm:block"></div>
+              {/* Interactive Status Filter Buttons */}
+              <button
+                type="button"
+                onClick={() => setActiveStatusFilter(prev => prev === 'confirmed' ? 'ALL' : 'confirmed')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all border cursor-pointer select-none font-bold text-xs ${
+                  activeStatusFilter === 'confirmed'
+                    ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-500/50 shadow-xs'
+                    : 'border-outline-variant/40 bg-surface-container-low/50 text-secondary hover:text-on-surface hover:bg-surface-container'
+                }`}
+                title={activeStatusFilter === 'confirmed' ? 'Mostrar todos' : 'Filtrar solo confirmados'}
+              >
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></div>
+                <span>{statusCounts.confirmed} Confirmados</span>
+                {activeStatusFilter === 'confirmed' && (
+                  <span className="material-symbols-outlined text-sm ml-0.5 text-emerald-600">close</span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveStatusFilter(prev => prev === 'pending' ? 'ALL' : 'pending')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all border cursor-pointer select-none font-bold text-xs ${
+                  activeStatusFilter === 'pending'
+                    ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/50 shadow-xs'
+                    : 'border-outline-variant/40 bg-surface-container-low/50 text-secondary hover:text-on-surface hover:bg-surface-container'
+                }`}
+                title={activeStatusFilter === 'pending' ? 'Mostrar todos' : 'Filtrar solo pendientes'}
+              >
+                <div className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></div>
+                <span>{statusCounts.pending} Pendientes</span>
+                {activeStatusFilter === 'pending' && (
+                  <span className="material-symbols-outlined text-sm ml-0.5 text-amber-600">close</span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveStatusFilter(prev => prev === 'declined' ? 'ALL' : 'declined')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all border cursor-pointer select-none font-bold text-xs ${
+                  activeStatusFilter === 'declined'
+                    ? 'bg-rose-500/15 text-rose-800 dark:text-rose-300 border-rose-500/50 shadow-xs'
+                    : 'border-outline-variant/40 bg-surface-container-low/50 text-secondary hover:text-on-surface hover:bg-surface-container'
+                }`}
+                title={activeStatusFilter === 'declined' ? 'Mostrar todos' : 'Filtrar solo declinados'}
+              >
+                <div className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></div>
+                <span>{statusCounts.declined} No asistirán</span>
+                {activeStatusFilter === 'declined' && (
+                  <span className="material-symbols-outlined text-sm ml-0.5 text-rose-600">close</span>
+                )}
+              </button>
+
+              {activeStatusFilter !== 'ALL' && (
+                <button
+                  type="button"
+                  onClick={() => setActiveStatusFilter('ALL')}
+                  className="text-[11px] text-primary hover:underline font-bold font-label-caps ml-1"
+                >
+                  VER TODOS
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Guests Table Container */}
+          {/* Guests Container: Mobile Cards + Desktop Table */}
           <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/60 shadow-xs overflow-hidden">
-            <div className="overflow-x-auto">
+            
+            {/* Mobile Card List View (block md:hidden) */}
+            <div className="block md:hidden divide-y divide-outline-variant/30">
+              {loading ? (
+                <div className="py-12 text-center text-secondary">
+                  <span className="material-symbols-outlined text-3xl animate-spin text-primary mb-2">sync</span>
+                  <p className="text-xs font-body-md">Cargando lista de invitados...</p>
+                </div>
+              ) : filteredGuests.length === 0 ? (
+                <div className="py-12 text-center text-secondary p-4">
+                  <span className="material-symbols-outlined text-4xl mb-2 text-outline">group_off</span>
+                  <p className="text-sm font-bold text-on-surface">No se encontraron invitados</p>
+                  <p className="text-xs text-secondary mt-1">Prueba a cambiar los filtros o importar un archivo Excel.</p>
+                </div>
+              ) : (
+                filteredGuests.map((guest) => (
+                  <div 
+                    key={guest.id} 
+                    className={`p-4 space-y-3 transition-colors ${
+                      selectedGuestIds.includes(guest.id) 
+                        ? 'bg-primary/5 dark:bg-primary/10' 
+                        : 'hover:bg-surface-container-low/40'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        {/* Mobile Checkbox */}
+                        <input 
+                          type="checkbox"
+                          checked={selectedGuestIds.includes(guest.id)}
+                          onChange={() => handleToggleGuestSelect(guest.id)}
+                          className="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary shrink-0 cursor-pointer"
+                        />
+                        <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-primary text-sm shrink-0">
+                          {guest.full_name.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-headline-sm text-sm text-on-surface font-bold truncate">
+                            {guest.full_name}
+                          </p>
+                          {guest.nickname && (
+                            <span className="inline-block mt-0.5 px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-label-caps rounded-md border border-primary/20 font-bold">
+                              "{guest.nickname}"
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-1 shrink-0">
+                        <button 
+                          onClick={() => setEditingGuest(guest)}
+                          className="p-2 text-outline hover:text-primary transition-colors rounded-lg flex items-center justify-center"
+                          title="Editar invitado"
+                          aria-label="Editar invitado"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">edit</span>
+                        </button>
+                        <button 
+                          onClick={() => setDeletingGuest(guest)}
+                          className="p-2 text-outline hover:text-rose-600 transition-colors rounded-lg flex items-center justify-center"
+                          title="Eliminar invitado"
+                          aria-label="Eliminar invitado"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">delete</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 pt-1 pl-8">
+                      <span className="px-2.5 py-0.5 bg-surface-container-high text-on-surface-variant text-[10px] font-label-caps font-bold rounded-lg border border-outline-variant/40 uppercase">
+                        {guest.category || 'AMIGOS'}
+                      </span>
+
+                      <div className={`flex items-center space-x-1 px-2.5 py-0.5 text-[10px] font-label-caps font-bold rounded-full ${
+                        guest.status === 'confirmed'
+                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                          : guest.status === 'declined'
+                          ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'
+                          : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                      }`}>
+                        <span className="material-symbols-outlined text-[14px]">
+                          {guest.status === 'confirmed' ? 'check_circle' : guest.status === 'declined' ? 'cancel' : 'pending'}
+                        </span>
+                        <span className="capitalize">{guest.status === 'confirmed' ? 'Confirmado' : guest.status === 'declined' ? 'No asistirá' : 'Pendiente'}</span>
+                      </div>
+
+                      {guest.companions_count > 0 && (
+                        <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded-full">
+                          +{guest.companions_count} acomp.
+                        </span>
+                      )}
+                    </div>
+
+                    {(guest.phone || guest.email || guest.dietary_restrictions) && (
+                      <div className="text-[11px] text-secondary space-y-0.5 pt-1 pl-8 border-t border-outline-variant/20 font-body-md">
+                        {guest.phone && <p>📱 {guest.phone}</p>}
+                        {guest.email && <p>✉️ {guest.email}</p>}
+                        {guest.dietary_restrictions && <p className="italic text-primary">🥗 {guest.dietary_restrictions}</p>}
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Desktop Table View (hidden md:block) */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse min-w-[700px]">
                 <thead>
                   <tr className="bg-surface-container-low/50 border-b border-outline-variant/40">
-                    <th className="px-6 py-3.5 font-label-caps text-[10px] text-outline tracking-widest uppercase">Invitado / Apodo</th>
-                    <th className="px-6 py-3.5 font-label-caps text-[10px] text-outline tracking-widest uppercase">Categoría</th>
+                    <th className="px-4 py-3.5 w-12 text-center">
+                      <input 
+                        type="checkbox"
+                        checked={isAllSelected}
+                        onChange={handleToggleSelectAll}
+                        className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary cursor-pointer"
+                        title={isAllSelected ? 'Deseleccionar todo' : 'Seleccionar todo'}
+                      />
+                    </th>
+                    <th 
+                      onClick={() => setSortOrder(prev => prev === 'name_asc' ? 'name_desc' : 'name_asc')}
+                      className="px-6 py-3.5 font-label-caps text-[10px] text-outline tracking-widest uppercase cursor-pointer hover:text-primary transition-colors select-none"
+                      title="Haz clic para ordenar por abecedario"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>Invitado / Apodo</span>
+                        <span className="material-symbols-outlined text-sm text-primary">
+                          {sortOrder === 'name_asc' ? 'arrow_downward' : sortOrder === 'name_desc' ? 'arrow_upward' : 'sort_by_alpha'}
+                        </span>
+                      </div>
+                    </th>
+                    <th 
+                      onClick={() => setSortOrder(prev => prev === 'category' ? 'name_asc' : 'category')}
+                      className="px-6 py-3.5 font-label-caps text-[10px] text-outline tracking-widest uppercase cursor-pointer hover:text-primary transition-colors select-none"
+                      title="Haz clic para ordenar por categoría / parentezco"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>Categoría</span>
+                        {sortOrder === 'category' && (
+                          <span className="material-symbols-outlined text-sm text-primary">arrow_downward</span>
+                        )}
+                      </div>
+                    </th>
                     <th className="px-6 py-3.5 font-label-caps text-[10px] text-outline tracking-widest uppercase">Estado</th>
                     <th className="px-6 py-3.5 font-label-caps text-[10px] text-outline tracking-widest uppercase">Requerimientos / Notas</th>
                     <th className="px-6 py-3.5 font-label-caps text-[10px] text-outline tracking-widest uppercase text-right">Acciones</th>
@@ -373,14 +711,14 @@ We can't wait to celebrate with you!`;
                 <tbody className="divide-y divide-outline-variant/30">
                   {loading ? (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-secondary">
+                      <td colSpan={6} className="py-12 text-center text-secondary">
                         <span className="material-symbols-outlined text-3xl animate-spin text-primary mb-2">sync</span>
                         <p className="text-xs font-body-md">Cargando lista de invitados...</p>
                       </td>
                     </tr>
                   ) : filteredGuests.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-secondary">
+                      <td colSpan={6} className="py-12 text-center text-secondary">
                         <span className="material-symbols-outlined text-4xl mb-2 text-outline">group_off</span>
                         <p className="text-sm font-bold text-on-surface">No se encontraron invitados</p>
                         <p className="text-xs text-secondary mt-1">Prueba a cambiar los filtros o importar un archivo Excel.</p>
@@ -388,7 +726,23 @@ We can't wait to celebrate with you!`;
                     </tr>
                   ) : (
                     filteredGuests.map((guest) => (
-                      <tr key={guest.id} className="guest-row hover:bg-surface-container-low/40 transition-colors">
+                      <tr 
+                        key={guest.id} 
+                        className={`guest-row transition-colors ${
+                          selectedGuestIds.includes(guest.id)
+                            ? 'bg-primary/5 dark:bg-primary/10'
+                            : 'hover:bg-surface-container-low/40'
+                        }`}
+                      >
+                        {/* Checkbox Column */}
+                        <td className="px-4 py-4 text-center">
+                          <input 
+                            type="checkbox"
+                            checked={selectedGuestIds.includes(guest.id)}
+                            onChange={() => handleToggleGuestSelect(guest.id)}
+                            className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary cursor-pointer"
+                          />
+                        </td>
                         {/* Guest Name & Nickname */}
                         <td className="px-6 py-4">
                           <div className="flex items-center space-x-3">
@@ -475,7 +829,7 @@ We can't wait to celebrate with you!`;
             </div>
 
             {/* Table Footer Stats */}
-            <div className="bg-surface-container-low/30 px-6 py-3 border-t border-outline-variant/40 flex items-center justify-between text-xs text-secondary font-body-md">
+            <div className="bg-surface-container-low/30 px-4 sm:px-6 py-3 border-t border-outline-variant/40 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs text-secondary font-body-md text-center sm:text-left">
               <span>Mostrando {filteredGuests.length} de {guests.length} invitados registrados</span>
               <span className="font-semibold text-primary">Sincronizado en tiempo real</span>
             </div>
@@ -546,6 +900,49 @@ We can't wait to celebrate with you!`;
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
       />
+
+      {/* Batch Delete Confirmation Modal */}
+      {isBatchDeleteModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-on-surface/30 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="fixed inset-0" onClick={() => !isBatchDeleting && setIsBatchDeleteModalOpen(false)} />
+          <div className="relative w-full max-w-md bg-surface-container-lowest border border-outline-variant/60 rounded-2xl shadow-2xl overflow-hidden z-10 p-6 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 text-rose-600 mb-4">
+              <span className="material-symbols-outlined text-3xl">warning</span>
+              <h3 className="font-headline-sm text-lg font-bold text-on-surface">Eliminación Múltiple</h3>
+            </div>
+
+            <p className="text-xs sm:text-sm text-secondary font-body-md mb-6 leading-relaxed">
+              ¿Estás seguro de que deseas eliminar permanentemente a los <strong className="text-on-surface font-bold">{selectedGuestIds.length} invitados seleccionados</strong>? Esta acción no se puede deshacer.
+            </p>
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-outline-variant/30">
+              <button
+                type="button"
+                onClick={() => setIsBatchDeleteModalOpen(false)}
+                disabled={isBatchDeleting}
+                className="px-4 py-2.5 rounded-xl font-label-caps text-xs text-secondary hover:bg-surface-container transition-colors disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleBatchDeleteConfirm}
+                disabled={isBatchDeleting}
+                className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-label-caps text-xs font-bold transition-all shadow-md inline-flex items-center gap-2 disabled:opacity-50"
+              >
+                {isBatchDeleting ? (
+                  <>
+                    <span className="material-symbols-outlined text-sm animate-spin">sync</span>
+                    <span>Eliminando...</span>
+                  </>
+                ) : (
+                  <span>Sí, Eliminar ({selectedGuestIds.length})</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

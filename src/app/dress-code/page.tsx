@@ -123,26 +123,38 @@ export default function DressCode() {
             <p className="font-body-md text-on-surface-variant text-sm sm:text-base">Detalles para que luzcas espectacular y en armonía con el gran día.</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="flex flex-col items-center text-center p-8 bg-surface rounded-2xl shadow-sm border border-outline-variant/30">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="flex flex-col items-center text-center p-6 sm:p-8 bg-surface rounded-2xl shadow-sm border border-outline-variant/30">
               <div className="w-12 h-12 flex items-center justify-center text-wedding-fucsia mb-6">
                 <span className="material-symbols-outlined text-[32px]">favorite</span>
               </div>
               <p className="font-body-md text-on-surface text-sm font-bold">¡Entre más color, mejor! La clave está en los tonos vivos y alegres.</p>
             </div>
 
-            <div className="flex flex-col items-center text-center p-8 bg-surface rounded-2xl shadow-sm border border-outline-variant/30">
+            <div className="flex flex-col items-center text-center p-6 sm:p-8 bg-surface rounded-2xl shadow-sm border border-outline-variant/30">
               <div className="w-12 h-12 flex items-center justify-center text-wedding-turquesa mb-6">
                 <span className="material-symbols-outlined text-[32px]">block</span>
               </div>
               <p className="font-body-md text-on-surface text-sm font-bold">Evitar blanco total (reservado para la novia) y negro.</p>
             </div>
 
-            <div className="flex flex-col items-center text-center p-8 bg-surface rounded-2xl shadow-sm border border-outline-variant/30">
+            <div className="flex flex-col items-center text-center p-6 sm:p-8 bg-surface rounded-2xl shadow-sm border border-outline-variant/30">
               <div className="w-12 h-12 flex items-center justify-center text-wedding-verde mb-6">
                 <span className="material-symbols-outlined text-[32px]">eco</span>
               </div>
               <p className="font-body-md text-on-surface text-sm font-bold">Los estampados tropicales y florales son bienvenidos.</p>
+            </div>
+
+            <div className="flex flex-col items-center text-center p-6 sm:p-8 bg-surface rounded-2xl shadow-sm border border-outline-variant/30">
+              <div className="w-12 h-12 flex items-center justify-center text-primary mb-6">
+                <svg className="w-7 h-7 fill-current" viewBox="0 0 24 24">
+                  <path d="M10.5 2h3v6.5h6.5v3h-6.5V22h-3V11.5H4v-3h6.5V2z" />
+                </svg>
+              </div>
+              <div className="font-body-md text-on-surface text-xs sm:text-sm font-bold text-center space-y-3">
+                <p>Desde ahora, agréganos a tus oraciones. No solo por la celebración de nuestra boda, sino por nuestro matrimonio y nuestra familia.</p>
+                <p>Lleva esa actitud que Dios te ha dado, es una celebración.</p>
+              </div>
             </div>
           </div>
 
@@ -153,7 +165,7 @@ export default function DressCode() {
               </div>
               <h4 className="font-label-caps text-xs text-on-surface mb-3 uppercase tracking-[0.1em] font-bold">El Terreno</h4>
               <p className="font-body-md text-xs sm:text-sm text-on-surface-variant max-w-xs text-center leading-relaxed">
-                Nuestra ceremonia tendrá lugar en un jardín. Os recomendamos evitar tacones finos; las bases anchas o cuñas serán vuestras aliadas.
+                Nuestra ceremonia tendrá lugar en un jardín. Recomendamos evitar tacones finos; las bases anchas o plataformas serán tus aliadas.
               </p>
             </div>
 
@@ -163,7 +175,7 @@ export default function DressCode() {
               </div>
               <h4 className="font-label-caps text-xs text-on-surface mb-3 uppercase tracking-[0.1em] font-bold">El Clima</h4>
               <p className="font-body-md text-xs sm:text-sm text-on-surface-variant max-w-xs text-center leading-relaxed">
-                Al caer la noche puede refrescar. Sugerimos traer un chal o prenda ligera para disfrutar cómodamente.
+                Al caer la noche puede refrescar. Sugerimos traer algo para cubrirte para disfrutar cómodamente.
               </p>
             </div>
           </div>

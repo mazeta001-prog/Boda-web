@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/context/AuthContext";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -15,7 +16,7 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Nuestra Historia | Boda de Iván y Dana",
+  title: "Nuestra Historia | Boda de Ivan y Dana",
   description: "Acompáñanos a celebrar nuestro amor el 20 de diciembre de 2026. Confirma tu asistencia, consulta detalles de vestimenta y más.",
 };
 
@@ -35,7 +36,9 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable} ${playfairDisplay.variable} bg-surface text-on-surface font-body-md antialiased min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed`}
       >
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

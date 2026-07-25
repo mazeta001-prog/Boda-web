@@ -134,6 +134,26 @@ export function CreateBudgetItemModal({ itemToEdit, isOpen, onClose, onSubmit }:
       return;
     }
 
+    let finalPayments = [...payments];
+    let finalUsed = Number(used) || 0;
+
+    // Si hay un abono rellenado en el formulario inline sin haberle dado a "Confirmar Abono", procesarlo automáticamente
+    if (showAddPayment && newPaymentAmount && Number(newPaymentAmount) > 0) {
+      if (!newPaymentDate) {
+        setErrorMessage('Selecciona una fecha para el abono.');
+        return;
+      }
+      const amt = Number(newPaymentAmount);
+      const autoPayment: BudgetPayment = {
+        id: 'pay-' + Date.now(),
+        amount: amt,
+        date: newPaymentDate,
+        note: newPaymentNote.trim() || undefined
+      };
+      finalPayments = [autoPayment, ...finalPayments];
+      finalUsed += amt;
+    }
+
     setIsSubmitting(true);
     setErrorMessage('');
 
@@ -141,10 +161,10 @@ export function CreateBudgetItemModal({ itemToEdit, isOpen, onClose, onSubmit }:
       await onSubmit({
         category: category.trim(),
         allocated: Number(allocated),
-        used: Number(used) || 0,
+        used: finalUsed,
         notes: notes.trim() || undefined,
         image_url: imageUrl || undefined,
-        payments: payments.length > 0 ? payments : undefined
+        payments: finalPayments.length > 0 ? finalPayments : undefined
       });
       onClose();
     } catch (err: any) {
@@ -209,7 +229,7 @@ export function CreateBudgetItemModal({ itemToEdit, isOpen, onClose, onSubmit }:
                   type="number"
                   required
                   min="0"
-                  step="500"
+                  step="any"
                   value={allocated}
                   onChange={e => setAllocated(e.target.value === '' ? '' : Number(e.target.value))}
                   placeholder="100000"
@@ -277,8 +297,8 @@ export function CreateBudgetItemModal({ itemToEdit, isOpen, onClose, onSubmit }:
                       <span className="absolute left-2.5 text-xs text-secondary font-bold">RD$</span>
                       <input
                         type="number"
-                        min="1"
-                        step="500"
+                        min="0"
+                        step="any"
                         placeholder="Ej. 15000"
                         value={newPaymentAmount}
                         onChange={e => setNewPaymentAmount(e.target.value === '' ? '' : Number(e.target.value))}

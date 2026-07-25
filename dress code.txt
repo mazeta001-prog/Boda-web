@@ -162,6 +162,41 @@
         <div class="max-w-container-max mx-auto px-gutter text-center">
             <h3 class="font-display-lg text-headline-md text-primary mb-12">Consejos Adicionales</h3>
             
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-16">
+                <div class="flex flex-col items-center text-center p-6 bg-surface rounded-2xl shadow-sm border border-outline-variant/30">
+                    <div class="w-12 h-12 flex items-center justify-center text-wedding-fucsia mb-6">
+                        <span class="material-symbols-outlined text-[32px]">favorite</span>
+                    </div>
+                    <p class="font-body-md text-on-surface text-sm font-bold">¡Entre más color, mejor! La clave está en los tonos vivos y alegres.</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center p-6 bg-surface rounded-2xl shadow-sm border border-outline-variant/30">
+                    <div class="w-12 h-12 flex items-center justify-center text-wedding-turquesa mb-6">
+                        <span class="material-symbols-outlined text-[32px]">block</span>
+                    </div>
+                    <p class="font-body-md text-on-surface text-sm font-bold">Evitar blanco total (reservado para la novia) y negro.</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center p-6 bg-surface rounded-2xl shadow-sm border border-outline-variant/30">
+                    <div class="w-12 h-12 flex items-center justify-center text-wedding-verde mb-6">
+                        <span class="material-symbols-outlined text-[32px]">eco</span>
+                    </div>
+                    <p class="font-body-md text-on-surface text-sm font-bold">Los estampados tropicales y florales son bienvenidos.</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center p-6 bg-surface rounded-2xl shadow-sm border border-outline-variant/30">
+                    <div class="w-12 h-12 flex items-center justify-center text-primary mb-6">
+                        <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24">
+                            <path d="M10.5 2h3v6.5h6.5v3h-6.5V22h-3V11.5H4v-3h6.5V2z" />
+                        </svg>
+                    </div>
+                    <div class="font-body-md text-on-surface text-xs sm:text-sm font-bold text-center space-y-3">
+                        <p>Desde ahora, agréganos a tus oraciones. No solo por la celebración de nuestra boda, sino por nuestro matrimonio y nuestra familia.</p>
+                        <p>Lleva esa actitud que Dios te ha dado, es una celebración.</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-4xl mx-auto">
                 <div class="flex flex-col items-center">
                     <div class="w-16 h-16 rounded-full border border-outline-variant flex items-center justify-center mb-6 text-primary">
@@ -169,7 +204,7 @@
                     </div>
                     <h4 class="font-label-caps text-label-caps text-on-surface mb-3 uppercase tracking-[0.1em]">El Terreno</h4>
                     <p class="font-body-md text-body-md text-on-surface-variant max-w-xs">
-                        Nuestra ceremonia tendrá lugar en un jardín. Os recomendamos tener cuidado con los tacones finos; las bases anchas o cuñas serán vuestras mejores aliadas.
+                        Nuestra ceremonia tendrá lugar en un jardín. Recomendamos evitar tacones finos; las bases anchas o plataformas serán tus aliadas.
                     </p>
                 </div>
 
@@ -179,7 +214,7 @@
                     </div>
                     <h4 class="font-label-caps text-label-caps text-on-surface mb-3 uppercase tracking-[0.1em]">El Clima</h4>
                     <p class="font-body-md text-body-md text-on-surface-variant max-w-xs">
-                        Al caer la noche, la brisa del jardín puede ser fresca. Sugerimos traer un chal o prenda ligera para disfrutar de la cena cómodamente.
+                        Al caer la noche puede refrescar. Sugerimos traer algo para cubrirte para disfrutar cómodamente.
                     </p>
                 </div>
             </div>
