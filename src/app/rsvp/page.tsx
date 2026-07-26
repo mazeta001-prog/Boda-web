@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { supabase, isSupabaseConfigured, localDB, normalizeString } from '@/lib/supabaseClient';
+import { supabase, isSupabaseConfigured, normalizeString } from '@/lib/supabaseClient';
 import { Guest } from '@/types/database';
+import RSVPCountdown from '@/components/RSVPCountdown';
 
 type StepType = 'search' | 'found' | 'success' | 'decline';
 type SlotStatus = 'waiting' | 'searching' | 'found' | 'ambiguous' | 'not-found';
@@ -30,6 +31,7 @@ interface SessionConfirmedItem {
 export default function RSVPForm() {
   const [step, setStep] = useState<StepType>('search');
   const [selectedGuestCount, setSelectedGuestCount] = useState<number>(1);
+  const [isRSVPExpired, setIsRSVPExpired] = useState(false);
   
   // Dynamic Guest Search Slots (up to 5)
   const [guestSlots, setGuestSlots] = useState<GuestSearchSlot[]>([
@@ -82,11 +84,9 @@ export default function RSVPForm() {
         ]);
       }
 
-      localDB.reportInvitationIssue(issueName.trim(), issuePhone.trim(), issueComment.trim());
       setIsIssueSuccess(true);
     } catch (err) {
       console.error('Error reporting issue:', err);
-      localDB.reportInvitationIssue(issueName.trim(), issuePhone.trim(), issueComment.trim());
       setIsIssueSuccess(true);
     } finally {
       setIsIssueSubmitting(false);
@@ -191,12 +191,12 @@ export default function RSVPForm() {
       let dbGuests: Guest[] = [];
 
       if (isSupabaseConfigured && supabase) {
-        const { data } = await supabase.from('guests').select('*');
-        if (data && data.length > 0) dbGuests = data as Guest[];
-      }
-
-      if (dbGuests.length === 0) {
-        dbGuests = localDB.getDB().guests;
+        const { data, error: fetchErr } = await supabase.from('guests').select('*');
+        if (fetchErr) {
+          console.error('Error fetching guests from Supabase:', fetchErr.message);
+        } else if (data) {
+          dbGuests = data as Guest[];
+        }
       }
 
       let totalFailedInThisSearch = 0;
@@ -346,7 +346,7 @@ export default function RSVPForm() {
         const dietaryPref = dietaryMap[guest.id] || '';
 
         if (isSupabaseConfigured && supabase) {
-          await supabase
+          const { error: updateErr } = await supabase
             .from('guests')
             .update({
               status: 'confirmed',
@@ -356,6 +356,8 @@ export default function RSVPForm() {
               updated_at: new Date().toISOString()
             })
             .eq('id', guest.id);
+
+          if (updateErr) throw updateErr;
 
           await supabase.from('activity_logs').insert([{
             action_type: 'invitation_accepted',
@@ -368,8 +370,6 @@ export default function RSVPForm() {
             message: `${guest.full_name} ha confirmado asistencia con ${companionsCount} acompañante(s).`,
             type: 'success'
           }]);
-        } else {
-          localDB.updateGuestRSVP(guest.id, 'confirmed', companionsCount, dietaryPref);
         }
 
         setSessionConfirmed(prev => [
@@ -380,20 +380,9 @@ export default function RSVPForm() {
 
       setStep('success');
       triggerConfetti();
-    } catch (err) {
-      console.error('Error al actualizar confirmación:', err);
-      for (const guest of foundGuestsList) {
-        const count = guestCountMap[guest.id] || 1;
-        const companionsCount = Math.max(0, count - 1);
-        const dietaryPref = dietaryMap[guest.id] || '';
-        localDB.updateGuestRSVP(guest.id, 'confirmed', companionsCount, dietaryPref);
-        setSessionConfirmed(prev => [
-          ...prev.filter(item => item.guest.id !== guest.id),
-          { guest, status: 'confirmed', companions: companionsCount, dietary: dietaryPref }
-        ]);
-      }
-      setStep('success');
-      triggerConfetti();
+    } catch (err: any) {
+      console.error('Error al actualizar confirmación en Supabase:', err);
+      alert(err.message || 'Ocurrió un error al guardar la confirmación en Supabase. Inténtalo nuevamente.');
     } finally {
       setIsSubmitting(false);
     }
@@ -407,7 +396,7 @@ export default function RSVPForm() {
     try {
       for (const guest of foundGuestsList) {
         if (isSupabaseConfigured && supabase) {
-          await supabase
+          const { error: updateErr } = await supabase
             .from('guests')
             .update({
               status: 'declined',
@@ -415,6 +404,8 @@ export default function RSVPForm() {
               updated_at: new Date().toISOString()
             })
             .eq('id', guest.id);
+
+          if (updateErr) throw updateErr;
 
           await supabase.from('activity_logs').insert([{
             action_type: 'invitation_declined',
@@ -427,8 +418,6 @@ export default function RSVPForm() {
             message: `${guest.full_name} no podrá asistir a la boda.`,
             type: 'warning'
           }]);
-        } else {
-          localDB.updateGuestRSVP(guest.id, 'declined', 0);
         }
 
         setSessionConfirmed(prev => [
@@ -438,16 +427,9 @@ export default function RSVPForm() {
       }
 
       setStep('decline');
-    } catch (err) {
-      console.error('Error al guardar declinación:', err);
-      for (const guest of foundGuestsList) {
-        localDB.updateGuestRSVP(guest.id, 'declined', 0);
-        setSessionConfirmed(prev => [
-          ...prev.filter(item => item.guest.id !== guest.id),
-          { guest, status: 'declined', companions: 0 }
-        ]);
-      }
-      setStep('decline');
+    } catch (err: any) {
+      console.error('Error al guardar declinación en Supabase:', err);
+      alert(err.message || 'Ocurrió un error al guardar la respuesta en Supabase. Inténtalo nuevamente.');
     } finally {
       setIsSubmitting(false);
     }
@@ -528,9 +510,14 @@ export default function RSVPForm() {
               
               <div className="decorative-line mb-6 sm:mb-8"></div>
               
-              <p className="font-body-lg text-secondary dark:text-on-surface-variant/90 mb-6 sm:mb-8 max-w-[520px] mx-auto font-light leading-relaxed text-xs sm:text-base">
+              <p className="font-body-lg text-secondary dark:text-on-surface-variant/90 mb-4 sm:mb-6 max-w-[520px] mx-auto font-light leading-relaxed text-xs sm:text-base">
                 Ingresa el nombre y apellido exactos tal como figuran en tu tarjeta de invitación para verificar la asistencia.
               </p>
+
+              {/* RSVP Countdown Timer from settings table */}
+              <div className="max-w-[520px] mx-auto mb-6 sm:mb-8">
+                <RSVPCountdown onExpiredChange={setIsRSVPExpired} />
+              </div>
 
               {/* Number of Guests Selector (1 to 5 Guests) */}
               <div className="mb-8 sm:mb-10 max-w-[480px] mx-auto">
@@ -703,7 +690,7 @@ export default function RSVPForm() {
               {/* Action Buttons */}
               <div className="space-y-4 max-w-[400px] mx-auto">
                 <button 
-                  disabled={isSearching || isRateLimited || guestSlots.every(s => !s.firstName.trim() && !s.lastName.trim())}
+                  disabled={isSearching || isRateLimited || isRSVPExpired || guestSlots.every(s => !s.firstName.trim() && !s.lastName.trim())}
                   className="btn-premium btn-shine hover:scale-105 transition-all duration-300 bg-primary text-on-primary px-6 py-4 font-label-caps text-xs tracking-wider sm:tracking-[0.2em] w-full flex items-center justify-center gap-2 sm:gap-3 rounded-xl shadow-md disabled:opacity-40 font-bold" 
                   onClick={handleSearch}
                 >
@@ -711,6 +698,11 @@ export default function RSVPForm() {
                     <>
                       <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
                       <span>VERIFICANDO INVITACIÓN...</span>
+                    </>
+                  ) : isRSVPExpired ? (
+                    <>
+                      <span className="material-symbols-outlined text-lg">timer_off</span>
+                      <span>CONFIRMACIÓN FINALIZADA</span>
                     </>
                   ) : (
                     <>

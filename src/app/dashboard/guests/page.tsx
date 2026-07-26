@@ -11,7 +11,7 @@ import { ImportGuestsModal } from '@/components/dashboard/ImportGuestsModal';
 import { SettingsModal } from '@/components/dashboard/SettingsModal';
 import { generateGuestExcelBuffer } from '@/lib/excelImporter';
 import { Guest } from '@/types/database';
-import { supabase, isSupabaseConfigured, localDB, ensureAdminSession } from '@/lib/supabaseClient';
+import { supabase, isSupabaseConfigured, ensureAdminSession } from '@/lib/supabaseClient';
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -141,9 +141,6 @@ We can't wait to celebrate with you!`;
           details: `Manual WhatsApp invitation initiated for ${guest.full_name}`,
           created_at: new Date().toISOString()
         }]);
-      } else {
-        localDB.markInvitationSent(guest.id);
-        localDB.addActivityLog('invitation_sent', 'Administrador (Dana & Ivan)', `Manual WhatsApp invitation initiated for ${guest.full_name}`);
       }
 
       await refetch();

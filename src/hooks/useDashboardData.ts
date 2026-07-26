@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   supabase, 
   isSupabaseConfigured, 
-  localDB,
   ensureAdminSession 
 } from '@/lib/supabaseClient';
 import { 
@@ -40,118 +39,88 @@ export function useDashboardData() {
   // Refresh data function
   const fetchData = useCallback(async () => {
     try {
-      if (isSupabaseConfigured && supabase) {
-        let activeSession = authSession;
-        if (!activeSession) {
-          activeSession = await refreshSession();
-        }
-
-        console.log("CURRENT SESSION:", activeSession);
-        if (activeSession) {
-          console.log("CURRENT USER ID (auth.uid()):", activeSession.user?.id);
-        } else {
-          console.warn("No active session found. Redirecting to /login...");
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login';
-          }
-          return;
-        }
-
-        const { data, error } = await supabase
-          .from("guests")
-          .select("*");
-
-        console.log("GUESTS DATA:", data);
-        console.log("GUESTS ERROR:", error);
-
-        const [
-          { data: guestsData, error: guestsErr },
-          { data: eventsData, error: eventsErr },
-          { data: tablesData, error: tablesErr },
-          { data: giftsData, error: giftsErr },
-          { data: invsData, error: invsErr },
-          { data: budgetData, error: budgetErr },
-          { data: logsData, error: logsErr },
-          { data: notifsData, error: notifsErr }
-        ] = await Promise.all([
-          supabase.from('guests').select('*').order('created_at', { ascending: false }),
-          supabase.from('events').select('*').order('date', { ascending: true }),
-          supabase.from('tables').select('*').order('created_at', { ascending: true }),
-          supabase.from('gifts').select('*').order('created_at', { ascending: false }),
-          supabase.from('invitations').select('*').order('created_at', { ascending: false }),
-          supabase.from('budget').select('*').order('created_at', { ascending: true }),
-          supabase.from('activity_logs').select('*').order('created_at', { ascending: false }),
-          supabase.from('notifications').select('*').order('created_at', { ascending: false })
-        ]);
-
-        console.log("GUESTS DATA:", guestsData);
-        console.log("GUESTS ERROR:", guestsErr);
-
-        if (guestsErr) console.warn('Supabase guests fetch:', guestsErr.message);
-        if (eventsErr) console.warn('Supabase events fetch:', eventsErr.message);
-
-        // Fall back to local DB if remote empty or errored
-        const local = localDB.getDB();
-        setGuests(guestsData ? (guestsData as Guest[]) : local.guests);
-        setEvents(eventsData ? (eventsData as EventItem[]) : local.events);
-        setTables(tablesData ? (tablesData as TableItem[]) : local.tables);
-        setGifts(giftsData ? (giftsData as GiftItem[]) : local.gifts);
-        setInvitations(invsData ? (invsData as InvitationItem[]) : local.invitations);
-        setBudget(budgetData ? (budgetData as BudgetItem[]) : local.budget);
-        setTotalBudgetGoal(local.total_budget || 1000000);
-        setActivityLogs(logsData ? (logsData as ActivityLog[]) : local.activity_logs);
-        setNotifications(notifsData ? (notifsData as NotificationItem[]) : local.notifications);
-      } else {
-        // Load from LocalDB
-        const local = localDB.getDB();
-        setGuests(local.guests);
-        setEvents(local.events);
-        setTables(local.tables);
-        setGifts(local.gifts);
-        setInvitations(local.invitations);
-        setBudget(local.budget);
-        setTotalBudgetGoal(local.total_budget || 1000000);
-        setActivityLogs(local.activity_logs);
-        setNotifications(local.notifications);
+      if (!isSupabaseConfigured || !supabase) {
+        throw new Error('Supabase no está configurado correctamente en las variables de entorno.');
       }
-      setError(null);
+
+      let activeSession = authSession;
+      if (!activeSession) {
+        activeSession = await refreshSession();
+      }
+
+      if (!activeSession) {
+        console.warn("No active session found. Redirecting to /login...");
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
+        return;
+      }
+
+      const [
+        { data: guestsData, error: guestsErr },
+        { data: eventsData, error: eventsErr },
+        { data: tablesData, error: tablesErr },
+        { data: giftsData, error: giftsErr },
+        { data: invsData, error: invsErr },
+        { data: budgetData, error: budgetErr },
+        { data: logsData, error: logsErr },
+        { data: notifsData, error: notifsErr }
+      ] = await Promise.all([
+        supabase.from('guests').select('*').order('created_at', { ascending: false }),
+        supabase.from('events').select('*').order('date', { ascending: true }),
+        supabase.from('tables').select('*').order('created_at', { ascending: true }),
+        supabase.from('gifts').select('*').order('created_at', { ascending: false }),
+        supabase.from('invitations').select('*').order('created_at', { ascending: false }),
+        supabase.from('budget').select('*').order('created_at', { ascending: true }),
+        supabase.from('activity_logs').select('*').order('created_at', { ascending: false }),
+        supabase.from('notifications').select('*').order('created_at', { ascending: false })
+      ]);
+
+      if (guestsErr) console.error('Error al cargar invitados desde Supabase:', guestsErr.message);
+      if (eventsErr) console.error('Error al cargar eventos desde Supabase:', eventsErr.message);
+      if (tablesErr) console.error('Error al cargar mesas desde Supabase:', tablesErr.message);
+      if (giftsErr) console.error('Error al cargar regalos desde Supabase:', giftsErr.message);
+      if (invsErr) console.error('Error al cargar invitaciones desde Supabase:', invsErr.message);
+      if (budgetErr) console.error('Error al cargar presupuesto desde Supabase:', budgetErr.message);
+      if (logsErr) console.error('Error al cargar historial desde Supabase:', logsErr.message);
+      if (notifsErr) console.error('Error al cargar notificaciones desde Supabase:', notifsErr.message);
+
+      const hasCriticalError = guestsErr || eventsErr || tablesErr || giftsErr || budgetErr;
+
+      setGuests((guestsData as Guest[]) || []);
+      setEvents((eventsData as EventItem[]) || []);
+      setTables((tablesData as TableItem[]) || []);
+      setGifts((giftsData as GiftItem[]) || []);
+      setInvitations((invsData as InvitationItem[]) || []);
+      setBudget((budgetData as BudgetItem[]) || []);
+      setActivityLogs((logsData as ActivityLog[]) || []);
+      setNotifications((notifsData as NotificationItem[]) || []);
+
+      if (hasCriticalError) {
+        setError('Error al consultar datos en la base de datos de Supabase.');
+      } else {
+        setError(null);
+      }
     } catch (err: any) {
-      console.error('Error fetching dashboard data:', err);
-      setError(err.message || 'Error al cargar los datos del panel.');
-      // Load fallback
-      const local = localDB.getDB();
-      setGuests(local.guests);
-      setEvents(local.events);
-      setTables(local.tables);
-      setGifts(local.gifts);
-      setInvitations(local.invitations);
-      setBudget(local.budget);
-      setActivityLogs(local.activity_logs);
-      setNotifications(local.notifications);
+      console.error('Error fetching dashboard data from Supabase:', err);
+      setError(err.message || 'Error al conectar con la base de datos de Supabase.');
+      setGuests([]);
+      setEvents([]);
+      setTables([]);
+      setGifts([]);
+      setInvitations([]);
+      setBudget([]);
+      setActivityLogs([]);
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [authSession, refreshSession]);
 
   useEffect(() => {
     fetchData();
 
-    // Subscribe to local storage state updates
-    const unsubscribeLocal = localDB.subscribe(() => {
-      if (!isSupabaseConfigured) {
-        const local = localDB.getDB();
-        setGuests(local.guests);
-        setEvents(local.events);
-        setTables(local.tables);
-        setGifts(local.gifts);
-        setInvitations(local.invitations);
-        setBudget(local.budget);
-        setActivityLogs(local.activity_logs);
-        setNotifications(local.notifications);
-      }
-    });
-
-    // Realtime Supabase subscription if configured
+    // Realtime Supabase subscription
     let channel: any = null;
     if (isSupabaseConfigured && supabase) {
       channel = supabase
@@ -167,7 +136,6 @@ export function useDashboardData() {
     }
 
     return () => {
-      unsubscribeLocal();
       if (channel && supabase) {
         supabase.removeChannel(channel);
       }
@@ -176,7 +144,6 @@ export function useDashboardData() {
 
   // Calculate live statistics
   const metrics: DashboardMetrics = useMemo(() => {
-    // Total Guests: Exact count of guest records (persons)
     const totalGuestsCount = guests.length;
 
     const confirmedGuestsCount = guests.filter(g => g.status === 'confirmed').length;
@@ -196,13 +163,13 @@ export function useDashboardData() {
     const giftsReservedCount = gifts.filter(g => g.status === 'reserved').length;
     const giftsPurchasedCount = gifts.filter(g => g.status === 'purchased').length;
 
-    const invitationsSentCount = guests.filter(g => g.invitation_sent).length || invitations.filter(i => i.status !== 'sent').length || 15;
-    const invitationsOpenedCount = guests.filter(g => g.invitation_opened).length || invitations.filter(i => i.status === 'opened' || i.status === 'accepted').length || 10;
-    const invitationsAcceptedCount = guests.filter(g => g.status === 'confirmed').length || invitations.filter(i => i.status === 'accepted').length || 8;
+    const invitationsSentCount = guests.filter(g => g.invitation_sent).length || invitations.filter(i => i.status !== 'sent').length;
+    const invitationsOpenedCount = guests.filter(g => g.invitation_opened).length || invitations.filter(i => i.status === 'opened' || i.status === 'accepted').length;
+    const invitationsAcceptedCount = guests.filter(g => g.status === 'confirmed').length || invitations.filter(i => i.status === 'accepted').length;
 
     const budgetUsedTotal = budget.reduce((sum, b) => sum + (b.used || 0), 0);
     const sumAllocated = budget.reduce((sum, b) => sum + (b.allocated || 0), 0);
-    const totalBudgetAllocated = totalBudgetGoal > 0 ? totalBudgetGoal : (sumAllocated || 1000000);
+    const totalBudgetAllocated = totalBudgetGoal > 0 ? totalBudgetGoal : sumAllocated;
     const budgetRemainingTotal = Math.max(0, totalBudgetAllocated - budgetUsedTotal);
 
     return {
@@ -255,8 +222,11 @@ export function useDashboardData() {
     };
   }, [guests, events, tables, gifts]);
 
-  // Actions with Optimistic UI updates
+  // Actions with Optimistic UI updates (bound strictly to Supabase)
   const createGuest = async (guestData: Omit<Guest, 'id' | 'created_at' | 'updated_at'>) => {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase no está configurado.');
+    }
     const tempId = 'g-temp-' + Date.now();
     const tempGuest: Guest = {
       ...guestData,
@@ -265,72 +235,64 @@ export function useDashboardData() {
       updated_at: new Date().toISOString()
     };
 
-    // Optimistic state update
     setGuests(prev => [tempGuest, ...prev]);
 
     try {
-      if (isSupabaseConfigured && supabase) {
-        await ensureAdminSession();
-        const { data, error: insertErr } = await supabase
-          .from('guests')
-          .insert([guestData])
-          .select()
-          .single();
+      await ensureAdminSession();
+      const { data, error: insertErr } = await supabase
+        .from('guests')
+        .insert([guestData])
+        .select()
+        .single();
 
-        if (insertErr) throw insertErr;
-        if (data) {
-          setGuests(prev => prev.map(g => g.id === tempId ? (data as Guest) : g));
-        }
-      } else {
-        localDB.addGuest(guestData);
+      if (insertErr) throw insertErr;
+      if (data) {
+        setGuests(prev => prev.map(g => g.id === tempId ? (data as Guest) : g));
       }
     } catch (err: any) {
-      console.error('Error creating guest:', err);
-      // Revert optimistic update
+      console.error('Error creating guest in Supabase:', err);
       setGuests(prev => prev.filter(g => g.id !== tempId));
       throw err;
     }
   };
 
   const updateGuest = async (id: string, updates: Partial<Guest>) => {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase no está configurado.');
+    }
     setGuests(prev => prev.map(g => g.id === id ? { ...g, ...updates, updated_at: new Date().toISOString() } : g));
 
     try {
-      if (isSupabaseConfigured && supabase) {
-        await ensureAdminSession();
-        const { error: updateErr } = await supabase
-          .from('guests')
-          .update(updates)
-          .eq('id', id);
+      await ensureAdminSession();
+      const { error: updateErr } = await supabase
+        .from('guests')
+        .update(updates)
+        .eq('id', id);
 
-        if (updateErr) throw updateErr;
-      } else {
-        localDB.updateGuest(id, updates);
-      }
+      if (updateErr) throw updateErr;
     } catch (err: any) {
-      console.error('Error updating guest:', err);
+      console.error('Error updating guest in Supabase:', err);
       fetchData();
       throw err;
     }
   };
 
   const deleteGuest = async (id: string) => {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase no está configurado.');
+    }
     setGuests(prev => prev.filter(g => g.id !== id));
 
     try {
-      if (isSupabaseConfigured && supabase) {
-        await ensureAdminSession();
-        const { error: deleteErr } = await supabase
-          .from('guests')
-          .delete()
-          .eq('id', id);
+      await ensureAdminSession();
+      const { error: deleteErr } = await supabase
+        .from('guests')
+        .delete()
+        .eq('id', id);
 
-        if (deleteErr) throw deleteErr;
-      } else {
-        localDB.deleteGuest(id);
-      }
+      if (deleteErr) throw deleteErr;
     } catch (err: any) {
-      console.error('Error deleting guest:', err);
+      console.error('Error deleting guest in Supabase:', err);
       fetchData();
       throw err;
     }
@@ -338,29 +300,31 @@ export function useDashboardData() {
 
   const deleteGuests = async (ids: string[]) => {
     if (!ids || ids.length === 0) return;
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase no está configurado.');
+    }
     const idSet = new Set(ids);
     setGuests(prev => prev.filter(g => !idSet.has(g.id)));
 
     try {
-      if (isSupabaseConfigured && supabase) {
-        await ensureAdminSession();
-        const { error: deleteErr } = await supabase
-          .from('guests')
-          .delete()
-          .in('id', ids);
+      await ensureAdminSession();
+      const { error: deleteErr } = await supabase
+        .from('guests')
+        .delete()
+        .in('id', ids);
 
-        if (deleteErr) throw deleteErr;
-      } else {
-        ids.forEach(id => localDB.deleteGuest(id));
-      }
+      if (deleteErr) throw deleteErr;
     } catch (err: any) {
-      console.error('Error batch deleting guests:', err);
+      console.error('Error batch deleting guests in Supabase:', err);
       fetchData();
       throw err;
     }
   };
 
   const createEvent = async (eventData: Omit<EventItem, 'id' | 'created_at'>) => {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase no está configurado.');
+    }
     const tempId = 'e-temp-' + Date.now();
     const tempEvent: EventItem = {
       ...eventData,
@@ -371,29 +335,28 @@ export function useDashboardData() {
     setEvents(prev => [tempEvent, ...prev]);
 
     try {
-      if (isSupabaseConfigured && supabase) {
-        await ensureAdminSession();
-        const { data, error: insertErr } = await supabase
-          .from('events')
-          .insert([eventData])
-          .select()
-          .single();
+      await ensureAdminSession();
+      const { data, error: insertErr } = await supabase
+        .from('events')
+        .insert([eventData])
+        .select()
+        .single();
 
-        if (insertErr) throw insertErr;
-        if (data) {
-          setEvents(prev => prev.map(e => e.id === tempId ? (data as EventItem) : e));
-        }
-      } else {
-        localDB.addEvent(eventData);
+      if (insertErr) throw insertErr;
+      if (data) {
+        setEvents(prev => prev.map(e => e.id === tempId ? (data as EventItem) : e));
       }
     } catch (err: any) {
-      console.error('Error creating event:', err);
+      console.error('Error creating event in Supabase:', err);
       setEvents(prev => prev.filter(e => e.id !== tempId));
       throw err;
     }
   };
 
   const createGift = async (giftData: Omit<GiftItem, 'id' | 'created_at'>) => {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase no está configurado.');
+    }
     const tempId = 'gf-temp-' + Date.now();
     const tempGift: GiftItem = {
       ...giftData,
@@ -404,29 +367,28 @@ export function useDashboardData() {
     setGifts(prev => [tempGift, ...prev]);
 
     try {
-      if (isSupabaseConfigured && supabase) {
-        await ensureAdminSession();
-        const { data, error: insertErr } = await supabase
-          .from('gifts')
-          .insert([giftData])
-          .select()
-          .single();
+      await ensureAdminSession();
+      const { data, error: insertErr } = await supabase
+        .from('gifts')
+        .insert([giftData])
+        .select()
+        .single();
 
-        if (insertErr) throw insertErr;
-        if (data) {
-          setGifts(prev => prev.map(g => g.id === tempId ? (data as GiftItem) : g));
-        }
-      } else {
-        localDB.addGift(giftData);
+      if (insertErr) throw insertErr;
+      if (data) {
+        setGifts(prev => prev.map(g => g.id === tempId ? (data as GiftItem) : g));
       }
     } catch (err: any) {
-      console.error('Error creating gift:', err);
+      console.error('Error creating gift in Supabase:', err);
       setGifts(prev => prev.filter(g => g.id !== tempId));
       throw err;
     }
   };
 
   const createBudgetItem = async (budgetData: Omit<BudgetItem, 'id' | 'created_at'>) => {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase no está configurado.');
+    }
     const tempId = 'b-temp-' + Date.now();
     const tempItem: BudgetItem = {
       ...budgetData,
@@ -437,67 +399,61 @@ export function useDashboardData() {
     setBudget(prev => [tempItem, ...prev]);
 
     try {
-      if (isSupabaseConfigured && supabase) {
-        await ensureAdminSession();
-        const { data, error: insertErr } = await supabase
-          .from('budget')
-          .insert([budgetData])
-          .select()
-          .single();
+      await ensureAdminSession();
+      const { data, error: insertErr } = await supabase
+        .from('budget')
+        .insert([budgetData])
+        .select()
+        .single();
 
-        if (insertErr) throw insertErr;
-        if (data) {
-          setBudget(prev => prev.map(b => b.id === tempId ? (data as BudgetItem) : b));
-        }
-      } else {
-        localDB.addBudgetItem(budgetData);
+      if (insertErr) throw insertErr;
+      if (data) {
+        setBudget(prev => prev.map(b => b.id === tempId ? (data as BudgetItem) : b));
       }
     } catch (err: any) {
-      console.error('Error creating budget item:', err);
+      console.error('Error creating budget item in Supabase:', err);
       setBudget(prev => prev.filter(b => b.id !== tempId));
       throw err;
     }
   };
 
   const updateBudgetItem = async (id: string, updates: Partial<BudgetItem>) => {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase no está configurado.');
+    }
     setBudget(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b));
 
     try {
-      if (isSupabaseConfigured && supabase) {
-        await ensureAdminSession();
-        const { error: updateErr } = await supabase
-          .from('budget')
-          .update(updates)
-          .eq('id', id);
+      await ensureAdminSession();
+      const { error: updateErr } = await supabase
+        .from('budget')
+        .update(updates)
+        .eq('id', id);
 
-        if (updateErr) throw updateErr;
-      } else {
-        localDB.updateBudgetItem(id, updates);
-      }
+      if (updateErr) throw updateErr;
     } catch (err: any) {
-      console.error('Error updating budget item:', err);
+      console.error('Error updating budget item in Supabase:', err);
       fetchData();
       throw err;
     }
   };
 
   const deleteBudgetItem = async (id: string) => {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase no está configurado.');
+    }
     setBudget(prev => prev.filter(b => b.id !== id));
 
     try {
-      if (isSupabaseConfigured && supabase) {
-        await ensureAdminSession();
-        const { error: deleteErr } = await supabase
-          .from('budget')
-          .delete()
-          .eq('id', id);
+      await ensureAdminSession();
+      const { error: deleteErr } = await supabase
+        .from('budget')
+        .delete()
+        .eq('id', id);
 
-        if (deleteErr) throw deleteErr;
-      } else {
-        localDB.deleteBudgetItem(id);
-      }
+      if (deleteErr) throw deleteErr;
     } catch (err: any) {
-      console.error('Error deleting budget item:', err);
+      console.error('Error deleting budget item in Supabase:', err);
       fetchData();
       throw err;
     }
@@ -505,7 +461,6 @@ export function useDashboardData() {
 
   const setTotalBudget = async (amount: number) => {
     setTotalBudgetGoal(amount);
-    localDB.setTotalBudget(amount);
   };
 
   const markNotificationRead = async (id: string) => {
@@ -513,8 +468,6 @@ export function useDashboardData() {
     if (isSupabaseConfigured && supabase) {
       await ensureAdminSession();
       await supabase.from('notifications').update({ read: true }).eq('id', id);
-    } else {
-      localDB.markNotificationRead(id);
     }
   };
 
@@ -523,8 +476,6 @@ export function useDashboardData() {
     if (isSupabaseConfigured && supabase) {
       await ensureAdminSession();
       await supabase.from('notifications').update({ read: true }).neq('read', true);
-    } else {
-      localDB.markAllNotificationsRead();
     }
   };
 
@@ -562,3 +513,4 @@ export function useDashboardData() {
     markAllNotificationsRead
   };
 }
+

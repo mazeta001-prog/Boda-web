@@ -29,7 +29,7 @@ export default function Sidebar({ variant = 'novios', isOpenMobile = false, onCl
     {
       name: 'Configuración',
       icon: 'settings',
-      href: '#',
+      href: '/dashboard/settings',
     },
   ];
 
@@ -53,7 +53,7 @@ export default function Sidebar({ variant = 'novios', isOpenMobile = false, onCl
         {menuItems.map((item) => {
           const isActive = pathname === item.href;
           const isConfig = item.name === 'Configuración';
-          
+
           if (isConfig) {
             return (
               <button
@@ -63,9 +63,16 @@ export default function Sidebar({ variant = 'novios', isOpenMobile = false, onCl
                   setIsSettingsOpen(true);
                   if (onCloseMobile) onCloseMobile();
                 }}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-secondary hover:bg-surface-container-low hover:text-on-surface text-left"
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left ${
+                  isActive
+                    ? 'bg-primary/10 text-primary font-semibold'
+                    : 'text-secondary hover:bg-surface-container-low hover:text-on-surface'
+                }`}
               >
-                <span className="material-symbols-outlined text-xl">
+                <span 
+                  className="material-symbols-outlined text-xl"
+                  style={{ fontVariationSettings: isActive ? "'FILL' 1" : undefined }}
+                >
                   {item.icon}
                 </span>
                 <span className="font-label-caps text-xs tracking-wider">{item.name}</span>
