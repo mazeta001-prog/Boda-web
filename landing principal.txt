@@ -314,7 +314,7 @@
 <div class="bg-surface-container-lowest p-10 text-center rounded-2xl champagne-shadow border border-outline-variant/20 group hover:-translate-y-4 hover:shadow-xl transition-all duration-500 reveal stagger-4 active" id="registry">
 <span class="material-symbols-outlined text-4xl text-primary mb-6 group-hover:scale-110 transition-transform">redeem</span>
 <h3 class="font-label-caps text-label-caps text-primary mb-4 tracking-widest">LISTA DE REGALOS</h3>
-<p class="font-body-md text-on-surface-variant mb-6">Vuestra presencia es nuestro mejor regalo, pero si deseáis tener un detalle con nosotros...</p>
+<p class="font-body-md text-on-surface-variant mb-6">Su presencia es nuestro mejor regalo, pero si desean tener un detalle con nosotros...</p>
 <a class="inline-block bg-primary-container text-white font-label-caps text-[10px] px-6 py-2 rounded-full transition-all hover:bg-primary tracking-widest shadow-sm hover:scale-105 btn-shine" href="#">VER MESA</a>
 </div>
 </div>

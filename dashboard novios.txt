@@ -177,7 +177,7 @@
 <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
 <div>
 <h1 class="font-headline-md text-headline-md text-on-surface mb-2">Panel de Control</h1>
-<p class="font-body-md text-secondary">Resumen general de vuestra celebración y gestión de invitados.</p>
+<p class="font-body-md text-secondary">Resumen general de su celebración y gestión de invitados.</p>
 </div>
 <div class="text-sm font-label-caps text-secondary">
                     Faltan <span class="text-primary font-bold">42 días</span>

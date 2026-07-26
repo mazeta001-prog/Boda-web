@@ -126,7 +126,7 @@ export default function AdminDashboard() {
                 )}
               </div>
               <p className="font-body-md text-xs md:text-sm text-secondary">
-                Estadísticas en tiempo real, control de invitados y presupuesto de vuestra boda.
+                Estadísticas en tiempo real, control de invitados y presupuesto de su boda.
               </p>
             </div>
 

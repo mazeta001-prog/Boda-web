@@ -116,7 +116,7 @@
         <div class="w-12 h-[1px] bg-primary/30 mx-auto mb-8"></div>
         <h2 class="font-headline-sm text-headline-sm italic text-secondary mb-4">Formal</h2>
         <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-            Queremos que os sintáis vuestra mejor versión. El evento será de etiqueta formal, combinando elegancia y comodidad para celebrar bajo las estrellas.
+            Queremos que se sientan en su mejor versión. El evento será de etiqueta formal, combinando elegancia y comodidad para celebrar bajo las estrellas.
         </p>
     </header>
 
