@@ -225,6 +225,15 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.activity_logs TO authentica
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.notifications TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.import_logs TO authenticated;
 
+-- Anon-role grants matching the public-write RLS policies below (RSVP confirm/decline,
+-- gift reservation, activity/notification logging). RLS alone does not grant these —
+-- Postgres checks the table-level GRANT before RLS is ever evaluated, so without these
+-- the anon role gets "permission denied for table X" regardless of policy contents.
+GRANT UPDATE ON TABLE public.guests TO anon;
+GRANT UPDATE ON TABLE public.gifts TO anon;
+GRANT INSERT ON TABLE public.activity_logs TO anon;
+GRANT INSERT ON TABLE public.notifications TO anon;
+
 -- 6.3 Sequence Privileges Grants (UUID Generation & Sequences)
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO anon;
@@ -315,11 +324,14 @@ CREATE POLICY "Allow public select tables"
 CREATE POLICY "Authenticated users manage guests"
   ON public.guests FOR ALL TO authenticated USING (auth.uid() IS NOT NULL) WITH CHECK (auth.uid() IS NOT NULL);
 
+-- Public search is by first/last name (not invitation_token), so anon SELECT
+-- must not be gated on invitation_token — that column is never populated by
+-- the guest creation flow, which silently hid every guest from RSVP search.
 CREATE POLICY "Allow public select guests for RSVP"
-  ON public.guests FOR SELECT USING (invitation_token IS NOT NULL);
+  ON public.guests FOR SELECT USING (true);
 
 CREATE POLICY "Allow public update guests for RSVP"
-  ON public.guests FOR UPDATE USING (invitation_token IS NOT NULL) WITH CHECK (invitation_token IS NOT NULL);
+  ON public.guests FOR UPDATE USING (true) WITH CHECK (true);
 
 -- 7.4 Gifts Policies
 CREATE POLICY "Authenticated users manage gifts"
