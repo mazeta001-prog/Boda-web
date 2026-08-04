@@ -117,6 +117,21 @@ CREATE TABLE IF NOT EXISTS public.import_logs (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 2.10 Settings Table (Configuración Global: Presupuesto Total y Fecha Límite RSVP)
+CREATE TABLE IF NOT EXISTS public.settings (
+  id INT PRIMARY KEY DEFAULT 1,
+  total_budget_goal NUMERIC(12, 2) DEFAULT 1000000.00,
+  rsvp_deadline TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.settings ALTER COLUMN rsvp_deadline DROP NOT NULL;
+
+INSERT INTO public.settings (id, total_budget_goal, rsvp_deadline)
+VALUES (1, 1000000.00, NOW() + INTERVAL '30 days')
+ON CONFLICT (id) DO NOTHING;
+
 -- Safe constraint additions for existing deployments
 DO $$
 BEGIN
@@ -224,6 +239,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.invitations TO authenticate
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.activity_logs TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.notifications TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.import_logs TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.settings TO authenticated;
+GRANT SELECT ON TABLE public.settings TO anon;
 
 -- Anon-role grants matching the public-write RLS policies below (RSVP confirm/decline,
 -- gift reservation, activity/notification logging). RLS alone does not grant these —
@@ -373,14 +390,21 @@ CREATE POLICY "Allow public insert notifications"
 CREATE POLICY "Authenticated users manage import_logs"
   ON public.import_logs FOR ALL TO authenticated USING (auth.uid() IS NOT NULL) WITH CHECK (auth.uid() IS NOT NULL);
 
+-- 7.10 Settings Policies
+CREATE POLICY "Allow public select settings"
+  ON public.settings FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated users manage settings"
+  ON public.settings FOR ALL USING (true) WITH CHECK (true);
+
 -- ==========================================
--- 7. REALTIME PUBLICATION
+-- 8. REALTIME PUBLICATION
 -- ==========================================
 
 DO $$
 DECLARE
   t text;
-  tables_to_add text[] := ARRAY['guests', 'events', 'tables', 'gifts', 'activity_logs', 'notifications', 'import_logs'];
+  tables_to_add text[] := ARRAY['guests', 'events', 'tables', 'gifts', 'budget', 'activity_logs', 'notifications', 'import_logs', 'settings'];
 BEGIN
   IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
     FOREACH t IN ARRAY tables_to_add LOOP
