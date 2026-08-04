@@ -162,6 +162,8 @@ export function EditGuestModal({ guest, isOpen, onClose, onSubmit }: EditGuestMo
               >
                 <option value="confirmed">Confirmado</option>
                 <option value="pending">Pendiente</option>
+                <option value="tentative">Tentativo</option>
+                <option value="not_sent">Invitación no enviada</option>
                 <option value="declined">No asistirá</option>
               </select>
             </div>

@@ -1,4 +1,4 @@
-export type GuestStatus = 'confirmed' | 'pending' | 'declined';
+export type GuestStatus = 'confirmed' | 'pending' | 'declined' | 'not_sent' | 'tentative';
 export type GiftStatus = 'available' | 'reserved' | 'purchased';
 export type ActivityActionType = 
   | 'guest_created'
@@ -121,8 +121,11 @@ export interface ImportLog {
 
 export interface DashboardMetrics {
   totalGuests: number;
+  totalAllGuests: number;
   confirmedGuests: number;
   pendingGuests: number;
+  tentativeGuests: number;
+  notSentGuests: number;
   declinedGuests: number;
   totalEvents: number;
   guestsPerEvent: number;

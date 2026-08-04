@@ -22,6 +22,7 @@ interface CreateGuestModalProps {
 export function CreateGuestModal({ isOpen, onClose, onSubmit }: CreateGuestModalProps) {
   const [fullName, setFullName] = useState('');
   const [category, setCategory] = useState('Amigos');
+  const [status, setStatus] = useState<GuestStatus>('not_sent');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [dietary, setDietary] = useState('');
@@ -46,15 +47,16 @@ export function CreateGuestModal({ isOpen, onClose, onSubmit }: CreateGuestModal
         category,
         email: email.trim(),
         phone: phone.trim() || undefined,
-        status: 'pending',
+        status,
         companions_count: 0,
         dietary_restrictions: dietary.trim() || undefined,
-        invitation_sent: true,
+        invitation_sent: status !== 'not_sent',
         invitation_opened: false
       });
       // Reset form
       setFullName('');
       setCategory('Amigos');
+      setStatus('not_sent');
       setEmail('');
       setPhone('');
       setDietary('');
@@ -103,17 +105,33 @@ export function CreateGuestModal({ isOpen, onClose, onSubmit }: CreateGuestModal
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-label-caps text-secondary mb-1">Parentesco / Categoría *</label>
-            <select
-              value={category}
-              onChange={e => setCategory(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-on-surface text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
-            >
-              <option value="Familia">Familia</option>
-              <option value="Amigos">Amigos</option>
-              <option value="Conocidos">Conocidos</option>
-            </select>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-label-caps text-secondary mb-1">Parentesco / Categoría *</label>
+              <select
+                value={category}
+                onChange={e => setCategory(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-on-surface text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+              >
+                <option value="Familia">Familia</option>
+                <option value="Amigos">Amigos</option>
+                <option value="Conocidos">Conocidos</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-label-caps text-secondary mb-1">Estado Inicial *</label>
+              <select
+                value={status}
+                onChange={e => setStatus(e.target.value as GuestStatus)}
+                className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/60 bg-surface-container-low text-on-surface text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+              >
+                <option value="not_sent">Invitación no enviada</option>
+                <option value="pending">Pendiente</option>
+                <option value="tentative">Tentativo</option>
+                <option value="confirmed">Confirmado</option>
+                <option value="declined">No asistirá</option>
+              </select>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

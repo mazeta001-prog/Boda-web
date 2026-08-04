@@ -323,12 +323,23 @@ export function ImportGuestsModal({
                 {activeTab === 'new' && (
                   <div>
                     {previewAnalysis.addedGuests.length === 0 ? (
-                      <div className="py-8 text-center text-secondary bg-surface-container-low/40 rounded-xl p-4">
-                        <span className="material-symbols-outlined text-3xl mb-1 text-outline">group_off</span>
-                        <p className="text-xs font-bold text-on-surface">No se encontraron nuevos invitados sin duplicar</p>
-                        <p className="text-[11px] text-secondary mt-1">
-                          Revisa la pestaña de <strong>Duplicados Detectados ({previewAnalysis.duplicateGuests.length})</strong> para seleccionarlos si deseas importarlos.
+                      <div className="py-6 text-center text-secondary bg-surface-container-low/40 rounded-xl p-4 space-y-3 border border-outline-variant/30">
+                        <span className="material-symbols-outlined text-3xl text-amber-600">amber</span>
+                        <p className="text-xs font-bold text-on-surface">Todos los invitados de este archivo ya existen en tu lista</p>
+                        <p className="text-[11px] text-secondary">
+                          Detectamos <strong>{previewAnalysis.duplicateGuests.length} duplicados</strong>. Puedes ir a la pestaña <strong>Duplicados Detectados</strong> o hacer clic en el botón siguiente para seleccionarlos e importarlos.
                         </p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveTab('duplicates');
+                            handleSelectAllDuplicates();
+                          }}
+                          className="px-4 py-2 rounded-xl bg-amber-600 text-white font-label-caps text-xs font-bold hover:bg-amber-700 transition-all shadow-xs inline-flex items-center gap-1.5"
+                        >
+                          <span className="material-symbols-outlined text-sm">done_all</span>
+                          <span>Seleccionar Todos los Duplicados ({previewAnalysis.duplicateGuests.length}) e Importar</span>
+                        </button>
                       </div>
                     ) : (
                       <div className="max-h-52 overflow-y-auto border border-outline-variant/40 rounded-xl overflow-hidden">
@@ -355,10 +366,12 @@ export function ImportGuestsModal({
                                 <td className="p-2">
                                   <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                                     g.status === 'confirmed' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' :
+                                    g.status === 'tentative' ? 'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300' :
+                                    g.status === 'not_sent' ? 'bg-slate-100 text-slate-800 dark:bg-slate-900/80 dark:text-slate-300' :
                                     g.status === 'declined' ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300' :
                                     'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
                                   }`}>
-                                    {g.status === 'confirmed' ? 'Confirmado' : g.status === 'declined' ? 'Declinado' : 'Pendiente'}
+                                    {g.status === 'confirmed' ? 'Confirmado' : g.status === 'tentative' ? 'Tentativo' : g.status === 'not_sent' ? 'No enviada' : g.status === 'declined' ? 'Declinado' : 'Pendiente'}
                                   </span>
                                 </td>
                                 <td className="p-2 pr-3 font-bold text-right text-primary">+{g.companions_count}</td>
@@ -418,7 +431,7 @@ export function ImportGuestsModal({
                                     ? 'bg-amber-600 text-white'
                                     : 'bg-surface-container-high text-secondary'
                                 }`}>
-                                  {isSelected ? '✓ Aceptado para Importar' : 'Omiso'}
+                                  {isSelected ? '✓ Aceptado para Importar' : 'Ignorado (No se subirá)'}
                                 </span>
                               </div>
 
@@ -460,8 +473,8 @@ export function ImportGuestsModal({
               <div className="text-xs text-secondary font-body-md">
                 {previewAnalysis && (
                   <span>
-                    Total a importar: <strong className="text-primary font-bold">{totalGuestsToImport}</strong>
-                    {selectedDuplicatesCount > 0 && ` (${selectedDuplicatesCount} duplicados incluidos)`}
+                    Nuevos a importar: <strong className="text-primary font-bold">{previewAnalysis.addedGuests.length}</strong>
+                    {selectedDuplicatesCount > 0 && ` (+${selectedDuplicatesCount} duplicados elegidos)`}
                   </span>
                 )}
               </div>
@@ -480,7 +493,11 @@ export function ImportGuestsModal({
                   className="px-5 py-2.5 rounded-xl bg-primary text-on-primary font-label-caps text-xs font-bold hover:bg-primary-container hover:text-on-primary-container transition-all shadow-xs disabled:opacity-50 inline-flex items-center gap-2"
                 >
                   <span className="material-symbols-outlined text-sm">download_done</span>
-                  {isProcessing ? 'Guardando en la lista...' : `Confirmar e Importar (${totalGuestsToImport})`}
+                  {isProcessing
+                    ? 'Guardando en la lista...'
+                    : selectedDuplicatesCount > 0
+                    ? `Importar (${totalGuestsToImport}: ${previewAnalysis?.addedGuests.length || 0} nuevos + ${selectedDuplicatesCount} duplicados)`
+                    : `Importar Únicamente ${totalGuestsToImport} Nuevos`}
                 </button>
               </div>
             </div>

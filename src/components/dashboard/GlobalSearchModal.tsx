@@ -104,11 +104,15 @@ export function GlobalSearchModal({ isOpen, onClose, onSearch }: GlobalSearchMod
                     <span className={`text-[10px] font-label-caps px-2.5 py-1 rounded-full uppercase font-bold ${
                       guest.status === 'confirmed' 
                         ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                        : guest.status === 'tentative'
+                        ? 'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300'
+                        : guest.status === 'not_sent'
+                        ? 'bg-slate-100 text-slate-800 dark:bg-slate-900/80 dark:text-slate-300'
                         : guest.status === 'declined'
                         ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'
                         : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
                     }`}>
-                      {guest.status}
+                      {guest.status === 'confirmed' ? 'Confirmado' : guest.status === 'tentative' ? 'Tentativo' : guest.status === 'not_sent' ? 'No enviada' : guest.status === 'declined' ? 'No asistirá' : 'Pendiente'}
                     </span>
                   </div>
                 ))}

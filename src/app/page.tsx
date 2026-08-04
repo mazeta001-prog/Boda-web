@@ -60,7 +60,7 @@ export default function Home() {
       <header className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-12 reveal">
         <div className="absolute inset-0 z-0">
           <img 
-            alt="Ivan y Dana" 
+            alt="Dana e Ivan" 
             className="w-full h-full object-cover scale-105 transition-transform duration-1000 brightness-75 object-[40%_40%]" 
             src="/fotos/foto1.jpg" 
           />
@@ -75,7 +75,7 @@ export default function Home() {
           </p>
 
           <h1 className="font-display-lg text-3xl sm:text-6xl md:text-7xl text-primary mb-3 sm:mb-4 tracking-tight font-extrabold">
-            Ivan &amp; Dana
+            Dana &amp; Ivan
           </h1>
 
           <div className="flex justify-center items-center gap-3 sm:gap-4 mb-5 sm:mb-6">
@@ -186,14 +186,14 @@ export default function Home() {
                   <img 
                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" 
                     src="/fotos/foto7.jpg"
-                    alt="Nuestra historia - Ivan y Dana 1" 
+                    alt="Nuestra historia - Dana e Ivan 1" 
                   />
                 </div>
                 <div className="aspect-square overflow-hidden rounded-2xl champagne-shadow border border-outline-variant/30 reveal stagger-2">
                   <img 
                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" 
                     src="/fotos/foto3.jpg"
-                    alt="Nuestra historia - Ivan y Dana 2" 
+                    alt="Nuestra historia - Dana e Ivan 2" 
                   />
                 </div>
               </div>
@@ -202,7 +202,7 @@ export default function Home() {
                   <img 
                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" 
                     src="/fotos/foto6.jpg"
-                    alt="Nuestra historia - Ivan y Dana 3" 
+                    alt="Nuestra historia - Dana e Ivan 3" 
                   />
                 </div>
               </div>
@@ -236,7 +236,7 @@ export default function Home() {
             <div className="flex-shrink-0 reveal stagger-3 w-full sm:w-auto text-center">
               <a 
                 className="inline-block font-label-caps text-xs sm:text-sm bg-primary text-on-primary px-8 sm:px-12 py-3.5 sm:py-4 rounded-full hover:scale-105 btn-shine transition-all tracking-[0.15em] sm:tracking-[0.2em] font-bold shadow-xl text-center w-full sm:w-auto" 
-                href="https://listaderegalos.casacuesta.com/Event/DANA-and-DANA?utm_source=share"
+                href="https://www.myregistry.com/wedding-registry/ivan-est-vez-and-dana-perez-fernandez-santo-domingo-distrito-nacional-/5553038/giftlist"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -313,22 +313,22 @@ export default function Home() {
             <div className="relative group overflow-hidden rounded-2xl champagne-shadow border border-outline-variant/30 shadow-sm aspect-[3/4] reveal stagger-1">
               <img 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                src="/fotos/foto2.jpg"
-                alt="Ivan & Dana - Momento 1" 
+                src="/fotos/foto4.jpg"
+                alt="Dana & Ivan - Momento 1" 
               />
             </div>
             <div className="relative group overflow-hidden rounded-2xl champagne-shadow border border-outline-variant/30 shadow-sm aspect-[3/4] reveal stagger-2">
               <img 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                src="/fotos/foto4.jpg"
-                alt="Ivan & Dana - Momento 2" 
+                src="/fotos/foto2.jpg"
+                alt="Dana & Ivan - Momento 2" 
               />
             </div>
             <div className="relative group overflow-hidden rounded-2xl champagne-shadow border border-outline-variant/30 shadow-sm aspect-[3/4] reveal stagger-3">
               <img 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                 src="/fotos/foto5.jpg"
-                alt="Ivan & Dana - Momento 3" 
+                alt="Dana & Ivan - Momento 3" 
               />
             </div>
           </div>

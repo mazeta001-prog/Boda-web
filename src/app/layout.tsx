@@ -16,7 +16,7 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Nuestra Historia | Boda de Ivan y Dana",
+  title: "Nuestra Historia | Boda de Dana e Ivan",
   description: "Acompáñanos a celebrar nuestro amor el 20 de diciembre de 2026. Confirma tu asistencia, consulta detalles de vestimenta y más.",
 };
 

@@ -21,7 +21,7 @@ export default function GuestManagement() {
   const { session, loading: authLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('ALL');
-  const [activeStatusFilter, setActiveStatusFilter] = useState<'ALL' | 'confirmed' | 'pending' | 'declined'>('ALL');
+  const [activeStatusFilter, setActiveStatusFilter] = useState<'ALL' | 'confirmed' | 'pending' | 'tentative' | 'not_sent' | 'declined'>('ALL');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -32,7 +32,7 @@ export default function GuestManagement() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const statusParam = params.get('status');
-      if (statusParam && ['confirmed', 'pending', 'declined'].includes(statusParam)) {
+      if (statusParam && ['confirmed', 'pending', 'tentative', 'not_sent', 'declined'].includes(statusParam)) {
         setActiveStatusFilter(statusParam as any);
       }
     }
@@ -61,6 +61,7 @@ export default function GuestManagement() {
     loading,
     error,
     createGuest,
+    createGuestsBatch,
     updateGuest,
     deleteGuest,
     deleteGuests,
@@ -157,8 +158,9 @@ We can't wait to celebrate with you!`;
 
   // Category counts
   const categoryCounts = useMemo(() => {
-    const counts = { ALL: guests.length, FAMILIA: 0, AMIGOS: 0, CONOCIDOS: 0 };
-    guests.forEach(g => {
+    const officialGuests = guests.filter(g => g.status !== 'tentative');
+    const counts = { ALL: officialGuests.length, FAMILIA: 0, AMIGOS: 0, CONOCIDOS: 0 };
+    officialGuests.forEach(g => {
       const cat = (g.category || 'AMIGOS').toUpperCase();
       if (cat.includes('FAMIL')) counts.FAMILIA++;
       else if (cat.includes('CONOCI')) counts.CONOCIDOS++;
@@ -182,7 +184,12 @@ We can't wait to celebrate with you!`;
       }
       // Status filter
       if (activeStatusFilter !== 'ALL') {
-        if (g.status !== activeStatusFilter) return false;
+        if (activeStatusFilter === 'not_sent') {
+          const isNotSent = g.status === 'not_sent' || (!g.invitation_sent && g.status !== 'confirmed' && g.status !== 'declined' && g.status !== 'tentative');
+          if (!isNotSent) return false;
+        } else if (g.status !== activeStatusFilter) {
+          return false;
+        }
       }
       // Search term filter
       if (searchTerm.trim()) {
@@ -221,13 +228,23 @@ We can't wait to celebrate with you!`;
   const statusCounts = useMemo(() => {
     let confirmed = 0;
     let pending = 0;
+    let tentative = 0;
+    let not_sent = 0;
     let declined = 0;
     guests.forEach(g => {
-      if (g.status === 'confirmed') confirmed++;
-      else if (g.status === 'declined') declined++;
-      else pending++;
+      if (g.status === 'confirmed') {
+        confirmed++;
+      } else if (g.status === 'tentative') {
+        tentative++;
+      } else if (g.status === 'declined') {
+        declined++;
+      } else if (g.status === 'not_sent' || !g.invitation_sent) {
+        not_sent++;
+      } else {
+        pending++;
+      }
     });
-    return { confirmed, pending, declined };
+    return { confirmed, pending, tentative, not_sent, declined };
   }, [guests]);
 
   // Excel Export Handler
@@ -250,16 +267,19 @@ We can't wait to celebrate with you!`;
 
   // Multiple guests import handler
   const handleImportGuestsSuccess = async (newGuests: Omit<Guest, 'id' | 'created_at' | 'updated_at'>[]) => {
-    for (const g of newGuests) {
-      await createGuest(g);
-    }
-    if (isSupabaseConfigured && supabase && newGuests.length > 0) {
-      await ensureAdminSession();
-      await supabase.from('import_logs').insert([{
-        filename: 'Lista_Invitados_Import.xlsx',
-        records_imported: newGuests.length,
-        imported_by: 'Administrador (Dana & Ivan)'
-      }]);
+    if (!newGuests || newGuests.length === 0) return;
+    await createGuestsBatch(newGuests);
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await ensureAdminSession();
+        await supabase.from('import_logs').insert([{
+          filename: 'list defi.xlsx',
+          records_imported: newGuests.length,
+          imported_by: 'Administrador (Dana & Ivan)'
+        }]);
+      } catch (logErr) {
+        console.warn('No se pudo guardar el registro en import_logs:', logErr);
+      }
     }
     await refetch();
   };
@@ -530,6 +550,40 @@ We can't wait to celebrate with you!`;
 
               <button
                 type="button"
+                onClick={() => setActiveStatusFilter(prev => prev === 'tentative' ? 'ALL' : 'tentative')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all border cursor-pointer select-none font-bold text-xs ${
+                  activeStatusFilter === 'tentative'
+                    ? 'bg-purple-500/15 text-purple-800 dark:text-purple-300 border-purple-500/50 shadow-xs'
+                    : 'border-outline-variant/40 bg-surface-container-low/50 text-secondary hover:text-on-surface hover:bg-surface-container'
+                }`}
+                title={activeStatusFilter === 'tentative' ? 'Mostrar todos' : 'Filtrar solo tentativos'}
+              >
+                <div className="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0"></div>
+                <span>{statusCounts.tentative} Tentativos</span>
+                {activeStatusFilter === 'tentative' && (
+                  <span className="material-symbols-outlined text-sm ml-0.5 text-purple-600">close</span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveStatusFilter(prev => prev === 'not_sent' ? 'ALL' : 'not_sent')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all border cursor-pointer select-none font-bold text-xs ${
+                  activeStatusFilter === 'not_sent'
+                    ? 'bg-slate-500/15 text-slate-800 dark:text-slate-200 border-slate-500/50 shadow-xs'
+                    : 'border-outline-variant/40 bg-surface-container-low/50 text-secondary hover:text-on-surface hover:bg-surface-container'
+                }`}
+                title={activeStatusFilter === 'not_sent' ? 'Mostrar todos' : 'Filtrar solo no enviadas'}
+              >
+                <div className="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0"></div>
+                <span>{statusCounts.not_sent} No enviadas</span>
+                {activeStatusFilter === 'not_sent' && (
+                  <span className="material-symbols-outlined text-sm ml-0.5 text-slate-600">close</span>
+                )}
+              </button>
+
+              <button
+                type="button"
                 onClick={() => setActiveStatusFilter(prev => prev === 'declined' ? 'ALL' : 'declined')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all border cursor-pointer select-none font-bold text-xs ${
                   activeStatusFilter === 'declined'
@@ -635,14 +689,18 @@ We can't wait to celebrate with you!`;
                       <div className={`flex items-center space-x-1 px-2.5 py-0.5 text-[10px] font-label-caps font-bold rounded-full ${
                         guest.status === 'confirmed'
                           ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                          : guest.status === 'tentative'
+                          ? 'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300'
+                          : guest.status === 'not_sent'
+                          ? 'bg-slate-100 text-slate-800 dark:bg-slate-900/80 dark:text-slate-300'
                           : guest.status === 'declined'
                           ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'
                           : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
                       }`}>
                         <span className="material-symbols-outlined text-[14px]">
-                          {guest.status === 'confirmed' ? 'check_circle' : guest.status === 'declined' ? 'cancel' : 'pending'}
+                          {guest.status === 'confirmed' ? 'check_circle' : guest.status === 'tentative' ? 'help' : guest.status === 'not_sent' ? 'mark_email_unread' : guest.status === 'declined' ? 'cancel' : 'pending'}
                         </span>
-                        <span className="capitalize">{guest.status === 'confirmed' ? 'Confirmado' : guest.status === 'declined' ? 'No asistirá' : 'Pendiente'}</span>
+                        <span className="capitalize">{guest.status === 'confirmed' ? 'Confirmado' : guest.status === 'tentative' ? 'Tentativo' : guest.status === 'not_sent' ? 'No enviada' : guest.status === 'declined' ? 'No asistirá' : 'Pendiente'}</span>
                       </div>
 
                       {guest.companions_count > 0 && (
@@ -778,14 +836,18 @@ We can't wait to celebrate with you!`;
                           <div className={`flex items-center space-x-1.5 px-2.5 py-1 text-[11px] font-label-caps font-bold rounded-full w-fit ${
                             guest.status === 'confirmed'
                               ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                              : guest.status === 'tentative'
+                              ? 'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300'
+                              : guest.status === 'not_sent'
+                              ? 'bg-slate-100 text-slate-800 dark:bg-slate-900/80 dark:text-slate-300'
                               : guest.status === 'declined'
                               ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'
                               : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
                           }`}>
                             <span className="material-symbols-outlined text-[16px]">
-                              {guest.status === 'confirmed' ? 'check_circle' : guest.status === 'declined' ? 'cancel' : 'pending'}
+                              {guest.status === 'confirmed' ? 'check_circle' : guest.status === 'tentative' ? 'help' : guest.status === 'not_sent' ? 'mark_email_unread' : guest.status === 'declined' ? 'cancel' : 'pending'}
                             </span>
-                            <span className="capitalize">{guest.status === 'confirmed' ? 'Confirmado' : guest.status === 'declined' ? 'No asistirá' : 'Pendiente'}</span>
+                            <span className="capitalize">{guest.status === 'confirmed' ? 'Confirmado' : guest.status === 'tentative' ? 'Tentativo' : guest.status === 'not_sent' ? 'No enviada' : guest.status === 'declined' ? 'No asistirá' : 'Pendiente'}</span>
                           </div>
                         </td>
 
@@ -829,7 +891,7 @@ We can't wait to celebrate with you!`;
 
             {/* Table Footer Stats */}
             <div className="bg-surface-container-low/30 px-4 sm:px-6 py-3 border-t border-outline-variant/40 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs text-secondary font-body-md text-center sm:text-left">
-              <span>Mostrando {filteredGuests.length} de {guests.length} invitados registrados</span>
+              <span>Mostrando {filteredGuests.length} de {guests.filter(g => g.status !== 'tentative').length} invitados oficiales ({statusCounts.tentative} tentativos)</span>
               <span className="font-semibold text-primary">Sincronizado en tiempo real</span>
             </div>
           </div>

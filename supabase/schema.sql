@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS public.guests (
   category VARCHAR(100) DEFAULT 'Amigos',
   email VARCHAR(255),
   phone VARCHAR(50),
-  status VARCHAR(20) NOT NULL CHECK (status IN ('confirmed', 'pending', 'declined')),
+  status VARCHAR(20) NOT NULL CHECK (status IN ('confirmed', 'pending', 'declined', 'not_sent', 'tentative')),
   event_id UUID REFERENCES public.events(id) ON DELETE SET NULL,
   table_id UUID REFERENCES public.tables(id) ON DELETE SET NULL,
   companions_count INT DEFAULT 0 CHECK (companions_count >= 0),
@@ -230,6 +230,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.import_logs TO authenticate
 -- Postgres checks the table-level GRANT before RLS is ever evaluated, so without these
 -- the anon role gets "permission denied for table X" regardless of policy contents.
 GRANT UPDATE ON TABLE public.guests TO anon;
+GRANT INSERT ON TABLE public.guests TO anon;
 GRANT UPDATE ON TABLE public.gifts TO anon;
 GRANT INSERT ON TABLE public.activity_logs TO anon;
 GRANT INSERT ON TABLE public.notifications TO anon;
@@ -329,6 +330,9 @@ CREATE POLICY "Authenticated users manage guests"
 -- the guest creation flow, which silently hid every guest from RSVP search.
 CREATE POLICY "Allow public select guests for RSVP"
   ON public.guests FOR SELECT USING (true);
+
+CREATE POLICY "Allow public insert guests"
+  ON public.guests FOR INSERT WITH CHECK (true);
 
 CREATE POLICY "Allow public update guests for RSVP"
   ON public.guests FOR UPDATE USING (true) WITH CHECK (true);

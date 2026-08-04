@@ -72,10 +72,10 @@ export default function Footer({ variant = 'main' }: FooterProps) {
     <footer className="w-full py-16 bg-surface-container-lowest border-t border-outline-variant/30 reveal active">
       <div className="flex flex-col items-center justify-center space-y-6 text-center w-full px-gutter">
         <div className="w-16 h-16 rounded-full border border-primary/30 flex items-center justify-center mb-6">
-          <span className="font-display-lg text-headline-sm text-primary">I&amp;D</span>
+          <span className="font-display-lg text-headline-sm text-primary">D&amp;I</span>
         </div>
         <span className="font-display-lg text-headline-md text-primary dark:text-primary-fixed">
-          Ivan &amp; Dana
+          Dana &amp; Ivan
         </span>
         <div className="flex gap-8 my-6">
           <Link className="font-label-caps text-[10px] text-on-surface-variant hover:text-primary transition-colors tracking-widest" href="#">

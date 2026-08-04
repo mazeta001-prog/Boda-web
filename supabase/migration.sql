@@ -96,6 +96,11 @@ BEGIN
   EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL;
   END;
   BEGIN
+    ALTER TABLE public.guests DROP CONSTRAINT IF EXISTS guests_status_check;
+    ALTER TABLE public.guests ADD CONSTRAINT guests_status_check CHECK (status IN ('confirmed', 'pending', 'declined', 'not_sent', 'tentative'));
+  EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL; WHEN undefined_object THEN NULL;
+  END;
+  BEGIN
     ALTER TABLE public.gifts ADD CONSTRAINT check_gifts_price CHECK (price >= 0.00);
   EXCEPTION WHEN duplicate_object THEN NULL; WHEN duplicate_table THEN NULL;
   END;
@@ -182,6 +187,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.import_logs TO authenticate
 -- Postgres checks the table-level GRANT before RLS is ever evaluated, so without these
 -- the anon role gets "permission denied for table X" regardless of policy contents.
 GRANT UPDATE ON TABLE public.guests TO anon;
+GRANT INSERT ON TABLE public.guests TO anon;
 GRANT UPDATE ON TABLE public.gifts TO anon;
 GRANT INSERT ON TABLE public.activity_logs TO anon;
 GRANT INSERT ON TABLE public.notifications TO anon;
@@ -276,6 +282,9 @@ CREATE POLICY "Authenticated users manage guests"
 -- the guest creation flow, which silently hid every guest from RSVP search.
 CREATE POLICY "Allow public select guests for RSVP"
   ON public.guests FOR SELECT USING (true);
+
+CREATE POLICY "Allow public insert guests"
+  ON public.guests FOR INSERT WITH CHECK (true);
 
 CREATE POLICY "Allow public update guests for RSVP"
   ON public.guests FOR UPDATE USING (true) WITH CHECK (true);

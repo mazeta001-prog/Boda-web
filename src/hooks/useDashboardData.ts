@@ -8,6 +8,7 @@ import {
 } from '@/lib/supabaseClient';
 import { 
   Guest, 
+  GuestStatus,
   EventItem, 
   TableItem, 
   GiftItem, 
@@ -64,7 +65,8 @@ export function useDashboardData() {
         { data: invsData, error: invsErr },
         { data: budgetData, error: budgetErr },
         { data: logsData, error: logsErr },
-        { data: notifsData, error: notifsErr }
+        { data: notifsData, error: notifsErr },
+        { data: settingsData, error: settingsErr }
       ] = await Promise.all([
         supabase.from('guests').select('*').order('created_at', { ascending: false }),
         supabase.from('events').select('*').order('date', { ascending: true }),
@@ -73,7 +75,8 @@ export function useDashboardData() {
         supabase.from('invitations').select('*').order('created_at', { ascending: false }),
         supabase.from('budget').select('*').order('created_at', { ascending: true }),
         supabase.from('activity_logs').select('*').order('created_at', { ascending: false }),
-        supabase.from('notifications').select('*').order('created_at', { ascending: false })
+        supabase.from('notifications').select('*').order('created_at', { ascending: false }),
+        supabase.from('settings').select('total_budget_goal').eq('id', 1).maybeSingle()
       ]);
 
       if (guestsErr) console.error('Error al cargar invitados desde Supabase:', guestsErr.message);
@@ -95,6 +98,10 @@ export function useDashboardData() {
       setBudget((budgetData as BudgetItem[]) || []);
       setActivityLogs((logsData as ActivityLog[]) || []);
       setNotifications((notifsData as NotificationItem[]) || []);
+
+      if (settingsData?.total_budget_goal !== undefined && settingsData?.total_budget_goal !== null) {
+        setTotalBudgetGoal(Number(settingsData.total_budget_goal));
+      }
 
       if (hasCriticalError) {
         setError('Error al consultar datos en la base de datos de Supabase.');
@@ -144,10 +151,13 @@ export function useDashboardData() {
 
   // Calculate live statistics
   const metrics: DashboardMetrics = useMemo(() => {
-    const totalGuestsCount = guests.length;
+    const officialGuests = guests.filter(g => g.status !== 'tentative');
+    const totalGuestsCount = officialGuests.length;
 
     const confirmedGuestsCount = guests.filter(g => g.status === 'confirmed').length;
     const pendingGuestsCount = guests.filter(g => g.status === 'pending').length;
+    const tentativeGuestsCount = guests.filter(g => g.status === 'tentative').length;
+    const notSentGuestsCount = guests.filter(g => g.status === 'not_sent' || (!g.invitation_sent && g.status !== 'confirmed' && g.status !== 'declined' && g.status !== 'tentative' && g.status !== 'pending')).length;
     const declinedGuestsCount = guests.filter(g => g.status === 'declined').length;
 
     const totalEventsCount = events.length;
@@ -172,10 +182,15 @@ export function useDashboardData() {
     const totalBudgetAllocated = totalBudgetGoal > 0 ? totalBudgetGoal : sumAllocated;
     const budgetRemainingTotal = Math.max(0, totalBudgetAllocated - budgetUsedTotal);
 
+    const totalAllGuestsCount = guests.length;
+
     return {
       totalGuests: totalGuestsCount,
+      totalAllGuests: totalAllGuestsCount,
       confirmedGuests: confirmedGuestsCount,
       pendingGuests: pendingGuestsCount,
+      tentativeGuests: tentativeGuestsCount,
+      notSentGuests: notSentGuestsCount,
       declinedGuests: declinedGuestsCount,
       totalEvents: totalEventsCount,
       guestsPerEvent: guestsPerEventAvg,
@@ -252,6 +267,81 @@ export function useDashboardData() {
     } catch (err: any) {
       console.error('Error creating guest in Supabase:', err);
       setGuests(prev => prev.filter(g => g.id !== tempId));
+      throw err;
+    }
+  };
+
+  const createGuestsBatch = async (newGuestsData: Omit<Guest, 'id' | 'created_at' | 'updated_at'>[]) => {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase no está configurado.');
+    }
+    if (!newGuestsData || newGuestsData.length === 0) return;
+
+    // Sanitize data to prevent PostgreSQL type errors (NaN, undefined, invalid strings)
+    const cleanedData = newGuestsData.map(g => ({
+      full_name: String(g.full_name || '').trim(),
+      nickname: g.nickname ? String(g.nickname).trim() : undefined,
+      category: g.category ? String(g.category).trim() : 'Amigos',
+      email: g.email ? String(g.email).trim() : '',
+      phone: g.phone ? String(g.phone).trim() : undefined,
+      status: (['confirmed', 'pending', 'declined', 'not_sent', 'tentative'].includes(g.status) ? g.status : 'pending') as GuestStatus,
+      companions_count: typeof g.companions_count === 'number' && !isNaN(g.companions_count) ? g.companions_count : 0,
+      dietary_restrictions: g.dietary_restrictions ? String(g.dietary_restrictions).trim() : undefined,
+      invitation_sent: Boolean(g.invitation_sent),
+      invitation_opened: Boolean(g.invitation_opened)
+    }));
+
+    const tempGuests: Guest[] = cleanedData.map((g, idx) => ({
+      ...g,
+      id: `g-temp-${Date.now()}-${idx}-${Math.random().toString(36).substring(2, 7)}`,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }));
+
+    setGuests(prev => [...tempGuests, ...prev]);
+
+    try {
+      await ensureAdminSession();
+      const { data, error: insertErr } = await supabase
+        .from('guests')
+        .insert(cleanedData)
+        .select();
+
+      if (insertErr) {
+        console.warn('Supabase batch insert warning, falling back to individual inserts:', insertErr);
+        let successCount = 0;
+        for (const singleGuest of cleanedData) {
+          try {
+            const { error: sErr } = await supabase.from('guests').insert([singleGuest]);
+            if (sErr) {
+              // Fallback: If DB constraint rejects 'not_sent', insert as pending with invitation_sent: false
+              const fallbackGuest = {
+                ...singleGuest,
+                status: (singleGuest.status === 'not_sent' ? 'pending' : singleGuest.status) as GuestStatus,
+                invitation_sent: singleGuest.status === 'not_sent' || singleGuest.status === 'tentative' ? false : singleGuest.invitation_sent
+              };
+              const { error: fErr } = await supabase.from('guests').insert([fallbackGuest]);
+              if (!fErr) successCount++;
+              else console.warn('Single guest fallback insert error:', fErr);
+            } else {
+              successCount++;
+            }
+          } catch (e) {
+            console.warn('Single guest insert error:', e);
+          }
+        }
+        if (successCount > 0) {
+          await fetchData();
+          return;
+        }
+        throw new Error(insertErr.message || 'Error al guardar los invitados en la base de datos.');
+      }
+      if (data) {
+        await fetchData();
+      }
+    } catch (err: any) {
+      console.error('Error creating guests batch in Supabase:', err);
+      await fetchData();
       throw err;
     }
   };
@@ -461,6 +551,20 @@ export function useDashboardData() {
 
   const setTotalBudget = async (amount: number) => {
     setTotalBudgetGoal(amount);
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await ensureAdminSession();
+        const { error: upsertErr } = await supabase
+          .from('settings')
+          .upsert({ id: 1, total_budget_goal: amount }, { onConflict: 'id' });
+
+        if (upsertErr) {
+          console.error('Error saving total_budget_goal to Supabase:', upsertErr.message);
+        }
+      } catch (err) {
+        console.error('Failed to update total_budget_goal in Supabase:', err);
+      }
+    }
   };
 
   const markNotificationRead = async (id: string) => {
@@ -500,6 +604,7 @@ export function useDashboardData() {
     refetch: fetchData,
     searchAll,
     createGuest,
+    createGuestsBatch,
     updateGuest,
     deleteGuest,
     deleteGuests,

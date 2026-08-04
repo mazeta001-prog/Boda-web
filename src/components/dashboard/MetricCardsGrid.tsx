@@ -51,23 +51,44 @@ export function MetricCardsGrid({
             <span className="material-symbols-outlined text-sm">arrow_forward</span>
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+        {/* Minimal Universo General Summary Bar */}
+        <div className="mb-6 p-4 sm:p-5 bg-surface-container-lowest border border-outline-variant/40 rounded-2xl shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-xl">groups</span>
+            </div>
+            <div>
+              <h3 className="font-headline-sm text-base font-bold text-on-surface">Universo Total de Invitados</h3>
+              <p className="text-xs text-secondary font-body-md mt-0.5">
+                Total general contemplado (Oficiales + No Enviadas + Tentativos)
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-baseline gap-2 bg-surface-container-low px-4 py-2 rounded-xl border border-outline-variant/30 shrink-0 self-start sm:self-auto">
+            <span className="text-2xl font-bold font-headline-sm text-primary">{metrics.totalAllGuests}</span>
+            <span className="text-xs font-semibold text-secondary">personas en total</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {/* 1. Total Guests */}
           <Link
             href="/dashboard/guests"
-            className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-primary/50 hover:shadow-md transition-all cursor-pointer block"
+            className="bg-surface-container-lowest p-5 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-primary/50 hover:shadow-md transition-all cursor-pointer block"
           >
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <span className="material-symbols-outlined text-6xl text-primary">groups</span>
+            <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span className="material-symbols-outlined text-5xl text-primary">groups</span>
             </div>
             <div className="relative z-10">
-              <span className="font-label-caps text-xs text-secondary uppercase tracking-widest block mb-2">Total Invitados</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-display-lg font-bold text-on-surface">{metrics.totalGuests}</span>
-                <span className="text-xs font-body-md text-secondary">personas</span>
+              <span className="font-label-caps text-[11px] text-secondary uppercase tracking-wider block mb-1.5 font-bold">Total Oficial</span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-3xl font-display-lg font-bold text-on-surface">{metrics.totalGuests}</span>
+                <span className="text-[11px] font-body-md text-secondary">oficiales</span>
               </div>
-              <p className="mt-3 text-xs text-primary font-bold flex items-center gap-1 group-hover:underline">
-                <span>Ver lista completa</span>
+              <p className="mt-3 text-[11px] text-primary font-bold flex items-center gap-1 group-hover:underline">
+                <span>Ver todos</span>
                 <span className="material-symbols-outlined text-xs">chevron_right</span>
               </p>
             </div>
@@ -76,22 +97,19 @@ export function MetricCardsGrid({
           {/* 2. Confirmed Guests */}
           <Link
             href="/dashboard/guests?status=confirmed"
-            className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-emerald-500/60 hover:shadow-md transition-all cursor-pointer block"
+            className="bg-surface-container-lowest p-5 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-emerald-500/60 hover:shadow-md transition-all cursor-pointer block"
           >
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <span className="material-symbols-outlined text-6xl text-emerald-600">check_circle</span>
+            <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span className="material-symbols-outlined text-5xl text-emerald-600">check_circle</span>
             </div>
             <div className="relative z-10">
-              <span className="font-label-caps text-xs text-secondary uppercase tracking-widest block mb-2">Confirmados</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-display-lg font-bold text-emerald-700 dark:text-emerald-400">{metrics.confirmedGuests}</span>
-                <span className="text-xs font-body-md text-emerald-600 dark:text-emerald-400 font-semibold">{guestConfirmationRate}% del total</span>
+              <span className="font-label-caps text-[11px] text-secondary uppercase tracking-wider block mb-1.5 font-bold">Confirmados</span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-3xl font-display-lg font-bold text-emerald-700 dark:text-emerald-400">{metrics.confirmedGuests}</span>
+                <span className="text-[11px] font-body-md text-emerald-600 dark:text-emerald-400 font-semibold">{guestConfirmationRate}%</span>
               </div>
-              <div className="w-full bg-surface-variant h-1.5 rounded-full mt-3 overflow-hidden">
-                <div className="bg-emerald-600 h-full rounded-full transition-all duration-500" style={{ width: `${guestConfirmationRate}%` }}></div>
-              </div>
-              <p className="mt-2 text-[11px] text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-1 group-hover:underline">
-                <span>Ver invitados confirmados</span>
+              <p className="mt-3 text-[11px] text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-1 group-hover:underline">
+                <span>Ver confirmados</span>
                 <span className="material-symbols-outlined text-xs">chevron_right</span>
               </p>
             </div>
@@ -100,40 +118,82 @@ export function MetricCardsGrid({
           {/* 3. Pending Guests */}
           <Link
             href="/dashboard/guests?status=pending"
-            className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-amber-500/60 hover:shadow-md transition-all cursor-pointer block"
+            className="bg-surface-container-lowest p-5 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-amber-500/60 hover:shadow-md transition-all cursor-pointer block"
           >
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <span className="material-symbols-outlined text-6xl text-amber-600">pending</span>
+            <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span className="material-symbols-outlined text-5xl text-amber-600">pending</span>
             </div>
             <div className="relative z-10">
-              <span className="font-label-caps text-xs text-secondary uppercase tracking-widest block mb-2">Pendientes</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-display-lg font-bold text-amber-700 dark:text-amber-400">{metrics.pendingGuests}</span>
-                <span className="text-xs font-body-md text-amber-600">Por responder</span>
+              <span className="font-label-caps text-[11px] text-secondary uppercase tracking-wider block mb-1.5 font-bold">Pendientes</span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-3xl font-display-lg font-bold text-amber-700 dark:text-amber-400">{metrics.pendingGuests}</span>
+                <span className="text-[11px] font-body-md text-amber-600">Por responder</span>
               </div>
-              <p className="mt-3 text-xs text-amber-700 dark:text-amber-300 font-bold flex items-center gap-1 group-hover:underline">
-                <span>Ver invitados pendientes</span>
+              <p className="mt-3 text-[11px] text-amber-700 dark:text-amber-300 font-bold flex items-center gap-1 group-hover:underline">
+                <span>Ver pendientes</span>
                 <span className="material-symbols-outlined text-xs">chevron_right</span>
               </p>
             </div>
           </Link>
 
-          {/* 4. Declined Guests */}
+          {/* 4. Tentative Guests */}
           <Link
-            href="/dashboard/guests?status=declined"
-            className="bg-surface-container-lowest p-6 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-rose-500/60 hover:shadow-md transition-all cursor-pointer block"
+            href="/dashboard/guests?status=tentative"
+            className="bg-surface-container-lowest p-5 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-purple-500/60 hover:shadow-md transition-all cursor-pointer block"
           >
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <span className="material-symbols-outlined text-6xl text-rose-600">cancel</span>
+            <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span className="material-symbols-outlined text-5xl text-purple-600">help</span>
             </div>
             <div className="relative z-10">
-              <span className="font-label-caps text-xs text-secondary uppercase tracking-widest block mb-2">Declinados</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-display-lg font-bold text-rose-700 dark:text-rose-400">{metrics.declinedGuests}</span>
-                <span className="text-xs font-body-md text-rose-600">No asistirán</span>
+              <span className="font-label-caps text-[11px] text-secondary uppercase tracking-wider block mb-1.5 font-bold">Tentativos</span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-3xl font-display-lg font-bold text-purple-700 dark:text-purple-400">{metrics.tentativeGuests}</span>
+                <span className="text-[11px] font-body-md text-purple-600 font-medium">(Fuera del total)</span>
               </div>
-              <p className="mt-3 text-xs text-rose-700 dark:text-rose-300 font-bold flex items-center gap-1 group-hover:underline">
-                <span>Ver quienes declinaron</span>
+              <p className="mt-3 text-[11px] text-purple-700 dark:text-purple-300 font-bold flex items-center gap-1 group-hover:underline">
+                <span>Ver tentativos</span>
+                <span className="material-symbols-outlined text-xs">chevron_right</span>
+              </p>
+            </div>
+          </Link>
+
+          {/* 5. Not Sent Guests */}
+          <Link
+            href="/dashboard/guests?status=not_sent"
+            className="bg-surface-container-lowest p-5 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-slate-500/60 hover:shadow-md transition-all cursor-pointer block"
+          >
+            <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span className="material-symbols-outlined text-5xl text-slate-600">mark_email_unread</span>
+            </div>
+            <div className="relative z-10">
+              <span className="font-label-caps text-[11px] text-secondary uppercase tracking-wider block mb-1.5 font-bold">No Enviadas</span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-3xl font-display-lg font-bold text-slate-700 dark:text-slate-300">{metrics.notSentGuests}</span>
+                <span className="text-[11px] font-body-md text-slate-500">Sin enviar</span>
+              </div>
+              <p className="mt-3 text-[11px] text-slate-700 dark:text-slate-300 font-bold flex items-center gap-1 group-hover:underline">
+                <span>Ver no enviadas</span>
+                <span className="material-symbols-outlined text-xs">chevron_right</span>
+              </p>
+            </div>
+          </Link>
+
+          {/* 6. Declined Guests */}
+          <Link
+            href="/dashboard/guests?status=declined"
+            className="bg-surface-container-lowest p-5 border border-outline-variant/40 rounded-2xl shadow-xs relative overflow-hidden group hover:border-rose-500/60 hover:shadow-md transition-all cursor-pointer block"
+          >
+            <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span className="material-symbols-outlined text-5xl text-rose-600">cancel</span>
+            </div>
+            <div className="relative z-10">
+              <span className="font-label-caps text-[11px] text-secondary uppercase tracking-wider block mb-1.5 font-bold">No Asistirán</span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-3xl font-display-lg font-bold text-rose-700 dark:text-rose-400">{metrics.declinedGuests}</span>
+                <span className="text-[11px] font-body-md text-rose-600">Declinados</span>
+              </div>
+              <p className="mt-3 text-[11px] text-rose-700 dark:text-rose-300 font-bold flex items-center gap-1 group-hover:underline">
+                <span>Ver declinados</span>
                 <span className="material-symbols-outlined text-xs">chevron_right</span>
               </p>
             </div>

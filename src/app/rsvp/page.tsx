@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { supabase, isSupabaseConfigured, normalizeString } from '@/lib/supabaseClient';
 import { Guest } from '@/types/database';
 import RSVPCountdown from '@/components/RSVPCountdown';
+import { getFormattedGuestDisplayName, matchGuestSearch } from '@/lib/guestUtils';
 
 type StepType = 'search' | 'found' | 'success' | 'decline';
 type SlotStatus = 'waiting' | 'searching' | 'found' | 'ambiguous' | 'not-found';
@@ -38,6 +39,7 @@ export default function RSVPForm() {
     { id: 1, firstName: '', lastName: '', status: 'waiting', foundGuest: null, candidateGuests: [], errorMessage: null }
   ]);
 
+  const [allDbGuests, setAllDbGuests] = useState<Guest[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -132,7 +134,8 @@ export default function RSVPForm() {
 
   // Handler when user selects their nickname from candidate options
   const handleSelectCandidate = (slotId: number, guest: Guest) => {
-    const nameParts = guest.full_name.trim().split(' ');
+    const displayName = getFormattedGuestDisplayName(guest, allDbGuests);
+    const nameParts = displayName.trim().split(' ');
     const autoFirstName = nameParts[0] || guest.full_name;
     const autoLastName = nameParts.slice(1).join(' ') || '';
 
@@ -162,7 +165,7 @@ export default function RSVPForm() {
     }));
   };
 
-  // Execute search for guest slots (Exact match -> Nickname match -> Ambiguous Candidate Selection)
+  // Execute search for guest slots (Exact match -> Flexible token match -> Ambiguous Candidate Selection)
   const handleSearch = async () => {
     if (isRateLimited) return;
 
@@ -196,6 +199,7 @@ export default function RSVPForm() {
           console.error('Error fetching guests from Supabase:', fetchErr.message);
         } else if (data) {
           dbGuests = data as Guest[];
+          setAllDbGuests(dbGuests);
         }
       }
 
@@ -205,37 +209,26 @@ export default function RSVPForm() {
         const fName = slot.firstName.trim();
         const lName = slot.lastName.trim();
         const fullQuery = `${fName} ${lName}`.trim();
-        const normQuery = normalizeString(fullQuery);
-        const normFName = normalizeString(fName);
-        const normLName = normalizeString(lName);
 
         if (!fullQuery) {
-          return slot;
+          totalFailedInThisSearch++;
+          return {
+            ...slot,
+            status: 'not-found' as SlotStatus,
+            foundGuest: null,
+            candidateGuests: [],
+            errorMessage: 'Por favor ingresa tu nombre o apellido para verificar tu invitación.'
+          };
         }
 
-        // 1. Gather all database matches (exact full name, exact nickname, or partial matches)
-        const allMatches = dbGuests.filter(g => {
-          const normFull = normalizeString(g.full_name);
-          const normSansAmp = normalizeString(g.full_name.replace(/&/g, ' '));
-          const normNick = g.nickname ? normalizeString(g.nickname) : '';
+        // 1. Flexible & Token-based Name matching logic
+        const allMatches = dbGuests.filter(g => matchGuestSearch(g, fName, lName));
 
-          const isExactFull = normFull === normQuery || normSansAmp === normQuery;
-          const isExactNick = normNick && (normNick === normQuery || (normFName && normNick === normFName));
-          const matchFull = normQuery ? normFull.includes(normQuery) : false;
-          const matchFirst = normFName ? normFull.includes(normFName) : false;
-          const matchLast = normLName ? normFull.includes(normLName) : false;
-          const matchNick = normFName && normNick ? normNick.includes(normFName) : false;
+        // 2. Candidate disambiguation logic (excluding tentative & not_sent / unsent guests)
+        const validRSVPGuests = allMatches.filter(g => g.status !== 'tentative' && g.status !== 'not_sent');
 
-          return isExactFull || isExactNick || matchFull || (matchFirst && (matchLast || !lName)) || matchNick;
-        });
-
-        // 2. Candidate disambiguation logic
-        const unclaimed = allMatches.filter(g => g.status === 'pending');
-        // Prioritize pending (unclaimed) invitations, or fallback to all matching invitations
-        const activeMatches = unclaimed.length > 0 ? unclaimed : allMatches;
-
-        // Case A: No matches at all
-        if (allMatches.length === 0) {
+        // Case A: No valid RSVP matches at all
+        if (validRSVPGuests.length === 0) {
           totalFailedInThisSearch++;
           return {
             ...slot,
@@ -246,10 +239,15 @@ export default function RSVPForm() {
           };
         }
 
+        const unclaimed = validRSVPGuests.filter(g => g.status === 'pending');
+        // Prioritize pending (unclaimed) invitations, or fallback to all matching valid invitations
+        const activeMatches = unclaimed.length > 0 ? unclaimed : validRSVPGuests;
+
         // Case B: Exactly 1 candidate remaining -> Auto-select!
         if (activeMatches.length === 1) {
           const matchedGuest = activeMatches[0];
-          const nameParts = matchedGuest.full_name.trim().split(' ');
+          const displayName = getFormattedGuestDisplayName(matchedGuest, dbGuests);
+          const nameParts = displayName.trim().split(' ');
           return {
             ...slot,
             firstName: nameParts[0] || matchedGuest.full_name,
@@ -511,7 +509,7 @@ export default function RSVPForm() {
               <div className="decorative-line mb-6 sm:mb-8"></div>
               
               <p className="font-body-lg text-secondary dark:text-on-surface-variant/90 mb-4 sm:mb-6 max-w-[520px] mx-auto font-light leading-relaxed text-xs sm:text-base">
-                Ingresa el nombre y apellido exactos tal como figuran en tu tarjeta de invitación para verificar la asistencia.
+                Ingresa tu nombre y tu apellido para encontrar tu invitación. Esta invitación es válida únicamente para 1 persona (no se aceptan invitados adicionales).
               </p>
 
               {/* RSVP Countdown Timer from settings table */}
@@ -640,24 +638,20 @@ export default function RSVPForm() {
                             >
                               <div className="space-y-1">
                                 <p className="font-bold text-sm text-on-surface group-hover:text-primary transition-colors">
-                                  {candidate.full_name}
+                                  {getFormattedGuestDisplayName(candidate, allDbGuests.length > 0 ? allDbGuests : (slot.candidateGuests || []))}
                                 </p>
-                                <div className="flex items-center gap-2 flex-wrap text-xs">
-                                  {candidate.nickname ? (
-                                    <span className="inline-block text-xs font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">
-                                      Apodo: "{candidate.nickname}"
-                                    </span>
-                                  ) : (
-                                    <span className="text-secondary text-xs italic">
-                                      (Sin apodo)
-                                    </span>
-                                  )}
-                                  {candidate.category && (
+                                {candidate.nickname && (
+                                  <p className="text-xs text-amber-700 dark:text-amber-300 italic">
+                                    Apodo: &quot;{candidate.nickname}&quot;
+                                  </p>
+                                )}
+                                {candidate.category && (
+                                  <div className="flex items-center gap-2 flex-wrap text-xs">
                                     <span className="text-secondary text-xs font-medium">
                                       • {candidate.category}
                                     </span>
-                                  )}
-                                </div>
+                                  </div>
+                                )}
                               </div>
 
                               <div className="px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-caps text-[10px] font-bold group-hover:scale-105 transition-transform shrink-0 shadow-xs">
@@ -709,7 +703,7 @@ export default function RSVPForm() {
                       <span className="material-symbols-outlined text-lg">verified</span>
                       <span>BUSCAR MI INVITACIÓN</span>
                     </>
-                  )}
+                  ) }
                 </button>
 
                 {/* Continue Button Enabled if at least one guest is found */}
@@ -747,7 +741,7 @@ export default function RSVPForm() {
                   <div className="space-y-2">
                     {sessionConfirmed.map(item => (
                       <div key={item.guest.id} className="flex items-center justify-between bg-surface-container-low/70 dark:bg-surface-container-highest/30 px-4 py-2.5 rounded-xl text-xs">
-                        <span className="font-semibold text-primary">{item.guest.full_name}</span>
+                        <span className="font-semibold text-primary">{getFormattedGuestDisplayName(item.guest, allDbGuests)}</span>
                         <span className={`px-2.5 py-0.5 rounded-full font-label-caps text-[10px] font-bold ${
                           item.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-amber-500/10 text-amber-600'
                         }`}>
@@ -790,14 +784,8 @@ export default function RSVPForm() {
                         </p>
                         
                         <h3 className="font-display-lg text-xl sm:text-3xl text-primary-container dark:text-inverse-primary font-normal leading-tight">
-                          {guest.full_name}
+                          {getFormattedGuestDisplayName(guest, allDbGuests)}
                         </h3>
-                        
-                        {guest.nickname && (
-                          <span className="inline-block mt-1 px-3 py-0.5 bg-primary/10 text-primary text-xs font-label-caps rounded-full border border-primary/20 tracking-wider">
-                            Conocido como: &quot;{guest.nickname}&quot;
-                          </span>
-                        )}
                       </div>
                     </div>
                   );
@@ -885,7 +873,7 @@ export default function RSVPForm() {
                     return (
                       <div key={guest.id} className="border-b border-outline-variant/20 pb-3 text-left">
                         <p className="font-body-md text-on-surface flex justify-between font-semibold text-primary">
-                          <span>{guest.full_name}</span>
+                          <span>{getFormattedGuestDisplayName(guest, allDbGuests)}</span>
                           <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold">Confirmado/a</span>
                         </p>
                       </div>

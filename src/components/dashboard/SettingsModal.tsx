@@ -160,7 +160,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             </div>
             <div className="min-w-0 flex-1">
               <span className="text-[10px] font-label-caps text-primary font-bold uppercase tracking-wider block">Sesión Activa</span>
-              <h4 className="font-bold text-sm text-on-surface truncate">Administrador (Ivan &amp; Dana)</h4>
+              <h4 className="font-bold text-sm text-on-surface truncate">Administrador (Dana &amp; Ivan)</h4>
               <p className="text-xs text-secondary truncate">Panel de Gestión de Boda</p>
             </div>
           </div>

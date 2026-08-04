@@ -99,9 +99,10 @@ export function parseAndDeduplicateExcel(
   // 1. Read sheet as 2D array of raw values
   const matrix: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
 
-  // Map of normalized existing guest names and emails
+  // Map of normalized existing guest names, emails, and phone digits
   const existingNamesSet = new Set<string>();
   const existingEmailsSet = new Set<string>();
+  const existingPhonesSet = new Set<string>();
 
   existingGuests.forEach(g => {
     if (g.full_name) {
@@ -109,6 +110,12 @@ export function parseAndDeduplicateExcel(
     }
     if (g.email) {
       existingEmailsSet.add(normalizeString(g.email));
+    }
+    if (g.phone) {
+      const cleanPhoneDigits = g.phone.replace(/\D/g, '');
+      if (cleanPhoneDigits.length >= 7) {
+        existingPhonesSet.add(cleanPhoneDigits);
+      }
     }
   });
 
@@ -207,27 +214,36 @@ export function parseAndDeduplicateExcel(
       continue;
     }
 
+    const rawCatNorm = normalizeString(parsedGuest.category || '');
+    let cleanCategory = parsedGuest.category || 'Amigos';
+    const statusKeywords = ['invitacion no enviada', 'tentativo', 'tentativa', 'no enviado', 'no enviada', 'sin enviar', 'confirmado', 'pendiente', 'rechazado', 'not sent', 'tentative'];
+    if (statusKeywords.some(k => rawCatNorm.includes(normalizeString(k)))) {
+      cleanCategory = 'Amigos';
+    }
+
     const candidateGuest: Omit<Guest, 'id' | 'created_at' | 'updated_at'> = {
       full_name: parsedGuest.full_name,
       nickname: parsedGuest.nickname || undefined,
-      category: parsedGuest.category || 'Amigos',
+      category: cleanCategory,
       email: parsedGuest.email || '',
       phone: parsedGuest.phone || undefined,
       status: parsedGuest.status || 'pending',
       companions_count: parsedGuest.companions_count || 0,
       dietary_restrictions: parsedGuest.dietary_restrictions || undefined,
-      invitation_sent: true,
+      invitation_sent: (parsedGuest.status === 'not_sent' || parsedGuest.status === 'tentative') ? false : true,
       invitation_opened: false
     };
 
     // Deduplication check
     const normalizedNameKey = normalizeString(parsedGuest.full_name);
     const normalizedEmailKey = parsedGuest.email ? normalizeString(parsedGuest.email) : '';
+    const cleanGuestPhone = parsedGuest.phone ? parsedGuest.phone.replace(/\D/g, '') : '';
 
     const isDuplicateByName = existingNamesSet.has(normalizedNameKey);
     const isDuplicateByEmail = parsedGuest.email ? existingEmailsSet.has(normalizedEmailKey) : false;
+    const isDuplicateByPhone = cleanGuestPhone && cleanGuestPhone.length >= 7 ? existingPhonesSet.has(cleanGuestPhone) : false;
 
-    if (isDuplicateByName || isDuplicateByEmail) {
+    if (isDuplicateByName || isDuplicateByEmail || isDuplicateByPhone) {
       skippedDuplicatesCount++;
       skippedNames.push(parsedGuest.full_name);
 
@@ -236,8 +252,10 @@ export function parseAndDeduplicateExcel(
         reason = `El nombre "${parsedGuest.full_name}" y el correo "${parsedGuest.email}" ya existen en la lista.`;
       } else if (isDuplicateByName) {
         reason = `El nombre "${parsedGuest.full_name}" ya existe en tu lista de invitados.`;
-      } else {
+      } else if (isDuplicateByEmail) {
         reason = `El correo "${parsedGuest.email}" ya está registrado en tu lista.`;
+      } else {
+        reason = `El teléfono "${parsedGuest.phone}" ya está registrado en tu lista.`;
       }
 
       duplicateGuests.push({
@@ -251,6 +269,7 @@ export function parseAndDeduplicateExcel(
 
     existingNamesSet.add(normalizedNameKey);
     if (parsedGuest.email) existingEmailsSet.add(normalizedEmailKey);
+    if (cleanGuestPhone && cleanGuestPhone.length >= 7) existingPhonesSet.add(cleanGuestPhone);
 
     addedGuests.push(candidateGuest);
   }
@@ -342,9 +361,19 @@ function extractGuestFromUnstructuredTokens(
     category = String(rawRow[columnIndexMap['category']]).trim();
   }
   if (columnIndexMap['status'] !== undefined && rawRow[columnIndexMap['status']]) {
-    const stRaw = String(rawRow[columnIndexMap['status']]).trim().toLowerCase();
-    if (stRaw.includes('confir') || stRaw.includes('si') || stRaw === 'yes') status = 'confirmed';
-    else if (stRaw.includes('declin') || stRaw.includes('no')) status = 'declined';
+    const stRaw = String(rawRow[columnIndexMap['status']]).trim();
+    const stNorm = normalizeString(stRaw);
+    if (stNorm.includes('confir') || stNorm.includes('si') || stNorm === 'yes' || stNorm.includes('asistira') || stNorm.includes('asiste')) {
+      status = 'confirmed';
+    } else if (stNorm.includes('tentat') || stNorm.includes('duda') || stNorm.includes('definir') || stNorm.includes('porver') || stNorm.includes('evalua')) {
+      status = 'tentative';
+    } else if (stNorm.includes('noenv') || stNorm.includes('sinenv') || stNorm.includes('notsent') || stNorm.includes('draft') || stNorm.includes('noenviad')) {
+      status = 'not_sent';
+    } else if (stNorm.includes('declin') || stNorm.includes('rechaz') || stNorm.includes('noasist')) {
+      status = 'declined';
+    } else if (stNorm.includes('pend') || stNorm.includes('enviad')) {
+      status = 'pending';
+    }
   }
   if (columnIndexMap['companions_count'] !== undefined && rawRow[columnIndexMap['companions_count']]) {
     companions_count = parseInt(String(rawRow[columnIndexMap['companions_count']])) || 0;
@@ -377,8 +406,20 @@ function extractGuestFromUnstructuredTokens(
       status = 'confirmed';
       continue;
     }
-    if (['declinado', 'declinada', 'no', 'no asistira', 'no asiste', 'decline', 'rechazado'].includes(norm)) {
+    if (['tentativo', 'tentativa', 'duda', 'por definir', 'tentative', 'por ver', 'en evaluacion'].some(k => norm.includes(k))) {
+      status = 'tentative';
+      continue;
+    }
+    if (['no enviada', 'no enviado', 'no enviadas', 'sin enviar', 'draft', 'not sent', 'not_sent', 'noenviada', 'noenviado'].some(k => norm.includes(k))) {
+      status = 'not_sent';
+      continue;
+    }
+    if (['declinado', 'declinada', 'no asistira', 'no asiste', 'decline', 'rechazado'].includes(norm)) {
       status = 'declined';
+      continue;
+    }
+    if (['pendiente', 'pendientes', 'por responder', 'pending', 'enviada', 'enviado'].includes(norm)) {
+      status = 'pending';
       continue;
     }
 
@@ -455,7 +496,7 @@ export function generateGuestExcelBuffer(guests: Guest[]): Uint8Array {
     'Categoría': g.category || 'Amigos',
     'Email': g.email || '',
     'Teléfono': g.phone || '',
-    'Estado': g.status === 'confirmed' ? 'Confirmado' : g.status === 'declined' ? 'No asistirá' : 'Pendiente',
+    'Estado': g.status === 'confirmed' ? 'Confirmado' : g.status === 'tentative' ? 'Tentativo' : g.status === 'not_sent' ? 'Invitación no enviada' : g.status === 'declined' ? 'No asistirá' : 'Pendiente',
     'Acompañantes Extra': g.companions_count || 0,
     'Dietas / Alergias': g.dietary_restrictions || 'Ninguna'
   }));
