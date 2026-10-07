@@ -71,7 +71,7 @@ export default function AdminDashboard() {
   } = useDashboardData();
 
   useEffect(() => {
-    const targetDate = new Date('December 20, 2026 16:00:00').getTime();
+    const targetDate = new Date('December 20, 2026 15:00:00').getTime();
     const calculateDays = () => {
       const now = new Date().getTime();
       const distance = targetDate - now;

@@ -429,7 +429,7 @@ END $$;
 -- ==========================================
 
 INSERT INTO public.events (title, date, location, max_capacity)
-SELECT 'Ceremonia Principal & Banquete', '2026-12-20 16:00:00+00', 'Finca El Olivar, Madrid', 250
+SELECT 'Ceremonia Principal & Banquete', '2026-12-20 15:00:00+00', 'Finca El Olivar, Madrid', 250
 WHERE NOT EXISTS (SELECT 1 FROM public.events WHERE title = 'Ceremonia Principal & Banquete');
 
 INSERT INTO public.events (title, date, location, max_capacity)

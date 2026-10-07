@@ -24,8 +24,8 @@ export default function Home() {
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // Countdown Logic for December 20, 2026
-    const targetDate = new Date('December 20, 2026 16:00:00').getTime();
+    // Countdown Logic for December 20, 2026 at 3:00 PM (15:00)
+    const targetDate = new Date('December 20, 2026 15:00:00').getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -260,7 +260,7 @@ export default function Home() {
               <span className="material-symbols-outlined text-3xl sm:text-4xl text-primary mb-4 sm:mb-6 group-hover:scale-110 transition-transform">calendar_month</span>
               <h3 className="font-label-caps text-xs text-primary mb-3 sm:mb-4 tracking-widest font-bold">FECHA Y HORA</h3>
               <p className="font-body-lg font-bold text-on-surface mb-1 sm:mb-2 text-sm sm:text-base">20 de Diciembre, 2026</p>
-              <p className="font-body-md text-secondary text-xs sm:text-sm">16:00 Horas</p>
+              <p className="font-body-md text-secondary text-xs sm:text-sm">3:00 PM</p>
             </div>
 
             <div className="bg-surface-container-lowest p-6 sm:p-10 text-center rounded-2xl champagne-shadow border border-outline-variant/30 group hover:-translate-y-4 hover:shadow-xl transition-all duration-500 reveal stagger-3">
